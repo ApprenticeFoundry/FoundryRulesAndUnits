@@ -91,7 +91,7 @@ namespace FoundryRulesAndUnits.Units
 		public double Convert(string u1, string u2, double v1)
 		{
 			var key = $"{u1}|{u2}";
-			if (ConversionLookup.TryGetValue(key, out UnitConversion found))
+			if (ConversionLookup.TryGetValue(key, out UnitConversion? found) && found != null)
 			{
 				return found.Convert(v1);
 			}
