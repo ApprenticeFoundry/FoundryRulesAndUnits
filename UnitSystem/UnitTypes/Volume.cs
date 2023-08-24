@@ -17,7 +17,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 		}
 
-		public Volume(double value, string? units) :
+		public Volume(double value, string? units = null) :
 			base(UnitFamilyName.Volume)
 		{
 			Init(Category(), value, units);

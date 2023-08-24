@@ -17,7 +17,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 		}
 
-		public Temperature(double value, string? units) :
+		public Temperature(double value, string? units = null) :
 			base(UnitFamilyName.Temperature)
 		{
 			Init(Category(), value, units);

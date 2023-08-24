@@ -17,7 +17,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 		}
 
-		public Quanity(double value, string? units) :
+		public Quanity(double value, string? units = null) :
 			base(UnitFamilyName.Quanity)
 		{
 			Init(Category(), value, units);

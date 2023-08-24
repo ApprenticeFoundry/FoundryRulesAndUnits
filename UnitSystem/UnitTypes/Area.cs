@@ -19,7 +19,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 		}
 
-		public Area(double value, string? units) :
+		public Area(double value, string? units= null) :
 			base(UnitFamilyName.Area)
 		{
 			Init(Category(), value, units);

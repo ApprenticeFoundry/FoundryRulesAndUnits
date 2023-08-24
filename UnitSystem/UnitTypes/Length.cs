@@ -21,7 +21,7 @@ namespace FoundryRulesAndUnits.Units
 
 		}
 
-		public Length(double value, string? units) :
+		public Length(double value, string? units=null) :
 			base(UnitFamilyName.Length)
 		{
 			Init(Category(), value, units);

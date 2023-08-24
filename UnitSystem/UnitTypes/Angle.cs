@@ -20,7 +20,7 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 
-		public Angle(double value, string? units) :
+		public Angle(double value, string? units=null) :
 			base(UnitFamilyName.Angle)
 		{
 			Init(Category(), value, units);

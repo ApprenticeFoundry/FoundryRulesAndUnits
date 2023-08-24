@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace FoundryRulesAndUnits.Extensions
 {
@@ -42,16 +38,17 @@ static public class BasicMath
 		}
 	}
 
+	//public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> items, Func<T, TKey> property)
+	//{
+	//	return items.GroupBy(property).Select(x => x.First());
+	//}
 
-	public static IEnumerable<T> DistinctBy<T, TKey>(this IEnumerable<T> items, Func<T, TKey> property)
-	{
-		return items.GroupBy(property).Select(x => x.First());
-	}
 	public static bool IsNullOrEmpty(this string str1)
 	{
 		var result = str1 == null || string.IsNullOrWhiteSpace(str1);
 		return result;
 	}
+
 	public static bool Matches(this string str1, string str2)
     {
 		if (str1.IsNullOrEmpty() && str2.IsNullOrEmpty()) return true;
@@ -60,6 +57,7 @@ static public class BasicMath
     }
 
 }
+
 
 static public class IoBTMath
 {
