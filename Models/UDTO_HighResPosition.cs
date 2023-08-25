@@ -31,6 +31,7 @@ namespace FoundryRulesAndUnits.Models
 		{
 			copyFrom(source);
 		}
+		
 		public UDTO_HighResPosition(double xLoc, double yLoc, double zLoc) : this()
 		{
 			this.Loc(xLoc, yLoc, zLoc);
@@ -40,12 +41,12 @@ namespace FoundryRulesAndUnits.Models
 
 		public double distanceXZ()
 		{
-			return Math.Sqrt(this.xLoc.V * this.xLoc.V + this.zLoc.V * this.zLoc.V);
+			return Math.Sqrt(this.xLoc * this.xLoc + this.zLoc * this.zLoc);
 		}
 
 		public double bearingXZ()
 		{
-			return Math.Atan2(this.xLoc.V, this.zLoc.V);
+			return Math.Atan2(this.xLoc, this.zLoc);
 		}
 
 
