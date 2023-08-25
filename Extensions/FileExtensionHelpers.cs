@@ -2,7 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.AspNetCore.Http;
 
-namespace DTARServer.Helpers;
+namespace FoundryRulesAndUnits.Extensions;
 
 public static class FileExtensionHelpers
 {
