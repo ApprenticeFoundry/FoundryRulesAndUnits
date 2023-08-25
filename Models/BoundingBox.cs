@@ -21,6 +21,7 @@ namespace FoundryRulesAndUnits.Models
 		{
 		}
 
+
 		public BoundingBox(BoundingBox source) : this()
 		{
 			copyFrom(source);
@@ -31,6 +32,10 @@ namespace FoundryRulesAndUnits.Models
 			this.Box(width, height, depth, units);
 		}
 
+		public UDTO_BoundingBox AsUDTO()
+		{
+			return new UDTO_BoundingBox(this);
+		}
 
 		public BoundingBox copyFrom(BoundingBox pos)
 		{

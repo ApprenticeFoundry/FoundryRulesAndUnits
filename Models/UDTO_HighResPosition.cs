@@ -39,15 +39,15 @@ namespace FoundryRulesAndUnits.Models
 
 
 
-		public double distanceXZ()
-		{
-			return Math.Sqrt(this.xLoc * this.xLoc + this.zLoc * this.zLoc);
-		}
+		// public double distanceXZ()
+		// {
+		// 	return Math.Sqrt(this.xLoc * this.xLoc + this.zLoc * this.zLoc);
+		// }
 
-		public double bearingXZ()
-		{
-			return Math.Atan2(this.xLoc, this.zLoc);
-		}
+		// public double bearingXZ()
+		// {
+		// 	return Math.Atan2(this.xLoc, this.zLoc);
+		// }
 
 
 

@@ -36,17 +36,20 @@ namespace FoundryRulesAndUnits.Models
 			this.Loc(xLoc, yLoc, zLoc, units);
 		}
 
-
-
-		public double distanceXZ()
+		public UDTO_HighResPosition AsUDTO()
 		{
-			return Math.Sqrt(this.xLoc.V * this.xLoc.V + this.zLoc.V * this.zLoc.V);
+			return new UDTO_HighResPosition(this);
 		}
 
-		public double bearingXZ()
-		{
-			return Math.Atan2(this.xLoc.V, this.zLoc.V);
-		}
+		// public double distanceXZ()
+		// {
+		// 	return Math.Sqrt(this.xLoc.V * this.xLoc.V + this.zLoc.V * this.zLoc.V);
+		// }
+
+		// public double bearingXZ()
+		// {
+		// 	return Math.Atan2(this.xLoc.V, this.zLoc.V);
+		// }
 
 
 
