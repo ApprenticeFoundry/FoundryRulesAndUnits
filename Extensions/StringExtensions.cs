@@ -29,12 +29,16 @@ public static class StringExtensions
         return string.Join("", str.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
     }
 
-    // public static bool Matches(this string str1, string str2)
-    // {
-    //     if (str1.IsNullOrEmpty() && str2.IsNullOrEmpty()) return true;
-    //     var result = str1?.ToLower() == str2?.ToLower();
-    //     return result;
-    // }
+
+
+    public static bool Matches(this string str1, string str2)
+    {
+        if (str1.IsNullOrEmpty() && str2.IsNullOrEmpty()) return true;
+        var result = str1?.ToLower() == str2?.ToLower();
+        return result;
+    }
+
+
 
     public static string CleanPartNumber(this string str1)
     {
