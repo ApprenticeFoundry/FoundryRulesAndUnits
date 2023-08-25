@@ -27,7 +27,7 @@ namespace FoundryRulesAndUnits.Units
 			Init(Category(), value, units);
 		}
 
-		public Length Assign(double value, string? units)
+		public Length Assign(double value, string? units=null)
 		{
 			if (units == I || units == null)
 			{

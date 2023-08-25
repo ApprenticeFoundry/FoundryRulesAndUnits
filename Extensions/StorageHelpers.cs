@@ -9,21 +9,6 @@ public static class StorageHelpers
     private static readonly Dictionary<string, Type> typeLookup = new();
 
 
-
-    //public static async Task<string> ReadAsStringAsync(this IFormFile file)
-    //{
-    //    var result = new StringBuilder();
-    //    using (var reader = new StreamReader(file.OpenReadStream()))
-    //    {
-    //        while (reader.Peek() >= 0)
-    //            result.AppendLine(await reader.ReadLineAsync());
-    //    }
-    //    return result.ToString();
-    //}
-
-
-
-
     public static void RegisterLookupType<T>() where T: class
     {
         var type = typeof(T);
