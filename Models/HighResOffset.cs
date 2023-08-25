@@ -4,5 +4,10 @@ namespace FoundryRulesAndUnits.Models
 	public class HighResOffset : HighResPosition
 	{
 	}
+
+	[System.Serializable]
+	public class UDTO_HighResOffset : UDTO_HighResPosition
+	{
+	}
 }
 
