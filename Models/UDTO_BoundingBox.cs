@@ -32,17 +32,32 @@ namespace FoundryRulesAndUnits.Models
 		}
 
 
-		public UDTO_BoundingBox copyFrom(BoundingBox pos)
+		public UDTO_BoundingBox copyFrom(BoundingBox box)
 		{
-			this.width = pos.width.Value();
-			this.height = pos.height.Value();
-			this.depth = pos.depth.Value();
-			this.pinX = pos.pinX.Value();
-			this.pinY = pos.pinY.Value();
-			this.pinZ = pos.pinZ.Value();
-			this.scaleX = pos.scaleX;
-			this.scaleY = pos.scaleY;
-			this.scaleZ = pos.scaleZ;
+			this.width = box.width.Value();
+			this.height = box.height.Value();
+			this.depth = box.depth.Value();
+			this.pinX = box.pinX.Value();
+			this.pinY = box.pinY.Value();
+			this.pinZ = box.pinZ.Value();
+			this.scaleX = box.scaleX;
+			this.scaleY = box.scaleY;
+			this.scaleZ = box.scaleZ;
+
+			return this;
+		}
+
+		public UDTO_BoundingBox copyFrom(UDTO_BoundingBox box)
+		{
+			this.width = box.width;
+			this.height = box.height;
+			this.depth = box.depth;
+			this.pinX = box.pinX;
+			this.pinY = box.pinY;
+			this.pinZ = box.pinZ;
+			this.scaleX = box.scaleX;
+			this.scaleY = box.scaleY;
+			this.scaleZ = box.scaleZ;
 
 			return this;
 		}
