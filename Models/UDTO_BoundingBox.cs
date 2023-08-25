@@ -47,7 +47,7 @@ namespace FoundryRulesAndUnits.Models
 			return this;
 		}
 
-		public UDTO_BoundingBox copyFrom(UDTO_BoundingBox box)
+		public UDTO_BoundingBox copyOther(UDTO_BoundingBox box)
 		{
 			this.width = box.width;
 			this.height = box.height;
