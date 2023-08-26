@@ -114,9 +114,11 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 		public static Length operator +(Length left, double right) => new(left.Value() + right, left.Internal());
-		public static Length operator -(Length left, double right) => new(left.Value() - right, left.Internal());
-
+		public static Length operator +(double left, Length right) => new(left + right.Value(), right.Internal());
 		public static Length operator +(Length left, Length right) => new(left.Value() + right.Value(), left.Internal());
+
+		public static Length operator -(Length left, double right) => new(left.Value() - right, left.Internal());
+		public static Length operator -(double left, Length right) => new(left - right.Value(), right.Internal());
 		public static Length operator -(Length left, Length right) => new(left.Value() - right.Value(), left.Internal());
 
 		public static bool operator <(Length left, Length right) => left.Value() < right.Value();
