@@ -8,24 +8,14 @@ namespace FoundryRulesAndUnits.Extensions;
 public static class FileHelpers
 {
 
-    // public static async Task<string> ReadAsStringAsync(this IFormFile file)
-    // {
-    //     var result = new StringBuilder();
-    //     using (var reader = new StreamReader(file.OpenReadStream()))
-    //     {
-    //         while (reader.Peek() >= 0)
-    //             result.AppendLine(await reader.ReadLineAsync());
-    //     }
-    //     return result.ToString();
-    // }
-
-
-
     public static T Hydrate<T>(this string target, bool includeFields) where T : class
     {
         using var stream = new MemoryStream();
         using var writer = new Utf8JsonWriter(stream);
         var node = JsonNode.Parse(target);
+        if ( node is null )
+            return null;
+
         node.WriteTo(writer);
         writer.Flush();
 
@@ -36,7 +26,9 @@ public static class FileHelpers
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        var result = JsonSerializer.Deserialize<T>(stream.ToArray(), options) as T;
+        if (JsonSerializer.Deserialize<ContextWrapper<T>>(stream.ToArray(), options) is not T result)
+            return null;
+
 
         return result;
     }
@@ -46,6 +38,9 @@ public static class FileHelpers
         using var stream = new MemoryStream();
         using var writer = new Utf8JsonWriter(stream);
         var node = JsonNode.Parse(target);
+        if ( node is null )
+           return new List<T>();
+
         node.WriteTo(writer);
         writer.Flush();
 
@@ -56,7 +51,8 @@ public static class FileHelpers
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        var result = JsonSerializer.Deserialize<List<T>>(stream.ToArray(), options) as List<T>;
+        if ( JsonSerializer.Deserialize<List<T>>(stream.ToArray(), options) is not List<T> result)
+            return new List<T>();
 
         return result;
     }
@@ -66,6 +62,9 @@ public static class FileHelpers
         using var stream = new MemoryStream();
         using var writer = new Utf8JsonWriter(stream);
         var node = JsonNode.Parse(target);
+        if ( node is null )
+           return new ContextWrapper<T>();
+        
         node.WriteTo(writer);
         writer.Flush();
 
@@ -76,7 +75,8 @@ public static class FileHelpers
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
         };
 
-        var result = JsonSerializer.Deserialize<ContextWrapper<T>>(stream.ToArray(), options) as ContextWrapper<T>;
+        if (JsonSerializer.Deserialize<ContextWrapper<T>>(stream.ToArray(), options) is not ContextWrapper<T> result)
+            return new ContextWrapper<T>();
 
         return result;
     }
