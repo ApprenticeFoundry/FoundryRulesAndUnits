@@ -7,7 +7,8 @@
     <Title>Foundry Rules and Units</Title>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
   </PropertyGroup>
 
   
