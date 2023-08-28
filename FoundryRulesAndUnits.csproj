@@ -7,6 +7,7 @@
     <Title>Foundry Rules and Units</Title>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   
