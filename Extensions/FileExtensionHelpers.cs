@@ -22,7 +22,7 @@ public static class FileExtensionHelpers
     //     return _provider;
     // }
 
-    public static Dictionary<string,string> MIMETypeData()
+    public static Dictionary<string, string> MIMETypeData()
     {
         var data = new Dictionary<string, string>()
         {
@@ -37,7 +37,6 @@ public static class FileExtensionHelpers
             { ".mp4", "video/mp4"},
             { ".mov", "video/mov"},
             { ".mp3", "video/mp3"},
-            { ".pdf", "application/pdf"},
             { ".doc", "application/vnd.ms-word"},
             { ".docx", "application/vnd.ms-word"},
             { ".xls", "application/vnd.ms-excel"},
