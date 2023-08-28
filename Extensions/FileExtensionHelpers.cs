@@ -22,7 +22,7 @@ public static class FileExtensionHelpers
     //     return _provider;
     // }
 
-    public static Dictionary<string,string> MIMETypeData()
+    public static Dictionary<string, string> MIMETypeData()
     {
         var data = new Dictionary<string, string>()
         {
