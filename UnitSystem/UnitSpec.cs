@@ -37,12 +37,12 @@ namespace FoundryRulesAndUnits.Units
 				AllowTrailingCommas = true,
 				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 				WriteIndented = true,
-				Converters =
-				{
-					new MeasuredValueJsonConverter(),
-					new LengthJsonConverter(),
-					new AngleJsonConverter()
-				}
+				// Converters =
+				// {
+				// 	new MeasuredValueJsonConverter(),
+				// 	new LengthJsonConverter(),
+				// 	new AngleJsonConverter()
+				// }
 			};
 			return options;
 		}
