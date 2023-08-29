@@ -16,7 +16,7 @@ public static class StringCompressor
     public static string Compress(this string text)
     {
         byte[] buffer = Encoding.UTF8.GetBytes(text);
-        var memoryStream = new MemoryStream();
+        using var memoryStream = new MemoryStream();
         using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
         {
             gZipStream.Write(buffer, 0, buffer.Length);

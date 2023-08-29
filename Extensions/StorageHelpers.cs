@@ -32,15 +32,15 @@ public static class StorageHelpers
 
   
 
-    public static Stream GenerateStream(this string s)
-    {
-        var stream = new MemoryStream();
-        var writer = new StreamWriter(stream);
-        writer.Write(s);
-        writer.Flush();
-        stream.Position = 0;
-        return stream;
-    }
+    // public static Stream GenerateStream(this string s)
+    // {
+    //     var stream = new MemoryStream();
+    //     var writer = new StreamWriter(stream);
+    //     writer.Write(s);
+    //     writer.Flush();
+    //     stream.Position = 0;
+    //     return stream;
+    // }
 
 	public static void EstablishDirectory(string folder)
 	{
