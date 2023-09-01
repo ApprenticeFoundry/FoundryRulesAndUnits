@@ -16,6 +16,7 @@ namespace FoundryRulesAndUnits.Models
 		public double xAng;
 		public double yAng;
 		public double zAng;
+		public string order = "XYZ";
 
 		public UDTO_HighResPosition()
 		{
@@ -26,6 +27,7 @@ namespace FoundryRulesAndUnits.Models
 			xAng = 0;
 			yAng = 0;
 			zAng = 0;
+			order = "XYZ";
 		}
 		public UDTO_HighResPosition(HighResPosition source): this()
 		{
@@ -59,6 +61,7 @@ namespace FoundryRulesAndUnits.Models
 			this.xAng = pos.xAng;
 			this.yAng = pos.yAng;
 			this.zAng = pos.zAng;
+			this.order = pos.order;
 			return this;
 		}
 
@@ -70,6 +73,7 @@ namespace FoundryRulesAndUnits.Models
 			this.xAng = pos.xAng.Value();
 			this.yAng = pos.yAng.Value();
 			this.zAng = pos.zAng.Value();
+			this.order = pos.order;
 			return this;
 		}
 		public UDTO_HighResPosition Loc(double xLoc, double yLoc, double zLoc)

@@ -16,6 +16,7 @@ namespace FoundryRulesAndUnits.Models
 		public Angle xAng;
 		public Angle yAng;
 		public Angle zAng;
+		public string order = "XYZ";
 
 		public HighResPosition()
 		{
@@ -61,6 +62,7 @@ namespace FoundryRulesAndUnits.Models
 			this.xAng.Assign(pos.xAng);
 			this.yAng.Assign(pos.yAng);
 			this.zAng.Assign(pos.zAng);
+			this.order = pos.order;
 			return this;
 		}
 		public HighResPosition Loc(double xLoc, double yLoc, double zLoc, string units = "m")
