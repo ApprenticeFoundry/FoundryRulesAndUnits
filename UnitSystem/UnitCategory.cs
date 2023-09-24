@@ -14,6 +14,7 @@ namespace FoundryRulesAndUnits.Units
 		Duration,
 		Mass,
 		Angle,
+		Heading,
 		Quanity,
 		Area,
 		Volume,
@@ -21,10 +22,14 @@ namespace FoundryRulesAndUnits.Units
 		Temperature,
 		Pressure,
 		Force,
-		Storage,
-		DataTransfer,
+		DataStorage,
+		DataFlow,
 		WorkTime,
-	}
+		Voltage,
+		Current,
+		Power,
+		Energy,
+    }
 
 	public class UnitCategory
 	{

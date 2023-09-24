@@ -169,7 +169,7 @@ namespace FoundryRulesAndUnits.Units
 
 
 
-			storage = new UnitCategory("Storage", new UnitSpec("KB", "KiloBytes", UnitFamilyName.Storage))
+			storage = new UnitCategory("DataStorage", new UnitSpec("KB", "KiloBytes", UnitFamilyName.DataStorage))
 				.Units("GB", "GigaBytes")
 				.Conversion(1000, "KB", 1, "GB")
 				.Units("TB", "TeraBytes")
@@ -179,7 +179,7 @@ namespace FoundryRulesAndUnits.Units
 
 			UnitCategories.Category(storage);
 
-			var transfer = new UnitCategory("DataTransfer", new UnitSpec("KB/sec", "KiloBytes per second", UnitFamilyName.DataTransfer))
+			var transfer = new UnitCategory("DataFlow", new UnitSpec("KB/sec", "KiloBytes per second", UnitFamilyName.DataFlow))
 				.Units("Bytes/sec", "Bytes per second")
 				.Conversion(1000, "Bytes/sec", 1, "KB/sec")
 				.Units("GB/sec", "GigaBytes per second")
