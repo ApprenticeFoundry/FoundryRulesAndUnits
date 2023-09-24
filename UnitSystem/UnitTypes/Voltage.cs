@@ -13,12 +13,12 @@ namespace FoundryRulesAndUnits.Units
 		};
 
 		public Voltage() :
-			base(UnitFamilyName.Volume)
+			base(UnitFamilyName.Voltage)
 		{
 		}
 
 		public Voltage(double value, string? units = null) :
-			base(UnitFamilyName.Temperature)
+			base(UnitFamilyName.Voltage)
 		{
 			Init(Category(), value, units);
 		}

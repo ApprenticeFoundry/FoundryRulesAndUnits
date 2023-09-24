@@ -29,6 +29,9 @@ namespace FoundryRulesAndUnits.Units
 		Current,
 		Power,
 		Energy,
+        Resistance,
+		Capacitance,
+        Percent,
     }
 
 	public class UnitCategory
