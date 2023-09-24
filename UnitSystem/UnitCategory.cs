@@ -32,6 +32,7 @@ namespace FoundryRulesAndUnits.Units
         Resistance,
 		Capacitance,
         Percent,
+        Frequency,
     }
 
 	public class UnitCategory
