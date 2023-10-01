@@ -5,12 +5,20 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>Foundry Rules and Units</Title>
+    <description>General Units and Rules for Foundry Data and Projects</description>
+    <packageTags>Foundry, Rules, Units, Blazor</packageTags>
+    <RepositoryUrl>https://github.com/ApprenticeFoundry/FoundryRulesAndUnits</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>FoundryRulesAndUnits</PackageId>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
-    <Version>1.0.3</Version>
-    <AssemblyVersion>1.0.3</AssemblyVersion>
+    <Version>1.0.4</Version>
+    <Authors>Stephen Strong</Authors>
+    <Company>Stephen Strong</Company>
+    <AssemblyVersion>1.0.4</AssemblyVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <IsPackable>true</IsPackable>
+
   </PropertyGroup>
   
   <ItemGroup>
