@@ -4,20 +4,22 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Title>Foundry Rules and Units</Title>
+    <Title>Apprentice Foundry Rules and Units</Title>
     <description>General Units and Rules for Foundry Data and Projects</description>
     <packageTags>Foundry, Rules, Units, Blazor</packageTags>
     <RepositoryUrl>https://github.com/ApprenticeFoundry/FoundryRulesAndUnits</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageId>FoundryRulesAndUnits</PackageId>
+    <PackageId>ApprenticeFoundryRulesAndUnits</PackageId>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>Stephen Strong</Authors>
     <Company>Stephen Strong</Company>
-    <AssemblyVersion>1.0.4</AssemblyVersion>
+    <AssemblyVersion>1.0.5</AssemblyVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageProjectUrl>https://apprenticefoundry.github.io/</PackageProjectUrl>
 
   </PropertyGroup>
   
