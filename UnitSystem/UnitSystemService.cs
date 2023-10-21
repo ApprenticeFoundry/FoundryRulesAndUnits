@@ -153,11 +153,11 @@ namespace FoundryRulesAndUnits.Units
 			UnitCategories.Category(volume);
 			Volume.Category = () => volume;
 
-			var quanity = new UnitCategory("Quantity", new UnitSpec("each", "each", UnitFamilyName.Quantity))
-				.Units("dozen", "dozen")
-				.Conversion(1, "dozen", 12, "each")
-				.Units("gross", "gross")
-				.Conversion(1, "gross", 144, "each");
+			var quanity = new UnitCategory("Quantity", new UnitSpec("ea", "each", UnitFamilyName.Quantity))
+				.Units("dz", "dozen")
+				.Conversion(1, "dz", 12, "ea")
+				.Units("gr", "gross")
+				.Conversion(1, "gr", 144, "ea");
 
 			UnitCategories.Category(quanity);
 			Quantity.Category = () => quanity;
