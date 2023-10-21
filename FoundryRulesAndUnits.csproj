@@ -17,10 +17,10 @@
     <PackageId>ApprenticeFoundryRulesAndUnits</PackageId>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
-    <Version>1.0.5</Version>
+    <Version>1.0.6</Version>
+    <AssemblyVersion>1.0.6</AssemblyVersion>
     <Authors>Stephen Strong</Authors>
     <Company>Stephen Strong</Company>
-    <AssemblyVersion>1.0.5</AssemblyVersion>
     <PackageProjectUrl>https://apprenticefoundry.github.io/</PackageProjectUrl>
 
   </PropertyGroup>
