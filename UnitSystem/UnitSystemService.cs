@@ -162,6 +162,19 @@ namespace FoundryRulesAndUnits.Units
 			UnitCategories.Category(quanity);
 			Quantity.Category = () => quanity;
 
+			var quanityFlow = new UnitCategory("QuantityFlow", new UnitSpec("ea/s", "each per sec", UnitFamilyName.QuantityFlow))
+				.Units("dz/s", "dozen per sec")
+				.Conversion(1, "dz/hr", 12, "ea/s")
+				.Units("ea/m", "each per min")
+				.Conversion(1, "ea/m", 60, "ea/s")
+				.Units("ea/day", "each per day")
+				.Conversion(1, "ea/day", 60 * 60 * 24, "ea/s")
+				.Units("ea/hr", "each per hour")
+				.Conversion(1, "ea/hr", 60 * 60, "ea/s");
+
+			UnitCategories.Category(quanityFlow);
+			QuantityFlow.Category = () => quanityFlow;
+
 			//(32°F − 32) × 5/9 = 0°C
 			//(32°F − 32) × 5/9 + 273.15 = 273.15K
 			//(32°C × 9/5) + 32 = 89.6°F

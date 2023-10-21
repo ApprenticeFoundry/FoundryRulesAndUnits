@@ -34,5 +34,7 @@ namespace FoundryRulesAndUnits.Units
 		public static QuantityFlow operator +(QuantityFlow left, QuantityFlow right) => new(left.Value() + right.Value(), left.Internal());
 		public static QuantityFlow operator -(QuantityFlow left, QuantityFlow right) => new(left.Value() - right.Value(), left.Internal());
 
+		public static Quantity operator *(QuantityFlow left, Time right) => new(left.Value() * right.Value(), "ea");
+		public static QuantityFlow operator /(Quantity left, Time right) => new(left.Value() / right.Value(), "ea/s");
 	}
 }
