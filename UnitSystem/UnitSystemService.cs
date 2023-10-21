@@ -153,6 +153,15 @@ namespace FoundryRulesAndUnits.Units
 			UnitCategories.Category(volume);
 			Volume.Category = () => volume;
 
+			var quanity = new UnitCategory("Quantity", new UnitSpec("each", "each", UnitFamilyName.Quantity))
+				.Units("dozen", "dozen")
+				.Conversion(1, "dozen", 12, "each")
+				.Units("gross", "gross")
+				.Conversion(1, "gross", 144, "each");
+
+			UnitCategories.Category(quanity);
+			Quantity.Category = () => quanity;
+
 			//(32°F − 32) × 5/9 = 0°C
 			//(32°F − 32) × 5/9 + 273.15 = 273.15K
 			//(32°C × 9/5) + 32 = 89.6°F
