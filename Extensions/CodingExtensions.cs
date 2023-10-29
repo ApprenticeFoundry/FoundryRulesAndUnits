@@ -219,6 +219,30 @@ namespace FoundryRulesAndUnits.Extensions
 			return flist.Count();
 		}
 
+		public static string EncodePropertyNamesAsCSV(this object source, char d = '\u002C')
+		{
+			var list = new List<string>();
+			var plist = source.GetType().GetProperties();
+
+			foreach (PropertyInfo property in plist)
+			{
+				list.Add(property.Name);
+			}
+			return string.Join(d, list);
+		}
+
+		public static string EncodePropertyDataAsCSV(this object source, char d = '\u002C')
+		{
+			var list = new List<string>();
+			var plist = source.GetType().GetProperties();
+
+			foreach (PropertyInfo property in plist)
+			{
+				var value = property.GetValue(source);
+				list.Add(value?.ToString() ?? "");
+			}
+			return string.Join(d, list);
+		}
 		public static int DecodePropertyDataAsCSV(this object source, string[] data)
 		{
 
