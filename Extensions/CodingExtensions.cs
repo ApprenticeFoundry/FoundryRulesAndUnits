@@ -219,6 +219,40 @@ namespace FoundryRulesAndUnits.Extensions
 			return flist.Count();
 		}
 
+		public static int DecodePropertyDataAsCSV(this object source, string[] data)
+		{
+
+			int i = 0;
+			var plist = source.GetType().GetProperties();
+
+			foreach (PropertyInfo property in plist)
+			{
+				var value = data[i++];
+
+				if (property.PropertyType == typeof(double))
+				{
+					property.SetValue(source, double.Parse(value));
+				}
+				else if (property.PropertyType == typeof(int))
+				{
+					property.SetValue(source, int.Parse(value));
+				}
+				else if (property.PropertyType == typeof(bool))
+				{
+					property.SetValue(source, bool.Parse(value));
+				}
+				else if (property.PropertyType == typeof(string))
+				{
+					property.SetValue(source, value);
+				}
+				else
+				{
+					throw new ArgumentException($"Cannot DecodePropertyDataAsCSV for {property.Name}");
+				}
+			}
+			return plist.Length;
+		}
+
 		public static void CopyNonNullProperties<T>(this T source, T dest)
 		{
 			var plist = from prop in typeof(T).GetProperties() where prop.CanRead && prop.CanWrite select prop;
