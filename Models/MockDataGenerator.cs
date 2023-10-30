@@ -15,6 +15,8 @@ namespace FoundryRulesAndUnits.Models
 			public string[] symbols { get; set; }
 			public string[] colors { get; set; }
 
+	
+
 			public NameList()
 			{
 				first = new string[] {
@@ -36,6 +38,36 @@ namespace FoundryRulesAndUnits.Models
 		readonly List<string> symbols;
 		readonly List<string> words;
 		readonly List<string> colors;
+
+			// Dark colors array
+		readonly List<string> darkColors = new List<string>() {
+			"#000000", // Black
+			"#342D7E", // DarkBlue  
+			"#483D8B", // DarkSlateBlue
+			"#2F4F4F", // DarkSlateGray
+			"#006400", // DarkGreen
+			"#8B0000", // DarkRed
+			"#4B0082", // Indigo
+			"#556B2F", // DarkOliveGreen 
+			"#000000", // Black
+			"#696969", // DimGray
+			"#A9A9A9"  // DarkGray
+		};
+
+		// Light colors array
+		readonly List<string> lightColors = new List<string>() {
+			"#FFFFFF", // White
+			"#DCDCDC", // Gainsboro
+			"#F5F5F5", // WhiteSmoke
+			"#D3D3D3", // LightGrey
+			"#90EE90", // LightGreen
+			"#FFB6C1", // LightPink
+			"#FFA07A", // LightSalmon
+			"#20B2AA", // LightSeaGreen
+			"#87CEFA", // LightSkyBlue
+			"#778899", // LightSlateGray 
+			"#B0C4DE"  // LightSteelBlue
+		};
 
 		public MockDataGenerator()
 		{
@@ -98,7 +130,15 @@ namespace FoundryRulesAndUnits.Models
 			var color = colors[rand.Next(colors.Count)];
 			return color;
 		}
-
-
+		public string GenerateLightColor()
+		{
+			var color = lightColors[rand.Next(lightColors.Count)];
+			return color;
+		}
+		public string GenerateDarkColor()
+		{
+			var color = darkColors[rand.Next(darkColors.Count)];
+			return color;
+		}
 	}
 }
