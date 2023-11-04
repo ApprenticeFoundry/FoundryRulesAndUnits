@@ -35,6 +35,7 @@ namespace FoundryRulesAndUnits.Units
 				IncludeFields = includeFields,
 				IgnoreReadOnlyFields = true,
 				AllowTrailingCommas = true,
+				PropertyNameCaseInsensitive = true,
 				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
 				WriteIndented = true,
 				// Converters =
