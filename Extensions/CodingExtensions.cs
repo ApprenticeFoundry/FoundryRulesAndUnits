@@ -160,6 +160,13 @@ namespace FoundryRulesAndUnits.Extensions
 			return result;
 		}
 
+		public static string DehydrateWrapper<T>(ContextWrapper<T> target, bool includeFields) where T : class
+		{
+			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var result = JsonSerializer.Serialize(target, options);
+			return result!;
+		}
+
 		public static string EncodeFieldNamesAsCSV(this object source, char d = '\u002C')
 		{
 			var list = new List<string>();
