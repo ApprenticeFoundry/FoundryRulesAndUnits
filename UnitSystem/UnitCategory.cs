@@ -107,9 +107,10 @@ namespace FoundryRulesAndUnits.Units
 			var key = $"{u1}|{u2}";
 			if (ConversionLookup.TryGetValue(key, out UnitConversion? found) && found != null)
 			{
+				$"con key found {key}".WriteLine();
 				return found.Convert(v1);
 			}
-			$"Convert: No Conversion found for {key}".WriteLine();
+			$"Convert: No Conversion found for {key}:  from {u1} to {u2}".WriteLine();
 			return v1;
 		}
 
@@ -118,6 +119,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var u2 = BaseUnit.Name();
 			var result = Convert(u2, u1, v1);
+			$"ConvertFrom BaseUnits: {v1} {u1} to {u2} = {result}".WriteLine();
 			return result;
 		}
 
@@ -126,6 +128,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var u2 = BaseUnit.Name();
 			var result = Convert(u1, u2, v1);
+			$"ConvertTo BaseUnits: {v1} {u1} to {u2} = {result}".WriteLine();
 			return result;
 		}
 

@@ -30,8 +30,8 @@ namespace FoundryRulesAndUnits.Units
 
 		public MeasuredValue(UnitFamilyName unitFamily)
 		{
-			V = default!;
 			F = unitFamily;
+			V = default!;
 		}
 
 
@@ -40,6 +40,7 @@ namespace FoundryRulesAndUnits.Units
 			I = cat.BaseUnits().Name();
 			U = units ?? I;
 			V = value;
+			
 			if (I != U)
 				V = cat.ConvertToBaseUnits(U, value);
 			return V;
