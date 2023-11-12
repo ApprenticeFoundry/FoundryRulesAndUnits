@@ -18,7 +18,7 @@ namespace FoundryRulesAndUnits.Units
 		public Temperature() :
 			base(UnitFamilyName.Temperature)
 		{
-			$"Temperature constructor".WriteInfo();
+			//$"Temperature constructor".WriteInfo();
 		}
 
 		public Temperature(double value, string? units = null) :
@@ -27,6 +27,31 @@ namespace FoundryRulesAndUnits.Units
 			Init(Category(), value, units);
 		}
 
+		public Temperature Assign(double value, string? units=null)
+		{
+			if (units == I || units == null)
+			{
+				V = value;
+			}
+			else
+			{
+				Init(Category(), value, units);
+			}
+			return this;
+		}
+
+		public Temperature Assign(Temperature source)
+		{
+			if (source.I == I)
+			{
+				V = source.Value();
+			}
+			else
+			{
+				Init(Category(), source.Value(), source.U);
+			}
+			return this;
+		}
 		public override double As(string units)
 		{
 			return ConvertAs(Category(), units);

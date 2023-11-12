@@ -7,11 +7,8 @@ namespace FoundryRulesAndUnits.Extensions
 {
     public static class ConsoleHelpers
     {
-        public static void WriteTrace(this String str)
-        {
-            $"... {str}".WriteLine(ConsoleColor.DarkMagenta);
-        }
-        public static void WriteLine<T>(this T entity, ConsoleColor? color = null)
+
+        public static string WriteLine<T>(this T entity, ConsoleColor? color = null)
         {
             if (color.HasValue)
                 Console.ForegroundColor = color.Value;
@@ -24,8 +21,11 @@ namespace FoundryRulesAndUnits.Extensions
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
 
-            Console.WriteLine(entity != null ? JsonSerializer.Serialize(entity, typeof(T), options) : "null");
+            var result = entity != null ? JsonSerializer.Serialize(entity, typeof(T), options): "null";
+
+            Console.WriteLine(result);
             Console.ResetColor();
+            return result;
         }
 
         public static string Padding(int pad = 0)
@@ -34,28 +34,34 @@ namespace FoundryRulesAndUnits.Extensions
             var padded = "                                                                       "[..index];
             return padded;
         }
+
+        public static string WriteTrace(this string message, int pad = 0)
+        {
+            return $"TR:{Padding(pad)}{message}".WriteLine(ConsoleColor.Gray);
+        }
+
         public static string WriteInfo(this string message, int pad = 0)
         {
-            return $"{Padding(pad)}{message}".WriteLine(ConsoleColor.Cyan);
+            return $"IN:{Padding(pad)}{message}".WriteLine(ConsoleColor.Cyan);
         }
         public static string WriteNote(this string message, int pad = 0)
         {
-            return $"{Padding(pad)}{message}".WriteLine(ConsoleColor.DarkMagenta);
+            return $"NO:{Padding(pad)}{message}".WriteLine(ConsoleColor.DarkMagenta);
         }
 
         public static string WriteWarning(this string message, int pad = 0)
         {
-            return $"{Padding(pad)}{message}".WriteLine(ConsoleColor.Yellow);
+            return $"WA:{Padding(pad)}{message}".WriteLine(ConsoleColor.Yellow);
         }
 
         public static string WriteError(this string message, int pad = 0)
         {
-            return $"{Padding(pad)}{message}".WriteLine(ConsoleColor.Red);
+            return $"ER:{Padding(pad)}{message}".WriteLine(ConsoleColor.Red);
         }
 
         public static string WriteSuccess(this string message, int pad = 0)
         {
-            return $"{Padding(pad)}{message}".WriteLine(ConsoleColor.Green);
+            return $"SU:{Padding(pad)}{message}".WriteLine(ConsoleColor.Green);
         }
 
 
