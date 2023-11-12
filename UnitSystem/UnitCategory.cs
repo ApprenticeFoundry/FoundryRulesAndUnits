@@ -80,12 +80,14 @@ namespace FoundryRulesAndUnits.Units
 				ConversionLookup.Remove(found.Name());
 
 			ConversionLookup.Add(found.Name(), found);
+			$"Conv: Added Conversion {found.Name()}".WriteLine();
 
 			found = new UnitConversion($"{u2}|{u1}", (v) => (v * v1) / v2);
 			if (ConversionLookup.ContainsKey(found.Name()))
 				ConversionLookup.Remove(found.Name());
 
 			ConversionLookup.Add(found.Name(), found);
+			$"Conv: Added Conversion {found.Name()}".WriteLine();
 			return this;
 		}
 
@@ -94,7 +96,9 @@ namespace FoundryRulesAndUnits.Units
 			var found = new UnitConversion($"{u1}|{u2}", convert);
 			if (ConversionLookup.ContainsKey(found.Name()))
 				ConversionLookup.Remove(found.Name());
+
 			ConversionLookup.Add(found.Name(), found);
+			$"Conversion: Added Conversion {found.Name()}".WriteLine();
 			return this;
 		}
 
