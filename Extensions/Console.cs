@@ -37,31 +37,31 @@ namespace FoundryRulesAndUnits.Extensions
 
         public static string WriteTrace(this string message, int pad = 0)
         {
-            return $"TR:{Padding(pad)}{message}".WriteLine(ConsoleColor.Gray);
+            return $"trac:{Padding(pad+1)}{message}".WriteLine(ConsoleColor.Gray);
         }
 
         public static string WriteInfo(this string message, int pad = 0)
         {
-            return $"IN:{Padding(pad)}{message}".WriteLine(ConsoleColor.Cyan);
+            return $"info:{Padding(pad+1)}{message}".WriteLine(ConsoleColor.Cyan);
         }
         public static string WriteNote(this string message, int pad = 0)
         {
-            return $"NO:{Padding(pad)}{message}".WriteLine(ConsoleColor.DarkMagenta);
+            return $"note:{Padding(pad+1)}{message}".WriteLine(ConsoleColor.DarkMagenta);
         }
 
         public static string WriteWarning(this string message, int pad = 0)
         {
-            return $"WA:{Padding(pad)}{message}".WriteLine(ConsoleColor.Yellow);
+            return $"warn:{Padding(pad+1)}{message}".WriteLine(ConsoleColor.Yellow);
         }
 
         public static string WriteError(this string message, int pad = 0)
         {
-            return $"ER:{Padding(pad)}{message}".WriteLine(ConsoleColor.Red);
+            return $"erro:{Padding(pad+1)}{message}".WriteLine(ConsoleColor.Red);
         }
 
         public static string WriteSuccess(this string message, int pad = 0)
         {
-            return $"SU:{Padding(pad)}{message}".WriteLine(ConsoleColor.Green);
+            return $"succ:{Padding(pad)}{message}".WriteLine(ConsoleColor.Green);
         }
 
 
