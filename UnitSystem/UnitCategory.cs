@@ -110,7 +110,7 @@ namespace FoundryRulesAndUnits.Units
 				//$"con key found {key}".WriteLine();
 				return found.Convert(v1);
 			}
-			$"Convert: No Conversion found for {key}:  from [{u1}] to [{u2}]".WriteError();
+			$"UnitCategoryConvert: No Conversion found for {key}:  from [{u1}] to [{u2}]".WriteError();
 			return v1;
 		}
 

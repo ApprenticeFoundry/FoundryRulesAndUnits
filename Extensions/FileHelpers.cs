@@ -58,7 +58,7 @@ public static class FileHelpers
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error WriteData {filename}| {ex.Message}");
+            $"Error WriteData {filename}| {ex.Message}".WriteError()    ;
             throw;
         }
     }
@@ -74,7 +74,7 @@ public static class FileHelpers
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error ReadData {filename}| {ex.Message}");
+            $"Error ReadData {filename}| {ex.Message}".WriteError();
             throw;
         }
     }
@@ -92,7 +92,7 @@ public static class FileHelpers
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error ReadListFromFile {filename}| {ex.Message}");
+            $"Error ReadListFromFile {filename}| {ex.Message}".WriteError();
             throw;
         }
     }
@@ -110,7 +110,7 @@ public static class FileHelpers
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error WriteListToFile | {ex.Message}");
+            $"Error WriteListToFile | {ex.Message}".WriteError();
             throw;
         }
     }
@@ -128,7 +128,7 @@ public static class FileHelpers
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error ReadObjectFromFile | {ex.Message}");
+            $"Error ReadObjectFromFile | {ex.Message}".WriteError();
             throw;
         }
     }
@@ -147,7 +147,7 @@ public static class FileHelpers
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error WriteSetting | {ex.Message}");
+            $"Error WriteSetting | {ex.Message}".WriteError();
             throw;
         }
     }
