@@ -30,7 +30,7 @@ namespace FoundryRulesAndUnits.Extensions
 
         public static string Padding(int pad = 0)
         {
-            var index = pad * 3;
+            var index = pad * 2;
             var padded = "                                                                       "[..index];
             return padded;
         }
@@ -61,7 +61,7 @@ namespace FoundryRulesAndUnits.Extensions
 
         public static string WriteSuccess(this string message, int pad = 0)
         {
-            return $"succ:{Padding(pad)}{message}".WriteLine(ConsoleColor.Green);
+            return $"succ:{Padding(pad+1)}{message}".WriteLine(ConsoleColor.Green);
         }
 
 
