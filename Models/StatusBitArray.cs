@@ -38,7 +38,7 @@ namespace FoundryRulesAndUnits.Models
 			m_Status.SetAll(false);
 		}
 
-		public bool Visible
+		public bool IsVisible
 		{
 			get
 			{
@@ -210,17 +210,7 @@ namespace FoundryRulesAndUnits.Models
 				m_Status[(int)StatusBit.Private] = value;
 			}
 		}
-		public bool IsPrivate
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.Private];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.Private] = value;
-			}
-		}
+
 		public bool IsSelected
 		{
 			get
