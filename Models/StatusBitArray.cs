@@ -15,6 +15,8 @@ namespace FoundryRulesAndUnits.Models
 			Invisible,
 			Private,
 			IsReadOnly,
+			IsUnselectable,
+			IsSelected,
 			UserSpecified,
 			Expanded,
 			Calculating,
@@ -27,6 +29,7 @@ namespace FoundryRulesAndUnits.Models
 			AllowSubshapes,
 			AllowConnections,
 			AllowAsParentShape,
+			ShouldNotRender,
 		}
 
 		public StatusBitArray()
@@ -207,15 +210,49 @@ namespace FoundryRulesAndUnits.Models
 				m_Status[(int)StatusBit.Private] = value;
 			}
 		}
-		public bool IsPublic
+		public bool IsPrivate
 		{
 			get
 			{
-				return !m_Status[(int)StatusBit.Private];
+				return m_Status[(int)StatusBit.Private];
 			}
 			set
 			{
-				m_Status[(int)StatusBit.Private] = !value;
+				m_Status[(int)StatusBit.Private] = value;
+			}
+		}
+		public bool IsSelected
+		{
+			get
+			{
+				return !m_Status[(int)StatusBit.IsSelected];
+			}
+			set
+			{
+				m_Status[(int)StatusBit.IsSelected] = !value;
+			}
+		}
+
+		public bool ShouldRender
+		{
+			get
+			{
+				return !m_Status[(int)StatusBit.ShouldNotRender];
+			}
+			set
+			{
+				m_Status[(int)StatusBit.ShouldNotRender] = !value;
+			}
+		}
+		public bool IsSelectable
+		{
+			get
+			{
+				return !m_Status[(int)StatusBit.IsUnselectable];
+			}
+			set
+			{
+				m_Status[(int)StatusBit.IsUnselectable] = !value;
 			}
 		}
 	}
