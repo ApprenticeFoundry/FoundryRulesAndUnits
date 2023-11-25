@@ -13,20 +13,9 @@ namespace FoundryRulesAndUnits.Models
 		private enum StatusBit 
 		{
 			Invisible,
-			Enabled,
-			LocalMembersOnly,
-			Dynamic,
-			BadReference,
-			MetaKnowledge,
-			QueueTrigger,
-			Temporary,
-			Purging,
-			ValueOverTyped,
-			ExistenceSuspect,
-			ValueSuspect,
-			UserSpecified,
 			Private,
-			Internal,
+			IsReadOnly,
+			UserSpecified,
 			Expanded,
 			Calculating,
 			Calculated,
@@ -34,15 +23,16 @@ namespace FoundryRulesAndUnits.Models
 			ProtectValue,
 			ForceEvaluation,
 			ValueIncorrect,
-			IsReadOnly,
-			TrackChanges
+			MetaKnowledge,
+			AllowSubshapes,
+			AllowConnections,
+			AllowAsParentShape,
 		}
 
 		public StatusBitArray()
 		{
 			m_Status = new BitArray( 24 );
 			m_Status.SetAll(false);
-			Enabled = true;
 		}
 
 		public bool Visible
@@ -57,39 +47,7 @@ namespace FoundryRulesAndUnits.Models
 			}
 		}
 
-		public bool Enabled
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.Enabled];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.Enabled] = value;
-			}
-		}
-		public bool IsPurging
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.Purging];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.Purging] = value;
-			}
-		}
-		public bool HasQueueTrigger
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.QueueTrigger];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.QueueTrigger] = value;
-			}
-		}
+
 		public bool IsExpanded
 		{
 			get
@@ -123,17 +81,7 @@ namespace FoundryRulesAndUnits.Models
 				m_Status[(int)StatusBit.ProtectFormula] = value;
 			}
 		}
-		public bool IsWhileFormula
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.Temporary];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.Temporary] = value;
-			}
-		}
+
 		public bool UserSpecified
 		{
 			get
@@ -156,28 +104,8 @@ namespace FoundryRulesAndUnits.Models
 				m_Status[(int)StatusBit.IsReadOnly] = value;
 			}
 		}
-		public bool IsValueOverTyped
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.ValueOverTyped];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.ValueOverTyped] = value;
-			}
-		}
-		public bool TrackChanges
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.TrackChanges];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.TrackChanges] = value;
-			}
-		}
+
+
 		public bool IsValueProtected
 		{
 			get
@@ -187,62 +115,6 @@ namespace FoundryRulesAndUnits.Models
 			set
 			{
 				m_Status[(int)StatusBit.ProtectValue] = value;
-			}
-		}
-		public bool IsValueDetermined
-		{
-			get
-			{
-				return !m_Status[(int)StatusBit.ValueSuspect];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.ValueSuspect] = !value;
-				m_Status[(int)StatusBit.Calculating]= false;
-			}
-		}
-		public bool Recalculate
-		{
-			get
-			{
-				return IsValueSuspect || IsReferenceBad; // || IsRecalculatedAlways;
-			}
-		}
-		public bool AllowRecalculation
-		{
-			get
-			{
-				return !IsFormulaProtected && (IsCalculated || IsReferenceBad);
-			}
-		}
-		public bool IsValueSuspect
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.ValueSuspect];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.ValueSuspect] = value;
-				m_Status[(int)StatusBit.Calculating] = false;
-
-				if ( value == true && IsReferenceBad == true )
-					IsReferenceBad = false;
-
-				if ( value && IsValueIncorrect )
-					IsValueIncorrect = false;
-			}
-		}
-
-		public bool IsExistenceSuspect
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.ExistenceSuspect];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.ExistenceSuspect] = value;
 			}
 		}
 
@@ -268,39 +140,29 @@ namespace FoundryRulesAndUnits.Models
 				m_Status[(int)StatusBit.Calculated] = value;
 			}
 		}
-		public bool IsLocalMembers
+		public bool AllowSubshapes
 		{
 			get
 			{
-				return m_Status[(int)StatusBit.LocalMembersOnly];
+				return m_Status[(int)StatusBit.AllowSubshapes];
 			}
 			set
 			{
-				m_Status[(int)StatusBit.LocalMembersOnly] = value;
+				m_Status[(int)StatusBit.AllowSubshapes] = value;
 			}
 		}
-		public bool Dynamic
+		public bool AllowConnections
 		{
 			get
 			{
-				return m_Status[(int)StatusBit.Dynamic];
+				return m_Status[(int)StatusBit.AllowConnections];
 			}
 			set
 			{
-				m_Status[(int)StatusBit.Dynamic] = value;
+				m_Status[(int)StatusBit.AllowConnections] = value;
 			}
 		}
-		public bool IsReferenceBad
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.BadReference];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.BadReference] = value;
-			}	
-		}
+
 		public bool IsValueIncorrect
 		{
 			get
@@ -323,26 +185,15 @@ namespace FoundryRulesAndUnits.Models
 				m_Status[(int)StatusBit.ForceEvaluation] = value;
 			}
 		}
-		public bool IsInternal
+		public bool AllowAsParentShape
 		{
 			get
 			{
-				return m_Status[(int)StatusBit.Internal];
+				return m_Status[(int)StatusBit.AllowAsParentShape];
 			}
 			set
 			{
-				m_Status[(int)StatusBit.Internal] = value;
-			}
-		}
-		public bool IsTemporary
-		{
-			get
-			{
-				return m_Status[(int)StatusBit.Temporary];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.Temporary] = value;
+				m_Status[(int)StatusBit.AllowAsParentShape] = value;
 			}
 		}
 		public bool IsPrivate
