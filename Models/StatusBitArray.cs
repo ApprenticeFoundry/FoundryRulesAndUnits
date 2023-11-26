@@ -215,11 +215,11 @@ namespace FoundryRulesAndUnits.Models
 		{
 			get
 			{
-				return !m_Status[(int)StatusBit.IsSelected];
+				return m_Status[(int)StatusBit.IsSelected];
 			}
 			set
 			{
-				m_Status[(int)StatusBit.IsSelected] = !value;
+				m_Status[(int)StatusBit.IsSelected] = value;
 			}
 		}
 
