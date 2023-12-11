@@ -176,4 +176,36 @@ public static class StorageHelpers
             throw;
         }
     }
+
+
+    public static string? LastSavedFileVersion(string folder, string filename)
+    {
+        EstablishDirectory(folder);
+
+        var root = filename.Split("_").First();
+        var ext = filename.Split(".").Last();
+
+        var files = Directory.GetFiles(folder);
+        var found = files.Where(item => Path.GetFileName(item).StartsWith(root) && Path.GetFileName(item).EndsWith(ext))
+                         .OrderByDescending(item => Path.GetFileName(item))
+                         .FirstOrDefault();
+
+        return found;
+    }
+
+   public static string LastSavedVersionNumber(string folder, string filename)
+    {
+        EstablishDirectory(folder);
+
+        var found = LastSavedFileVersion(folder, filename);
+
+        if (found != null)
+        {
+            var version = found.Split("_").Last();
+            version = version.Split(".").First();
+            return version;
+        }
+        return "0000";
+    }
+
 }
