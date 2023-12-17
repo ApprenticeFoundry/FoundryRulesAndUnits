@@ -50,7 +50,7 @@ public static class FileHelpers
     {
         try
         {
-            $"WriteData local {folder.ToUpper()}: {filename}".WriteTrace();
+            //$"WriteData local {folder.ToUpper()}: {filename}".WriteTrace();
 
             string filePath = FullPath(folder, filename);
             File.WriteAllText(filePath, data);

@@ -75,7 +75,7 @@ public static class StorageHelpers
     {
         try
         {
-            $"WriteData local {folder.ToUpper()}: {filename}".WriteTrace();
+            //$"WriteData local {folder.ToUpper()}: {filename}".WriteTrace();
             EstablishDirectory(folder);
             string filePath = FullPath(folder, filename);
             File.WriteAllText(filePath, data);
