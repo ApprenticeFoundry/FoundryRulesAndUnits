@@ -18,6 +18,20 @@ namespace FoundryRulesAndUnits.Units
 	}
 
 
+    [JsonDerivedType(typeof(Temperature))]
+	[JsonDerivedType(typeof(Length))]
+	[JsonDerivedType(typeof(Angle))]
+	[JsonDerivedType(typeof(Area))]
+	[JsonDerivedType(typeof(Volume))]
+	[JsonDerivedType(typeof(Current))]
+	[JsonDerivedType(typeof(Time))]
+	[JsonDerivedType(typeof(Speed))]
+	[JsonDerivedType(typeof(DataFlow))]
+	[JsonDerivedType(typeof(DataStorage))]
+	[JsonDerivedType(typeof(Frequency))]
+	[JsonDerivedType(typeof(Percent))]
+	[JsonDerivedType(typeof(Duration))]
+	[JsonDerivedType(typeof(Distance))]
 	[System.Serializable]
 	public class MeasuredValue : IMeasuredValue
 	{
