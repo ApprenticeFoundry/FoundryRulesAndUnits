@@ -15,6 +15,28 @@ namespace FoundryRulesAndUnits.Units
 		protected string title { get; set; }
 		protected UnitFamilyName family { get; set; }
 
+		private static JsonSerializerOptions WithFields = new()
+		{
+			IncludeFields = true,
+			IgnoreReadOnlyFields = true,
+			AllowTrailingCommas = true,
+			PropertyNameCaseInsensitive = true,
+			PropertyNamingPolicy = new FoundryNamingPolicy(),
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+			WriteIndented = true,
+		};
+
+		private static JsonSerializerOptions WithoutFields = new()
+		{
+			IncludeFields = false,
+			IgnoreReadOnlyFields = true,
+			AllowTrailingCommas = true,
+			PropertyNameCaseInsensitive = true,
+			PropertyNamingPolicy = new FoundryNamingPolicy(),
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+			WriteIndented = true,
+		};
+
 		public UnitSpec(string units)
 		{
 			this.name = units;
@@ -36,22 +58,7 @@ namespace FoundryRulesAndUnits.Units
 //https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/customize-properties
 		public static JsonSerializerOptions JsonHydrateOptions(bool includeFields = false)
 		{
-			var options = new JsonSerializerOptions()
-			{
-				IncludeFields = includeFields,
-				IgnoreReadOnlyFields = true,
-				AllowTrailingCommas = true,
-				PropertyNameCaseInsensitive = true,
-				//PropertyNamingPolicy = new FoundryNamingPolicy(),
-				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-				WriteIndented = true,
-				// Converters =
-				// {
-				// 	new MeasuredValueJsonConverter(),
-				// 	new LengthJsonConverter(),
-				// 	new AngleJsonConverter()
-				// }
-			};
+			JsonSerializerOptions options = includeFields ? WithFields : WithoutFields;
 			return options;
 		}
 	}
