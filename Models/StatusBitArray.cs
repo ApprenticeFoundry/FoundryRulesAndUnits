@@ -15,8 +15,8 @@ namespace FoundryRulesAndUnits.Models
 			Invisible,
 			Private,
 			IsReadOnly,
-			IsUnselectable,
-			IsSelected,
+			Unselectable,
+			Selected,
 			UserSpecified,
 			Expanded,
 			Calculating,
@@ -215,11 +215,11 @@ namespace FoundryRulesAndUnits.Models
 		{
 			get
 			{
-				return m_Status[(int)StatusBit.IsSelected];
+				return m_Status[(int)StatusBit.Selected];
 			}
 			set
 			{
-				m_Status[(int)StatusBit.IsSelected] = value;
+				m_Status[(int)StatusBit.Selected] = value;
 			}
 		}
 
@@ -238,11 +238,11 @@ namespace FoundryRulesAndUnits.Models
 		{
 			get
 			{
-				return !m_Status[(int)StatusBit.IsUnselectable];
+				return !m_Status[(int)StatusBit.Unselectable];
 			}
 			set
 			{
-				m_Status[(int)StatusBit.IsUnselectable] = !value;
+				m_Status[(int)StatusBit.Unselectable] = !value;
 			}
 		}
 	}

@@ -39,7 +39,7 @@ namespace FoundryRulesAndUnits.Units
 		public double V = 0.0;
 		[JsonPropertyName("I")]
 		public string I = "";      //internal storage units
-		[JsonPropertyName("U")]
+		[JsonIgnore]
 		public string U = "";  //reporting  input and output units
 		protected UnitFamilyName F = UnitFamilyName.None;
 
