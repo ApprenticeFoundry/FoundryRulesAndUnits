@@ -106,6 +106,13 @@ namespace FoundryRulesAndUnits.Extensions
 			return result!;
 		}
 
+		public static T Clone<T>(this T target) where T : class
+		{
+			var data = Dehydrate<T>(target,true);
+			var result = data.Hydrate<T>(true);
+			return result;
+		}
+
 		public static T Hydrate<T>(this string target, bool includeFields) where T : class
 		{
 			using var stream = new MemoryStream();
