@@ -17,13 +17,19 @@ namespace FoundryRulesAndUnits.Models
 			lookup ??= new Dictionary<string, object>();
 			lookup[key] = value;
 		}
-		public object Find(string key)
+		public string GetValue(string key, string def = "")
 		{
-			if ( lookup?.TryGetValue(key, out object value) == true ) return value;
-			return null!;
+			if ( lookup?.TryGetValue(key, out object value) == true ) return value?.ToString() ?? def;
+			return def;
 		}
 
-		public ControlParameters Clone(ControlParameters others)	
+        public object Find(string key)
+        {
+            if (lookup?.TryGetValue(key, out object value) == true) return value;
+            return null!;
+        }
+
+        public ControlParameters Clone(ControlParameters others)	
 		{
 			lookup ??= new Dictionary<string, object>();
 			foreach (var item in others.lookup!)
