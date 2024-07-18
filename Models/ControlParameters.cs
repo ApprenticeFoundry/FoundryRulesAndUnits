@@ -19,13 +19,13 @@ namespace FoundryRulesAndUnits.Models
 		}
 		public string GetValue(string key, string def = "")
 		{
-			if ( lookup?.TryGetValue(key, out object value) == true ) return value?.ToString() ?? def;
+			if ( lookup?.TryGetValue(key, out object? value) == true ) return value?.ToString() ?? def;
 			return def;
 		}
 
         public object Find(string key)
         {
-            if (lookup?.TryGetValue(key, out object value) == true) return value;
+            if (lookup?.TryGetValue(key, out object? value) == true) return value;
             return null!;
         }
 

@@ -76,6 +76,15 @@ namespace FoundryRulesAndUnits.Models
 			return false;
 		}
 
+		public ControlParameters AddMetaDataIfNotNull(string key, string value)
+		{
+			if ( value != null && string.IsNullOrEmpty(value) == false)
+			{
+				MetaData().Establish(key, value);
+			}
+			return metadata!;
+		}
+
 		public ControlParameters AddMetaData(string key, string value)
 		{
 			MetaData().Establish(key, value);
