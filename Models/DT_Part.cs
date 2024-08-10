@@ -36,24 +36,28 @@ namespace FoundryRulesAndUnits.Models
 
 		public static string ParentReference(string path) 
 		{
+			if ( string.IsNullOrEmpty(path) ) return "";
 			string[] list = path.Split('.');
 			string result = string.Join(".", list, 0, list.Length - 1);
 			return result;
 		}
 		public static string ParentName(string path) 
 		{
-			string[] list = path.Split('.');
+			if ( string.IsNullOrEmpty(path) ) return "";
+			string[] list = path.Split('.') ?? [];
 			if ( list.Length < 2 ) return "";
 			return list[^2];
 		}
 		public static string RootName(string path) 
 		{
-			string[] list = path.Split('.');
+			if ( string.IsNullOrEmpty(path) ) return "";
+			string[] list = path.Split('.') ?? [];
 			return list[0];
 		}
 		public static string SelfName(string path) 
 		{
-			string[] list = path.Split('.');
+			if ( string.IsNullOrEmpty(path) ) return "";
+			string[] list = path.Split('.') ?? [];
 			if ( list.Length < 1 ) return "";
 			return list[^1];
 		}
