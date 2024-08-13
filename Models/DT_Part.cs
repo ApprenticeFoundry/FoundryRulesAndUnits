@@ -44,20 +44,20 @@ namespace FoundryRulesAndUnits.Models
 		public static string ParentName(string path) 
 		{
 			if ( string.IsNullOrEmpty(path) ) return "";
-			string[] list = path.Split('.') ?? [];
+			string[] list = path.Split('.') ?? new string[0];
 			if ( list.Length < 2 ) return "";
 			return list[^2];
 		}
 		public static string RootName(string path) 
 		{
 			if ( string.IsNullOrEmpty(path) ) return "";
-			string[] list = path.Split('.') ?? [];
+			string[] list = path.Split('.') ?? new string[0];;
 			return list[0];
 		}
 		public static string SelfName(string path) 
 		{
 			if ( string.IsNullOrEmpty(path) ) return "";
-			string[] list = path.Split('.') ?? [];
+			string[] list = path.Split('.') ?? new string[0];;
 			if ( list.Length < 1 ) return "";
 			return list[^1];
 		}
