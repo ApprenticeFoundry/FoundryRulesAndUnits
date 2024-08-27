@@ -11,9 +11,9 @@ public interface ITreeNode
 
     public string GetTreeNodeTitle(); 
     public IEnumerable<TreeNodeAction>? GetTreeNodeActions(); 
-    public IEnumerable<ITreeNode> GetChildren();
+    public IEnumerable<ITreeNode> GetTreeChildren();
 
-    public bool HasChildren() => GetChildren()?.Any() ?? false;
+    public bool HasChildren() => GetTreeChildren()?.Any() ?? false;
     public bool IsCollapsed() => !GetIsExpanded();
     public bool ToggleExpanded() => SetExpanded(!GetIsExpanded());
     public bool ToggleSelected() => SetSelected(!GetIsSelected());
@@ -21,7 +21,7 @@ public interface ITreeNode
     public void PrintToConsole(int indent = 1)
     {
         $"{GetTreeNodeTitle()}".WriteSuccess(indent);
-        foreach (var child in GetChildren())
+        foreach (var child in GetTreeChildren())
             child.PrintToConsole(indent + 1);
     }
 }
@@ -37,7 +37,7 @@ public static class TreeNodeExtensions
         {
             var current = stack.Pop();
             yield return current;
-            foreach (var child in current.GetChildren())
+            foreach (var child in current.GetTreeChildren())
                 stack.Push(child);
         }
     }
