@@ -33,6 +33,12 @@ namespace FoundryRulesAndUnits.Models
 		public DT_Part() 
 		{
 		}
+		public int StructureDepth()
+		{
+			if ( string.IsNullOrEmpty(structureReference) ) return 0;
+			var leg = structureReference ?? "";
+			return leg.Split('.').Length;
+		}
 
 		public static string ParentReference(string path) 
 		{
@@ -48,6 +54,22 @@ namespace FoundryRulesAndUnits.Models
 			if ( list.Length < 2 ) return "";
 			return list[^2];
 		}
+
+		public static string Subpath(string path)
+		{
+			if (string.IsNullOrEmpty(path)) return "";
+			string[] array = path.Split('.') ?? new string[0];
+			if (array.Length < 2)  return "";
+			return string.Join(".", array.Skip(1));
+		}
+
+		public static string Parentpath(string path)
+		{
+			if (string.IsNullOrEmpty(path)) return "";
+			string[] array = path.Split('.') ?? new string[0];
+			if (array.Length < 2)  return "";
+			return string.Join(".", array.Take(array.Length - 1));
+		}
 		public static string RootName(string path) 
 		{
 			if ( string.IsNullOrEmpty(path) ) return "";
@@ -60,6 +82,18 @@ namespace FoundryRulesAndUnits.Models
 			string[] list = path.Split('.') ?? new string[0];;
 			if ( list.Length < 1 ) return "";
 			return list[^1];
+		}
+
+		public bool MatchStructure(DT_Part other)
+		{
+			return structureReference == other.structureReference;
+		}
+
+		public bool IsSubStructure(DT_Part parent)
+		{
+			if (string.IsNullOrEmpty(structureReference)) return false;
+			if (string.IsNullOrEmpty(parent.structureReference)) return false;
+			return structureReference.StartsWith(parent.structureReference);
 		}
 
 		public bool MatchPartNumber(DT_Part other)
@@ -96,6 +130,7 @@ namespace FoundryRulesAndUnits.Models
 
 		public bool IsEmpty()
 		{
+			if (!string.IsNullOrEmpty(structureReference)) return false;
 			if (!string.IsNullOrEmpty(referenceDesignation)) return false;
 			if (!string.IsNullOrEmpty(partNumber)) return false;
 			if (!string.IsNullOrEmpty(serialNumber)) return false;
