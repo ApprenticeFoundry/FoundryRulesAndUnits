@@ -33,9 +33,13 @@ public static class StringExtensions
 
     public static bool Matches(this string str1, string str2)
     {
-        if (str1.IsNullOrEmpty() && str2.IsNullOrEmpty()) return true;
-        var result = str1?.ToLower() == str2?.ToLower();
-        return result;
+        if (str1 == null && str2 == null)
+            return true;
+        
+        if (str1 == null || str2 == null)
+            return false;
+        
+        return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
     }
 
 
