@@ -30,6 +30,7 @@ namespace FoundryRulesAndUnits.Models
 			AllowConnections,
 			AllowAsParentShape,
 			ShouldNotRender,
+			ShowChildren,
 		}
 
 		public StatusBitArray()
@@ -232,6 +233,18 @@ namespace FoundryRulesAndUnits.Models
 			set
 			{
 				m_Status[(int)StatusBit.ShouldNotRender] = !value;
+			}
+		}
+		
+		public bool ShowChildren
+		{
+			get
+			{
+				return !m_Status[(int)StatusBit.ShowChildren];
+			}
+			set
+			{
+				m_Status[(int)StatusBit.ShowChildren] = !value;
 			}
 		}
 		public bool IsSelectable

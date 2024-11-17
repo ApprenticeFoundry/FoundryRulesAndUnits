@@ -25,15 +25,17 @@ namespace FoundryRulesAndUnits.Models
 
         public object Find(string key)
         {
-            if (lookup?.TryGetValue(key, out object? value) == true) return value;
+            if (lookup?.TryGetValue(key, out object? value) == true) 
+				return value;
             return null!;
         }
 
-        public ControlParameters Clone(ControlParameters others)	
+        public ControlParameters CloneFrom(ControlParameters others)	
 		{
 			lookup ??= new Dictionary<string, object>();
-			foreach (var item in others.lookup!)
-				lookup[item.Key] = item.Value;
+			if ( others.lookup != null )
+				foreach (var item in others.lookup)
+					lookup[item.Key] = item.Value;
 			
 			return this;
 		}	
