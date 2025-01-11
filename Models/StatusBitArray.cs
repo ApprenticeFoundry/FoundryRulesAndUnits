@@ -31,6 +31,7 @@ namespace FoundryRulesAndUnits.Models
 			AllowAsParentShape,
 			ShouldNotRender,
 			ShowChildren,
+			Dirty,
 		}
 
 		public StatusBitArray()
@@ -256,6 +257,19 @@ namespace FoundryRulesAndUnits.Models
 			set
 			{
 				m_Status[(int)StatusBit.Unselectable] = !value;
+			}
+		}
+
+		
+		public bool IsDirty
+		{
+			get
+			{
+				return m_Status[(int)StatusBit.Dirty];
+			}
+			set
+			{
+				m_Status[(int)StatusBit.Dirty] = value;
 			}
 		}
 	}
