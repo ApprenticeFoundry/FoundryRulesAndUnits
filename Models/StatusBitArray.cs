@@ -32,6 +32,7 @@ namespace FoundryRulesAndUnits.Models
 			ShouldNotRender,
 			ShowChildren,
 			Dirty,
+			ShouldDelete
 		}
 
 		public StatusBitArray()
@@ -270,6 +271,19 @@ namespace FoundryRulesAndUnits.Models
 			set
 			{
 				m_Status[(int)StatusBit.Dirty] = value;
+			}
+		}
+
+		
+		public bool ShouldDelete
+		{
+			get
+			{
+				return m_Status[(int)StatusBit.ShouldDelete];
+			}
+			set
+			{
+				m_Status[(int)StatusBit.ShouldDelete] = value;
 			}
 		}
 	}
