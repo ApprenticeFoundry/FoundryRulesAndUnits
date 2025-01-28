@@ -23,6 +23,7 @@ namespace FoundryRulesAndUnits.Models
 	[System.Serializable]
 	public class DT_Part
 	{
+		public string? title;
 		public string? promiseReference;
 		public string? structureReference;
 		public string? referenceDesignation;
@@ -165,17 +166,25 @@ namespace FoundryRulesAndUnits.Models
 			return $"{partName()} ({referenceDesignation})";
 		}
 
-		public string ComputeTitle()
+		public string PartTitle()
 		{
-			var title = partName();
-
-			if (!string.IsNullOrEmpty(referenceDesignation))
-				title = $"{title} ({referenceDesignation})";
-
-			if (!string.IsNullOrEmpty(serialNumber))
-				title = $"{title} (SN:{serialNumber})";
+			if (string.IsNullOrEmpty(title))
+				return refName();
 
 			return title;
+		}
+
+		public string ComputeTitle()
+		{
+			var result =  $"{title} {partName()}";
+						
+			if (!string.IsNullOrEmpty(referenceDesignation))
+				result = $"{result} ({referenceDesignation})";
+
+			if (!string.IsNullOrEmpty(serialNumber))
+				result = $"{result} (SN:{serialNumber})";
+
+			return result;
 		}
 	}
 
