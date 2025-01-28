@@ -7,3 +7,8 @@ Click Upload
 
 
 Upload to nuget.org
+
+
+https://www.nuget.org/packages/RulesEngine/
+
+https://github.com/microsoft/RulesEngine

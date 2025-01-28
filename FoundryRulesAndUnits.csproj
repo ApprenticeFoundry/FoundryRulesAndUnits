@@ -17,13 +17,21 @@
     <PackageId>ApprenticeFoundryRulesAndUnits</PackageId>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
-    <Version>5.1.0</Version>
-    <AssemblyVersion>5.1.0</AssemblyVersion>
+    <Version>5.2.0</Version>
+    <AssemblyVersion>5.2.0</AssemblyVersion>
     <Authors>Stephen Strong</Authors>
     <Company>Stephen Strong</Company>
     <PackageProjectUrl>https://apprenticefoundry.github.io/</PackageProjectUrl>
 
   </PropertyGroup>
+
+  <PropertyGroup>
+      <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
   
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
