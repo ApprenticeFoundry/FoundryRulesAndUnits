@@ -1,3 +1,5 @@
+using FoundryRulesAndUnits.Extensions;
+
 namespace FoundryRulesAndUnits.Models
 {
 	// public class DO_Promise
@@ -24,6 +26,7 @@ namespace FoundryRulesAndUnits.Models
 	public class DT_Part
 	{
 		public string? title;
+		public string? partType;
 		public string? promiseReference;
 		public string? structureReference;
 		public string? referenceDesignation;
@@ -34,6 +37,13 @@ namespace FoundryRulesAndUnits.Models
 		public DT_Part() 
 		{
 		}
+		
+		public bool IsPartType(string type)
+		{
+			if ( string.IsNullOrEmpty(partType) ) return false;
+			return partType.Matches(type);
+		}
+
 		public int StructureDepth()
 		{
 			if ( string.IsNullOrEmpty(structureReference) ) return 0;
@@ -131,6 +141,7 @@ namespace FoundryRulesAndUnits.Models
 
 		public bool IsEmpty()
 		{
+			if (!string.IsNullOrEmpty(partType)) return false;
 			if (!string.IsNullOrEmpty(structureReference)) return false;
 			if (!string.IsNullOrEmpty(referenceDesignation)) return false;
 			if (!string.IsNullOrEmpty(partNumber)) return false;
