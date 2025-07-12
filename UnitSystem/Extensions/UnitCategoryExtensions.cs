@@ -85,7 +85,7 @@ namespace FoundryRulesAndUnits.Units
         public static UnitCategory AddCrossSystemConversions(this UnitCategory category)
         {
             var baseUnit = category.BaseUnits().Name();
-            
+
             if (baseUnit == "m") // Metric base - add imperial conversions
             {
                 return category
