@@ -11,7 +11,7 @@ public class DESIGN_Base
     public string type { get; set; }
     public string url { get; set; }
     public string timeStamp { get; set; }
-    public ControlParameters metadata { get; set; }
+    public ControlParameters? metadata { get; set; }
 }
 
 
