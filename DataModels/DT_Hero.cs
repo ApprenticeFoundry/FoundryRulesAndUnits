@@ -21,7 +21,7 @@ public class DT_Hero : DT_Title
     //call field name from property
     public string Key
     {
-        get { return this.name; }
+        get { return this.name ?? "NO KEY"; }
         set { this.name = value; }
     }
 

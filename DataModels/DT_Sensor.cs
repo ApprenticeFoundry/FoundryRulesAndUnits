@@ -8,10 +8,10 @@ namespace FoundryRulesAndUnits.Models;
 
 public class DT_Sensor : DT_Ingredient
 {
-    public string? topic;
-    public string? sourceGuid;
-    public string? sourceURL;
-    public string? data;  //place holder for raw data
+    public string? Topic { get; set; }
+    public string? SourceGuid { get; set; }
+    public string? SourceURL { get; set; }
+    public string? Data { get; set; }  //place holder for raw data
 
     public List<DT_Sensor>? members;
 
@@ -47,7 +47,7 @@ public class DT_Sensor : DT_Ingredient
     public List<DT_Sensor> ShallowMembers()
     {
         var result = members?.Select(obj => obj.ShallowCopy()).ToList();
-        return result;
+        return result ?? new List<DT_Sensor>();
     }
 
 }

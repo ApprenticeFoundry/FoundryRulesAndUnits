@@ -11,10 +11,10 @@ public class DT_Link : DT_Hero, ISystem
 {
 
 
-    public string? referenceDesignation;
+    public string? ReferenceDesignation { get; set; } = null;
 
-    public string? sourceHeroGuid;
-    public string? targetHeroGuid;
+    public string? SourceHeroGuid { get; set; } = null;
+    public string? TargetHeroGuid { get; set; } = null;
 
     public DT_Link()
     {

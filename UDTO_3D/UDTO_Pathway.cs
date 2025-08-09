@@ -21,7 +21,7 @@ public class UDTO_Pathway : UDTO_3D
     public UDTO_Body FindDatum(string name)
     {
         var found = Datums.Where(obj => name.Matches(obj.Name ?? "")).FirstOrDefault();
-        return found;
+        return found ?? new UDTO_Body();
     }
 
     public UDTO_Body EstablishDatum(string name, double x = 0.0, double y = 0.0, double z = 0.0)

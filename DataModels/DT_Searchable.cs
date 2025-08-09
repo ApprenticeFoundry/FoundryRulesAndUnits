@@ -3,16 +3,16 @@ using FoundryRulesAndUnits.Models;
 
 namespace FoundryRulesAndUnits.Models;
 
-public class DESIGN_Base
-{
-    public string guid { get; set; }
-    public string parentGuid { get; set; }
-    public string name { get; set; }
-    public string type { get; set; }
-    public string url { get; set; }
-    public string timeStamp { get; set; }
-    public ControlParameters? metadata { get; set; }
-}
+// public class DESIGN_Base
+// {
+//     public string guid { get; set; }
+//     public string parentGuid { get; set; }
+//     public string name { get; set; }
+//     public string type { get; set; }
+//     public string url { get; set; }
+//     public string timeStamp { get; set; }
+//     public ControlParameters? metadata { get; set; }
+// }
 
 
 public interface ISystem

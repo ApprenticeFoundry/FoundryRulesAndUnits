@@ -14,7 +14,6 @@ public class UDTO_3D : UDTO_Base
     public string? ParentUniqueGuid { get; set; }
 
     public string? SourceURL { get; set; }
-    public DT_System? SubSystem { get; set; }
     public DT_Part? Part { get; set; }
 
 

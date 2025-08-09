@@ -12,10 +12,10 @@ public class DT_Document : DT_Hero, ISystem
     public int memberCount;
 
 
-    public string? referenceDesignation;
-    public string? itemDescription;
-    public string? itemDescriptionRevision;
-    public List<DT_Document>? children;
+    public string? ReferenceDesignation { get; set; } = null;
+    public string? ItemDescription { get; set; } = null;
+    public string? ItemDescriptionRevision { get; set; } = null;
+    public List<DT_Document>? children; 
 
 
     public DT_Document()
@@ -107,7 +107,7 @@ public class DT_Document : DT_Hero, ISystem
     public List<DT_Document> ShallowSteps()
     {
         var result = children?.Select(obj => obj.ShallowCopy()).ToList();
-        return result;
+        return result ?? new List<DT_Document>();
     }
 
 }

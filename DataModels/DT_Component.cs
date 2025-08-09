@@ -13,8 +13,8 @@ namespace FoundryRulesAndUnits.Models;
 public class DT_Component : DT_Ingredient
 {
     public string? Text { get; set; } = null;
-    protected HighResPosition? position;
-    protected BoundingBox? boundingBox;
+    public HighResPosition? Position { get; set; } = null;
+    public BoundingBox? BoundingBox { get; set; } = null;
 
     protected List<DT_Component>? members;
 
@@ -56,7 +56,7 @@ public class DT_Component : DT_Ingredient
     public List<DT_Component> ShallowMembers()
     {
         var result = members?.Select(obj => obj.ShallowCopy()).ToList();
-        return result;
+        return result ?? new List<DT_Component>();
     }
 
 

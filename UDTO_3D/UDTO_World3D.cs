@@ -21,15 +21,16 @@ public class UDTO_World : UDTO_3D, ISystem
 
     public UDTO_World() : base()
     {
+        SystemName = "Default World";
     }
     private List<T> FindLookup<T>() where T : UDTO_3D
     {
-        if (typeof(T) == typeof(UDTO_Body)) return Bodies as List<T>;
-        if (typeof(T) == typeof(UDTO_Label)) return Labels as List<T>;
-        if (typeof(T) == typeof(UDTO_Pathway)) return Pathways as List<T>;
-        if (typeof(T) == typeof(UDTO_Relationship)) return Relationships as List<T>;
+        if (typeof(T) == typeof(UDTO_Body)) return (Bodies as List<T>)!;
+        if (typeof(T) == typeof(UDTO_Label)) return (Labels as List<T>)!;
+        if (typeof(T) == typeof(UDTO_Pathway)) return (Pathways as List<T>)!;
+        if (typeof(T) == typeof(UDTO_Relationship)) return (Relationships as List<T>)!;
 
-        return null;
+        return null!;
     }
     public T FindOrCreate<T>(string name, bool create = false) where T : UDTO_3D
     {

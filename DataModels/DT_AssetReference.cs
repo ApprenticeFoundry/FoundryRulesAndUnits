@@ -14,7 +14,6 @@ public class DT_AssetReference : DT_Title, IDT_Reference
     public string? AssetGuid { get; set; }
     public string? HeroGuid { get; set; }
     public DT_AssetFile? Asset { get; set; }
-    public DT_Thread? Thread { get; set; }
     public HighResPosition? Position { get; set; }
 
 
