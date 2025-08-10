@@ -33,8 +33,8 @@ public class UDTO_3D : UDTO_Base
     {
         Part ??= new DT_Part()
         {
-            partNumber = Name,
-            version = "1.0"
+            PartNumber = Name,
+            Version = "1.0"
         };
         return Part;
     }
@@ -43,30 +43,30 @@ public class UDTO_3D : UDTO_Base
     {
         var hero = new DT_Hero()
         {
-            guid = UniqueGuid,
-            name = Name,
-            Title = partName()
+            Guid = UniqueGuid,
+            Name = Name,
+            Title = PartName()
         };
         return hero;
     }
-    public string partName()
+    public string PartName()
     {
         if (Part == null)
             return Name ?? "";
 
-        return $"{Name}_{Part.structureReference}";
+        return $"{Name}_{Part.StructureReference}";
     }
-    public bool isDelete()
+    public bool IsDelete()
     {
         return this.Type == "Command:DELETE";
     }
 
-    public bool isVisible()
+    public bool IsVisible()
     {
         return this.Visible;
     }
 
-    public UDTO_3D setVisible(bool visible)
+    public UDTO_3D SetVisible(bool visible)
     {
         this.Visible = visible;
         return this;

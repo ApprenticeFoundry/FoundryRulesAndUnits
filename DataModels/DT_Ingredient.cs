@@ -24,7 +24,7 @@ public class DT_Ingredient : DT_Hero, ISystem
 
     public DT_Part GetPart()
     {
-        Part ??= new DT_Part() { partNumber = name };
+        Part ??= new DT_Part() { PartNumber = Name };
         return Part;
     }
     public string ComputeTitle()

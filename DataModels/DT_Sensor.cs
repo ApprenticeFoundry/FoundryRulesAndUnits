@@ -28,7 +28,7 @@ public class DT_Sensor : DT_Ingredient
     public DT_Sensor AddMember(DT_Sensor child)
     {
         members ??= new List<DT_Sensor>();
-        child.parentGuid = this.guid;
+        child.ParentGuid = this.Guid;
         members.Add(child);
         return child;
     }

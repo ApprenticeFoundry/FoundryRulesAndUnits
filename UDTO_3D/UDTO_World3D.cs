@@ -110,7 +110,7 @@ public class UDTO_World : UDTO_3D, ISystem
     }
     public T CreateUsingDTBASE<T>(DT_Base obj) where T : UDTO_3D
     {
-        return CreateUsing<T>(obj.name ?? "", obj.guid ?? "");
+        return CreateUsing<T>(obj.Name ?? "", obj.Guid ?? "");
     }
 
 

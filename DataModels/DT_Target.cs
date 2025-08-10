@@ -17,12 +17,12 @@ public abstract class DT_NetworkItem : DT_Searchable
 [System.Serializable]
 public class DT_TargetLink : DT_NetworkItem
 {
-    public string? sourceGuid;
-    public string? sinkGuid;
+    public string? SourceGuid;
+    public string? SinkGuid;
 
     public DT_TargetLink()
     {
-        this.type = "DT_TargetLink";
+        this.Type = "DT_TargetLink";
     }
 
     public static DT_TargetLink Create(DT_Target from, DT_Target to)
@@ -33,100 +33,94 @@ public class DT_TargetLink : DT_NetworkItem
 
     public DT_TargetLink Link(DT_Target from, DT_Target to)
     {
-        from.linkCount++;
-        to.linkCount++;
+        from.LinkCount++;
+        to.LinkCount++;
 
-        this.sourceGuid = from.guid;
-        this.sinkGuid = to.guid;
-        this.name = $"{from.address} -- {to.address}";
+        this.SourceGuid = from.Guid;
+        this.SinkGuid = to.Guid;
+        this.Name = $"{from.Address} -- {to.Address}";
         this.Title = $"{from.GetKey()} == {to.GetKey()}";
         return this;
     }
     public bool IsValid()
     {
-        return sourceGuid != null && sinkGuid != null;
+        return SourceGuid != null && SinkGuid != null;
     }
     public bool IncludesTarget(DT_Target target)
     {
         if (IsValid())
-            return sourceGuid == target.guid || sinkGuid == target.guid;
+            return SourceGuid == target.Guid || SinkGuid == target.Guid;
         return false;
     }
     public string? OtherTarget(DT_Target target)
     {
-        if (sourceGuid == target.guid)
-            return sinkGuid;
-        if (sinkGuid == target.guid)
-            return sourceGuid;
+        if (SourceGuid == target.Guid)
+            return SinkGuid;
+        if (SinkGuid == target.Guid)
+            return SourceGuid;
         return null;
     }
 
 }
+
 [System.Serializable]
 public class DT_Target : DT_NetworkItem
 {
-    public string address = "";
-    public string domain = "";
-    public int linkCount;
+    public string Address = "";
+    public string Domain = "";
+    public int LinkCount;
 
-    public DT_Part part = new();
-    public DT_HeroReference heroReference = new();
-    public DT_AssetFile asset = new();
-    public List<string> threads = new();
+    public DT_Part Part = new();
+    public DT_HeroReference HeroReference = new();
+    public DT_AssetFile Asset = new();
 
-    public int x;
-    public int y;
-    public int z;
+
+    public int X;
+    public int Y;
+    public int Z;
 
 
     public DT_Target()
     {
-        type = "DT_Target";
-        linkCount = 0;
+        Type = "DT_Target";
+        LinkCount = 0;
     }
     public DT_Part CopyFrom(DT_Part source)
     {
-        source.CopyNonNullFields(this.part);
-        return this.part;
+        source.CopyNonNullFields(this.Part);
+        return this.Part;
     }
 
     public DT_Part GetPart()
     {
-        part ??= new DT_Part() { partNumber = address };
-        return part;
+        Part ??= new DT_Part() { PartNumber = Address };
+        return Part;
     }
 
     public string GetKey()
     {
-        return $"{domain}:{address}";
+        return $"{Domain}:{Address}";
     }
 
 
     public string FullKey()
     {
         var part = GetPart();
-        return $"{domain}:{part.ComputeTitle()}";
+        return $"{Domain}:{part.ComputeTitle()}";
     }
 
     public bool MatchPart(DT_Part other)
     {
         if (other == null) return false;
         var part = GetPart();
-        if (part.partNumber != other.partNumber) return false;
-        if (part.serialNumber != other.serialNumber) return false;
-        if (part.version != other.version) return false;
-        if (part.referenceDesignation != other.referenceDesignation) return false;
+        if (part.PartNumber != other.PartNumber) return false;
+        if (part.SerialNumber != other.SerialNumber) return false;
+        if (part.Version != other.Version) return false;
+        if (part.ReferenceDesignation != other.ReferenceDesignation) return false;
         return true;
     }
 
-    public List<string> AddThread(string thread)
-    {
-        threads ??= new List<string>();
-        if (thread != null)
-            threads.Add(thread);
 
-        return threads;
-    }
 
 
 }

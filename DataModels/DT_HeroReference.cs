@@ -15,7 +15,7 @@ public class DT_HeroReference : DT_Title, IDT_Reference
     public DT_Part? MarkAsTemplate()
     {
         Part ??= new DT_Part();
-        Part.serialNumber = "TBD";
+        Part.SerialNumber = "TBD";
         return Part;
     }
 

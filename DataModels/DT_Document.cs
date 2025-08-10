@@ -15,7 +15,7 @@ public class DT_Document : DT_Hero, ISystem
     public string? ReferenceDesignation { get; set; } = null;
     public string? ItemDescription { get; set; } = null;
     public string? ItemDescriptionRevision { get; set; } = null;
-    public List<DT_Document>? children; 
+    public List<DT_Document>? children { get; set; } = null;
 
 
     public DT_Document()
@@ -25,7 +25,7 @@ public class DT_Document : DT_Hero, ISystem
     public DT_Document AddChild(DT_Document child)
     {
         children ??= new List<DT_Document>();
-        child.parentGuid = this.guid;
+        child.ParentGuid = this.Guid;
 
         children.Add(child);
         this.memberCount = children.Count;

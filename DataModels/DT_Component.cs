@@ -40,7 +40,7 @@ public class DT_Component : DT_Ingredient
     public DT_Component AddMember(DT_Component child)
     {
         members ??= new List<DT_Component>();
-        child.parentGuid = this.guid;
+        child.ParentGuid = this.Guid;
         members.Add(child);
         return child;
     }

@@ -23,13 +23,13 @@ public class DT_AssetReference : DT_Title, IDT_Reference
     public DT_AssetReference AttachDocument(DT_AssetFile doc)
     {
         Asset = doc;
-        AssetGuid = doc.guid;
+        AssetGuid = doc.Guid;
         return this;
     }
 
     public DT_AssetReference ClearDocument()
     {
-        AssetGuid = Asset?.guid;
+        AssetGuid = Asset?.Guid;
         Asset = null;
         return this;
     }

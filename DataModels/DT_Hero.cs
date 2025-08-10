@@ -21,8 +21,8 @@ public class DT_Hero : DT_Title
     //call field name from property
     public string Key
     {
-        get { return this.name ?? "NO KEY"; }
-        set { this.name = value; }
+        get { return this.Name ?? "NO KEY"; }
+        set { this.Name = value; }
     }
 
     public virtual List<DT_Hero> Children()
@@ -35,7 +35,7 @@ public class DT_Hero : DT_Title
 
         if (AssetReferences.IndexOf(item) == -1)
         {
-            item.HeroGuid = this.guid;
+            item.HeroGuid = this.Guid;
             AssetReferences.Add(item);
         }
         else

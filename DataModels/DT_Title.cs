@@ -32,7 +32,7 @@ public class DT_Title : DT_Searchable
         }
 
         Comments.Add(item);
-        item.parentGuid = this.guid;
+        item.ParentGuid = this.Guid;
         return item;
     }
 
@@ -63,7 +63,7 @@ public class DT_Title : DT_Searchable
         }
 
         QualityChecks.Add(item);
-        item.parentGuid = this.guid;
+        item.ParentGuid = this.Guid;
         return item;
     }
 
