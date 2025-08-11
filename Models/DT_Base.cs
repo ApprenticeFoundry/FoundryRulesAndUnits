@@ -17,9 +17,9 @@ public class DT_Base
 	public string? Name { get; set; }
 	public string? Type { get; set; }
 	public string? Url { get; set; }
+    public List<string> Tags { get; set; }
 
 	public string? TimeStamp;
-	protected List<string> Tags { get; set; } = new();
 
 	protected ControlParameters? metadata;
 
@@ -44,7 +44,11 @@ public class DT_Base
 
 	public List<string> GetTags()
     {
-        return Tags ?? new List<string>();
+		if (Tags == null)
+		{
+			Tags = new List<string>();
+        }
+        return Tags;
     }
 	
     public DT_Base AddTag(string tag)
@@ -52,20 +56,21 @@ public class DT_Base
 		if (string.IsNullOrEmpty(tag))
 			return this;
 
-		var tagUpper = tag.ToUpper();
-		if (Tags.Contains(tagUpper))
+		var tags = GetTags();
+
+        var tagUpper = tag.ToUpper();
+		if (tags.Contains(tagUpper))
 			return this;
 
-		Tags.Add(tag);
+        tags.Add(tag);
 		return this;
 	}
 
 	public virtual void Fill_DT_Component(DT_Component component)
 	{
-		foreach (var item in Tags)
-		{
+		foreach (var item in GetTags())
 			component.AddTag(item);
-		}
+		
 		if (HasMetaData())
 			component.MergeMetaData(metadata);
 	}
