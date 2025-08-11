@@ -21,13 +21,13 @@ namespace FoundryRulesAndUnits.Units
 
 		}
 
-		public Length(double value, string? units) :
+		public Length(double value, string? units=null) :
 			base(UnitFamilyName.Length)
 		{
 			Init(Category(), value, units);
 		}
 
-		public Length Assign(double value, string? units)
+		public Length Assign(double value, string? units=null)
 		{
 			if (units == I || units == null)
 			{
@@ -114,9 +114,11 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 		public static Length operator +(Length left, double right) => new(left.Value() + right, left.Internal());
-		public static Length operator -(Length left, double right) => new(left.Value() - right, left.Internal());
-
+		public static Length operator +(double left, Length right) => new(left + right.Value(), right.Internal());
 		public static Length operator +(Length left, Length right) => new(left.Value() + right.Value(), left.Internal());
+
+		public static Length operator -(Length left, double right) => new(left.Value() - right, left.Internal());
+		public static Length operator -(double left, Length right) => new(left - right.Value(), right.Internal());
 		public static Length operator -(Length left, Length right) => new(left.Value() - right.Value(), left.Internal());
 
 		public static bool operator <(Length left, Length right) => left.Value() < right.Value();

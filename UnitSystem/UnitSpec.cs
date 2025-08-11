@@ -4,11 +4,38 @@ using System.Text.Json;
 namespace FoundryRulesAndUnits.Units
 {
 
+    public class FoundryNamingPolicy : JsonNamingPolicy
+    {
+        public override string ConvertName(string name) => name;
+    }
+
 	public class UnitSpec
 	{
 		protected string name { get; set; }
 		protected string title { get; set; }
 		protected UnitFamilyName family { get; set; }
+
+		private static JsonSerializerOptions WithFields = new()
+		{
+			IncludeFields = true,
+			IgnoreReadOnlyFields = true,
+			AllowTrailingCommas = true,
+			PropertyNameCaseInsensitive = true,
+			PropertyNamingPolicy = new FoundryNamingPolicy(),
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+			WriteIndented = true,
+		};
+
+		private static JsonSerializerOptions WithoutFields = new()
+		{
+			IncludeFields = false,
+			IgnoreReadOnlyFields = true,
+			AllowTrailingCommas = true,
+			PropertyNameCaseInsensitive = true,
+			PropertyNamingPolicy = new FoundryNamingPolicy(),
+			DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+			WriteIndented = true,
+		};
 
 		public UnitSpec(string units)
 		{
@@ -28,22 +55,10 @@ namespace FoundryRulesAndUnits.Units
 		public string Name() { return name; }
 		public UnitFamilyName UnitFamily() { return family; }
 
+//https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/customize-properties
 		public static JsonSerializerOptions JsonHydrateOptions(bool includeFields = false)
 		{
-			var options = new JsonSerializerOptions()
-			{
-				IncludeFields = includeFields,
-				IgnoreReadOnlyFields = true,
-				AllowTrailingCommas = true,
-				DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-				WriteIndented = true,
-				Converters =
-				{
-					new MeasuredValueJsonConverter(),
-					new LengthJsonConverter(),
-					new AngleJsonConverter()
-				}
-			};
+			JsonSerializerOptions options = includeFields ? WithFields : WithoutFields;
 			return options;
 		}
 	}

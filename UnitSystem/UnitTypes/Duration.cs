@@ -17,7 +17,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 		}
 
-		public Duration(double value, string? units) :
+		public Duration(double value, string? units = null) :
 			base(UnitFamilyName.Duration)
 		{
 			Init(Category(), value, units);

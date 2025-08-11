@@ -1,17 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFrameworks>net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Title>Foundry Rules and Units</Title>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <IsPackable>true</IsPackable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+
+    <Title>Apprentice Foundry Rules and Units</Title>
+    <description>General Units and Rules for Foundry Data and Projects</description>
+    <packageTags>Foundry, Rules, Units, Blazor</packageTags>
+    <RepositoryUrl>https://github.com/ApprenticeFoundry/FoundryRulesAndUnits</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageId>ApprenticeFoundryRulesAndUnits</PackageId>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
+    <Version>7.3.0</Version>
+    <AssemblyVersion>7.3.0</AssemblyVersion>
+    <Authors>Stephen Strong</Authors>
+    <Company>Stephen Strong</Company>
+    <PackageProjectUrl>https://apprenticefoundry.github.io/</PackageProjectUrl>
+
+  </PropertyGroup>
+
+  <PropertyGroup>
+      <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RulesEngine" Version="5.0.2" />
-    <PackageReference Include="System.Text.Json" Version="7.0.3" />
+      <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
 </Project>

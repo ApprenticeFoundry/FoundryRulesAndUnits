@@ -18,20 +18,37 @@ namespace FoundryRulesAndUnits.Units
 	}
 
 
+    [JsonDerivedType(typeof(Temperature))]
+	[JsonDerivedType(typeof(Length))]
+	[JsonDerivedType(typeof(Angle))]
+	[JsonDerivedType(typeof(Area))]
+	[JsonDerivedType(typeof(Volume))]
+	[JsonDerivedType(typeof(Current))]
+	[JsonDerivedType(typeof(Time))]
+	[JsonDerivedType(typeof(Speed))]
+	[JsonDerivedType(typeof(DataFlow))]
+	[JsonDerivedType(typeof(DataStorage))]
+	[JsonDerivedType(typeof(Frequency))]
+	[JsonDerivedType(typeof(Percent))]
+	[JsonDerivedType(typeof(Duration))]
+	[JsonDerivedType(typeof(Distance))]
 	[System.Serializable]
 	public class MeasuredValue : IMeasuredValue
 	{
+		[JsonPropertyName("V")]
 		public double V = 0.0;
+		[JsonPropertyName("I")]
 		public string I = "";      //internal storage units
-		protected string U = "";  //reporting  input and output units
+		[JsonIgnore]
+		public string U = "";  //reporting  input and output units
 		protected UnitFamilyName F = UnitFamilyName.None;
 
 
 
 		public MeasuredValue(UnitFamilyName unitFamily)
 		{
-			V = default!;
 			F = unitFamily;
+			V = default!;
 		}
 
 
@@ -40,6 +57,7 @@ namespace FoundryRulesAndUnits.Units
 			I = cat.BaseUnits().Name();
 			U = units ?? I;
 			V = value;
+
 			if (I != U)
 				V = cat.ConvertToBaseUnits(U, value);
 			return V;

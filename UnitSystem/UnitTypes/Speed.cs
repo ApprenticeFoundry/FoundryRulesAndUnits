@@ -17,7 +17,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 		}
 
-		public Speed(double value, string? units) :
+		public Speed(double value, string? units = null) :
 			base(UnitFamilyName.Speed)
 		{
 			Init(Category(), value, units);

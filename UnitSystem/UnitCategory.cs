@@ -14,17 +14,27 @@ namespace FoundryRulesAndUnits.Units
 		Duration,
 		Mass,
 		Angle,
-		Quanity,
+		Heading,
+		Quantity,
+		QuantityFlow,
 		Area,
 		Volume,
 		Speed,
 		Temperature,
 		Pressure,
 		Force,
-		Storage,
-		DataTransfer,
+		DataStorage,
+		DataFlow,
 		WorkTime,
-	}
+		Voltage,
+		Current,
+		Power,
+		Energy,
+        Resistance,
+		Capacitance,
+        Percent,
+        Frequency,
+    }
 
 	public class UnitCategory
 	{
@@ -70,12 +80,14 @@ namespace FoundryRulesAndUnits.Units
 				ConversionLookup.Remove(found.Name());
 
 			ConversionLookup.Add(found.Name(), found);
+			//$"Conv: Added Conversion {found.Name()}".WriteLine();
 
 			found = new UnitConversion($"{u2}|{u1}", (v) => (v * v1) / v2);
 			if (ConversionLookup.ContainsKey(found.Name()))
 				ConversionLookup.Remove(found.Name());
 
 			ConversionLookup.Add(found.Name(), found);
+			//$"Conv: Added Conversion {found.Name()}".WriteLine();
 			return this;
 		}
 
@@ -84,18 +96,21 @@ namespace FoundryRulesAndUnits.Units
 			var found = new UnitConversion($"{u1}|{u2}", convert);
 			if (ConversionLookup.ContainsKey(found.Name()))
 				ConversionLookup.Remove(found.Name());
+
 			ConversionLookup.Add(found.Name(), found);
+			//$"Conversion: Added Conversion {found.Name()}".WriteLine();
 			return this;
 		}
 
 		public double Convert(string u1, string u2, double v1)
 		{
 			var key = $"{u1}|{u2}";
-			if (ConversionLookup.TryGetValue(key, out UnitConversion found))
+			if (ConversionLookup.TryGetValue(key, out UnitConversion? found) && found != null)
 			{
+				//$"con key found {key}".WriteLine();
 				return found.Convert(v1);
 			}
-			$"Convert: No Conversion found for {key}".WriteLine();
+			$"UnitCategoryConvert: No Conversion found for {key}:  from [{u1}] to [{u2}]".WriteError();
 			return v1;
 		}
 
@@ -104,6 +119,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var u2 = BaseUnit.Name();
 			var result = Convert(u2, u1, v1);
+			//$"ConvertFrom BaseUnits: {v1} {u1} to {u2} = {result}".WriteLine();
 			return result;
 		}
 
@@ -112,6 +128,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var u2 = BaseUnit.Name();
 			var result = Convert(u1, u2, v1);
+			//$"ConvertTo BaseUnits: {v1} {u1} to {u2} = {result}".WriteLine();
 			return result;
 		}
 

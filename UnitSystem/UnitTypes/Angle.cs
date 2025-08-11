@@ -20,7 +20,7 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 
-		public Angle(double value, string? units) :
+		public Angle(double value, string? units=null) :
 			base(UnitFamilyName.Angle)
 		{
 			Init(Category(), value, units);
@@ -59,12 +59,12 @@ namespace FoundryRulesAndUnits.Units
 
 		public static Angle FromDegrees(double v)
 		{
-			return new Angle(v, "D");
+			return new Angle(v, "deg");
 		}
 
 		public static Angle FromRadians(double v)
 		{
-			return new Angle(v, "r");
+			return new Angle(v, "rad");
 		}
 
 		public override double As(string units)
@@ -75,7 +75,7 @@ namespace FoundryRulesAndUnits.Units
 		public Angle Degrees(double value)
 		{
 			var cat = Category();
-			V = cat.ConvertToBaseUnits("d", value);
+			V = cat.ConvertToBaseUnits("deg", value);
 			return this;
 		}
 
