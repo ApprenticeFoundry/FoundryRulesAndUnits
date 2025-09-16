@@ -59,13 +59,22 @@ namespace FoundryRulesAndUnits.Units
 			V = value;
 
 			if (I != U)
-				V = cat.ConvertToBaseUnits(U, value);
+			{
+				var (success, result) = cat.ConvertToBaseUnits(U, value);
+				if (success)
+					V = result;
+			}
+			else
+			{
+				V = cat.ConvertToBaseUnits(U, value).value;
+			}
 			return V;
 		}
 
 		public double ConvertAs(UnitCategory cat, string units)
 		{
-			return cat.ConvertFromBaseUnits(units, V);
+			var result = cat.ConvertFromBaseUnits(units, V);
+			return result.value;
 		}
 
 		public int ValueAsInt() { return (int)V; }

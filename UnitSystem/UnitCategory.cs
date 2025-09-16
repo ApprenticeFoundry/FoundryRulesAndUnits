@@ -102,20 +102,20 @@ namespace FoundryRulesAndUnits.Units
 			return this;
 		}
 
-		public double Convert(string u1, string u2, double v1)
+		public (bool success, double value) Convert(string u1, string u2, double v1)
 		{
 			var key = $"{u1}|{u2}";
 			if (ConversionLookup.TryGetValue(key, out UnitConversion? found) && found != null)
 			{
 				//$"con key found {key}".WriteLine();
-				return found.Convert(v1);
+				return (true, found.Convert(v1));
 			}
 			$"UnitCategoryConvert: No Conversion found for {key}:  from [{u1}] to [{u2}]".WriteError();
-			return v1;
+			return (false, v1);
 		}
 
 
-		public double ConvertFromBaseUnits(string u1, double v1)
+		public (bool success, double value) ConvertFromBaseUnits(string u1, double v1)
 		{
 			var u2 = BaseUnit.Name();
 			var result = Convert(u2, u1, v1);
@@ -124,7 +124,7 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 
-		public double ConvertToBaseUnits(string u1, double v1)
+		public (bool success, double value) ConvertToBaseUnits(string u1, double v1)
 		{
 			var u2 = BaseUnit.Name();
 			var result = Convert(u1, u2, v1);

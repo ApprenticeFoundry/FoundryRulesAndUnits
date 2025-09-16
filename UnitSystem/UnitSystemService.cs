@@ -43,6 +43,7 @@ namespace FoundryRulesAndUnits.Units
 		public UnitCategory? length { get;  set;}
 		public UnitCategory? angle { get;  set;}
 		public UnitCategory? storage { get;  set;}
+		public UnitCategory? time { get; set; }
 		public UnitCategory? worktime { get; set; }
 		public UnitCategory? mass { get; set; }
 		public UnitCategory? force { get; set; }
@@ -137,12 +138,14 @@ namespace FoundryRulesAndUnits.Units
 				.AddMassUnits("kg");              // g, mg, lb, oz with conversions
 
 			UnitCategories.Category(mass);
+			Mass.Category = () => mass;
 
 			// Force: NEWTONS as true base unit (MKS system)  
 			force = new UnitCategory("Force", new UnitSpec("N", "newtons", UnitFamilyName.Force))
 				.AddForceUnits("N");              // kN, dyne, lbf with conversions
 
 			UnitCategories.Category(force);
+			Force.Category = () => force;
 
 			// Temperature: CELSIUS as base unit (MKS system)
 			temperature = new UnitCategory("Temperature", new UnitSpec("C", "Celsius", UnitFamilyName.Temperature))
@@ -193,6 +196,13 @@ namespace FoundryRulesAndUnits.Units
 
 			UnitCategories.Category(angle);
 			Angle.Category = () => angle;
+
+			// Time - same for all systems (seconds-based)
+			time = new UnitCategory("Time", new UnitSpec("s", "seconds", UnitFamilyName.Time))
+				.AddTimeUnits("s");
+
+			UnitCategories.Category(time);
+			Time.Category = () => time;
 
 			// Data Storage - same for all systems (bytes-based)
 			storage = new UnitCategory("DataStorage", new UnitSpec("KB", "KiloBytes", UnitFamilyName.DataStorage))

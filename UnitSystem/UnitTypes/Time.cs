@@ -18,21 +18,31 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 		public Time(double value, string? units = null) :
-			base(UnitFamilyName.Duration)
+			base(UnitFamilyName.Time)
 		{
 			Init(Category(), value, units);
 		}
 
-		public static Duration Zero { get { return new Duration(0, "s"); } }
+		public static Time Zero { get { return new Time(0, "s"); } }
 
-		public static Duration FromDays(double v)
+		public static Time FromDays(double v)
 		{
-			return new Duration(v, "d");
+			return new Time(v, "day");
 		}
 
-		public static Duration FromSeconds(double v)
+		public static Time FromSeconds(double v)
 		{
-			return new Duration(v, "s");
+			return new Time(v, "s");
+		}
+
+		public static Time FromMinutes(double v)
+		{
+			return new Time(v, "min");
+		}
+
+		public static Time FromHours(double v)
+		{
+			return new Time(v, "hr");
 		}
 
 		public override double As(string units)

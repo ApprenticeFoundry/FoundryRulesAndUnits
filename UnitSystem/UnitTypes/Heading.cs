@@ -75,7 +75,9 @@ namespace FoundryRulesAndUnits.Units
 		public Heading Degrees(double value)
 		{
 			var cat = Category();
-			V = cat.ConvertToBaseUnits("deg", value);
+			var result = cat.ConvertToBaseUnits("deg", value);
+			if (result.success)
+				V = result.value;
 			return this;
 		}
 

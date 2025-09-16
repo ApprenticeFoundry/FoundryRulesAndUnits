@@ -75,7 +75,11 @@ namespace FoundryRulesAndUnits.Units
 		public Angle Degrees(double value)
 		{
 			var cat = Category();
-			V = cat.ConvertToBaseUnits("deg", value);
+			var result = cat.ConvertToBaseUnits("deg", value);
+			if (result.success)
+				V = result.value;
+			else
+				V = value;
 			return this;
 		}
 

@@ -81,12 +81,12 @@ namespace FoundryRulesAndUnits.Testing.UnitSystem
             {
                 // Test 1 meter to millimeters
                 double testValue = 1.0; // 1 meter
-                double mm = service.length.ConvertFromBaseUnits("mm", testValue);
-                $"  ✓ 1 m = {mm} mm (expected: 1000)".WriteSuccess();
-                
+                var result1 = service.length.ConvertFromBaseUnits("mm", testValue);
+                $"  ✓ 1 m = {result1.value} mm (expected: 1000)".WriteSuccess();
+
                 // Test 1 meter to inches
-                double inches = service.length.ConvertFromBaseUnits("in", testValue);
-                $"  ✓ 1 m = {inches:F4} in (expected: ~39.3701)".WriteSuccess();
+                var result2 = service.length.ConvertFromBaseUnits("in", testValue);
+                $"  ✓ 1 m = {result2.value:F4} in (expected: ~39.3701)".WriteSuccess();
             }
         }
 
@@ -182,8 +182,11 @@ namespace FoundryRulesAndUnits.Testing.UnitSystem
                 {
                     try
                     {
-                        double result = category.ConvertFromBaseUnits(unit.Name(), 1.0);
-                        $"    1 {baseUnit.Name()} = {result:F4} {unit.Name()} ({unit.Title()})".WriteSuccess();
+                        var result = category.ConvertFromBaseUnits(unit.Name(), 1.0);
+                        if (result.success)
+                            $"    1 {baseUnit.Name()} = {result.value:F4} {unit.Name()} ({unit.Title()})".WriteSuccess();
+                        else
+                            $"    1 {baseUnit.Name()} = conversion failed:  {unit.Name()} ({unit.Title()})".WriteError();
                     }
                     catch (Exception ex)
                     {
