@@ -58,6 +58,13 @@ namespace FoundryRulesAndUnits.Units
                         }
                     }
                     
+                    // WORKAROUND: Manually add missing imperial units that are defined in FPS/IPS systems
+                    // but not captured due to category overwriting issue
+                    _unitFamilyLookup.TryAdd("in", UnitFamilyName.Length);
+                    _unitFamilyLookup.TryAdd("ft", UnitFamilyName.Length);
+                    _unitFamilyLookup.TryAdd("yd", UnitFamilyName.Length);
+                    _unitFamilyLookup.TryAdd("mi", UnitFamilyName.Length);
+                    
                     _isInitialized = true;
                 }
                 catch (Exception ex)
@@ -215,10 +222,29 @@ namespace FoundryRulesAndUnits.Units
         public static UnitCategory AddImperialLengthUnits(this UnitCategory category, string baseUnit)
         {
             // Add common imperial length units with exact conversions
-            category.Units("in", "inches").Conversion(1.0, baseUnit, 0.0254, "in");
-            category.Units("ft", "feet").Conversion(1.0, baseUnit, 0.3048, "ft");
-            category.Units("yd", "yards").Conversion(1.0, baseUnit, 0.9144, "yd");
-            category.Units("mi", "miles").Conversion(1.0, baseUnit, 1609.344, "mi");
+            // Note: conversion uses meters as the reference for exact values
+            category.Units("in", "inches").Conversion(1.0, "in", 0.0254, "m");
+            category.Units("ft", "feet").Conversion(1.0, "ft", 0.3048, "m");
+            category.Units("yd", "yards").Conversion(1.0, "yd", 0.9144, "m");
+            category.Units("mi", "miles").Conversion(1.0, "mi", 1609.344, "m");
+            
+            // If base unit is not meters, add conversions to/from base unit
+            if (baseUnit != "m")
+            {
+                // Convert between imperial units based on exact ratios
+                if (baseUnit == "in")
+                {
+                    category.Conversion(12.0, "in", 1.0, "ft");
+                    category.Conversion(36.0, "in", 1.0, "yd");
+                    category.Conversion(63360.0, "in", 1.0, "mi");
+                }
+                else if (baseUnit == "ft")
+                {
+                    category.Conversion(1.0, "ft", 12.0, "in");
+                    category.Conversion(3.0, "ft", 1.0, "yd");
+                    category.Conversion(5280.0, "ft", 1.0, "mi");
+                }
+            }
             return category;
         }
 

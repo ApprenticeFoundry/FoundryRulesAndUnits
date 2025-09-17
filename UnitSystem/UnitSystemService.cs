@@ -188,11 +188,14 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		private void EstablishSystemIndependentCategories()
 		{
-			// Angles - same for all systems (radians/degrees)
+			// Angles - same for all systems (radians/degrees/milliradians)
 			angle = new UnitCategory("Angle", new UnitSpec("rad", "radians", UnitFamilyName.Angle))
 				.Units("deg", "degrees")
+				.Units("mrad", "milliradians")
 				.Conversion("deg", "rad", v => Math.PI * v / 180.0)
-				.Conversion("rad", "deg", v => 180.0 * v / Math.PI);
+				.Conversion("rad", "deg", v => 180.0 * v / Math.PI)
+				.Conversion("mrad", "rad", v => v / 1000.0)
+				.Conversion("rad", "mrad", v => v * 1000.0);
 
 			UnitCategories.Category(angle);
 			Angle.Category = () => angle;
