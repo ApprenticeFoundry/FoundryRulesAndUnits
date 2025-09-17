@@ -102,6 +102,67 @@ namespace FoundryRulesAndUnits.Units
 		{
 			return default!;
 		}
+
+		/// <summary>
+		/// Checks if this MeasuredValue is compatible with another for mathematical operations
+		/// </summary>
+		/// <param name="other">The other MeasuredValue to check compatibility with</param>
+		/// <returns>True if the units are compatible (same family)</returns>
+		public bool IsCompatibleWith(MeasuredValue other)
+		{
+			// Check if they're the same unit family (both Angle, both Length, etc.)
+			return other != null && this.GetType() == other.GetType();
+		}
+
+		/// <summary>
+		/// Gets the unit family name for this measured value
+		/// </summary>
+		/// <returns>The unit family (Angle, Length, Mass, etc.)</returns>
+		public string GetUnitFamily()
+		{
+			return this.GetType().Name;
+		}
+
+		/// <summary>
+		/// Validates if a mathematical operation with another MeasuredValue is valid
+		/// </summary>
+		/// <param name="operation">The operation (+, -, *, /)</param>
+		/// <param name="other">The other MeasuredValue</param>
+		/// <returns>Validation result with success/failure and explanatory message</returns>
+		public UnitOperationResult ValidateOperation(string operation, MeasuredValue other)
+		{
+			if (other == null)
+			{
+				return UnitOperationResult.Invalid("Cannot perform operation with null value");
+			}
+
+			var thisType = this.GetType();
+			var otherType = other.GetType();
+
+			return operation switch
+			{
+				"+" or "-" when thisType == otherType => 
+					UnitOperationResult.Valid($"Can {operation} same unit types: {thisType.Name}", thisType),
+				
+				"+" or "-" when thisType != otherType => 
+					UnitOperationResult.Invalid($"Cannot {operation} different unit types: {thisType.Name} {operation} {otherType.Name}"),
+				
+				"*" when thisType == typeof(Length) && otherType == typeof(Length) => 
+					UnitOperationResult.Valid("Length * Length = Area", typeof(Area)),
+				
+				"/" when thisType == typeof(Length) && otherType == typeof(Time) => 
+					UnitOperationResult.Valid("Length / Time = Speed", typeof(Speed)),
+				
+				"/" when thisType == otherType => 
+					UnitOperationResult.Valid($"{thisType.Name} / {otherType.Name} = dimensionless ratio", typeof(Dimensionless)),
+				
+				"*" or "/" => 
+					UnitOperationResult.Warning($"Multiplication/division of {thisType.Name} * {otherType.Name} - result type unclear"),
+				
+				_ => UnitOperationResult.Invalid($"Unknown operation: {operation}")
+			};
+		}
+
 		public override string ToString()
 		{
 			return AsString(Units());
@@ -180,5 +241,25 @@ namespace FoundryRulesAndUnits.Units
 		{
 			//dataValue.V = 200;
 		}
+	}
+
+	/// <summary>
+	/// Result of unit operation validation
+	/// </summary>
+	public class UnitOperationResult
+	{
+		public bool IsValid { get; set; }
+		public bool IsWarning { get; set; }
+		public string Message { get; set; }
+		public Type? ResultType { get; set; }
+
+		public static UnitOperationResult Valid(string message, Type? resultType = null) =>
+			new() { IsValid = true, Message = message, ResultType = resultType };
+
+		public static UnitOperationResult Invalid(string message) =>
+			new() { IsValid = false, Message = message };
+
+		public static UnitOperationResult Warning(string message) =>
+			new() { IsValid = true, IsWarning = true, Message = message };
 	}
 }

@@ -207,6 +207,13 @@ namespace FoundryRulesAndUnits.Units
 			UnitCategories.Category(time);
 			Time.Category = () => time;
 
+			// Speed - same for all systems (m/s as base, system-independent compound units)
+			var speed = new UnitCategory("Speed", new UnitSpec("m/s", "meters per second", UnitFamilyName.Speed))
+				.AddSpeedUnits();
+
+			UnitCategories.Category(speed);
+			Speed.Category = () => speed;
+
 			// Data Storage - same for all systems (bytes-based)
 			storage = new UnitCategory("DataStorage", new UnitSpec("KB", "KiloBytes", UnitFamilyName.DataStorage))
 				.Units("GB", "GigaBytes")

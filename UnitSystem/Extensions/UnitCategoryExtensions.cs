@@ -194,13 +194,17 @@ namespace FoundryRulesAndUnits.Units
         /// <summary>
         /// Extension method to add speed units to a UnitCategory with exact conversions
         /// </summary>
-        public static void AddSpeedUnits(this UnitCategory category)
+        public static UnitCategory AddSpeedUnits(this UnitCategory category)
         {
             var baseUnit = category.BaseUnits().Name();
+            // Ensure base unit is explicitly registered
+            category.Units("m/s", "meters per second").Conversion(1.0, baseUnit, 1.0, "m/s");
+            // Add common speed units with exact conversions
             category.Units("km/h", "kilometers per hour").Conversion(1.0, baseUnit, 0.277778, "km/h");
             category.Units("mph", "miles per hour").Conversion(1.0, baseUnit, 0.44704, "mph");
             category.Units("ft/s", "feet per second").Conversion(1.0, baseUnit, 0.3048, "ft/s");
             category.Units("kn", "knots").Conversion(1.0, baseUnit, 0.514444, "kn");
+            return category;
         }
 
         /// <summary>
