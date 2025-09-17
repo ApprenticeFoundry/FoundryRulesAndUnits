@@ -17,7 +17,7 @@ public class DT_Base
 	public string? Name { get; set; }
 	public string? Type { get; set; }
 	public string? Url { get; set; }
-    public List<string> Tags { get; set; } 
+    public List<string> Tags { get; set; } = new List<string>();
 
 	public string? TimeStamp;
 
