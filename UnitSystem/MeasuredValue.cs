@@ -66,7 +66,8 @@ namespace FoundryRulesAndUnits.Units
 			}
 			else
 			{
-				V = cat.ConvertToBaseUnits(U, value).value;
+				// When input units match internal units, no conversion needed
+				V = value;
 			}
 			return V;
 		}

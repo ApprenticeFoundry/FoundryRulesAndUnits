@@ -213,10 +213,31 @@ namespace FoundryRulesAndUnits.Units
         public static UnitCategory AddMetricLengthUnits(this UnitCategory category, string baseUnit)
         {
             // Add common metric length units with exact conversions
-            category.Units("mm", "millimeters").Conversion(1.0, baseUnit, 0.001, "mm");
-            category.Units("cm", "centimeters").Conversion(1.0, baseUnit, 0.01, "cm");
-            category.Units("m", "meters").Conversion(1.0, baseUnit, 1.0, "m");
-            category.Units("km", "kilometers").Conversion(1.0, baseUnit, 1000.0, "km");
+            // Format: Conversion(value1, unit1, value2, unit2) means "value1 unit1 = value2 unit2"
+            if (baseUnit == "m")
+            {
+                // When meters is base unit:
+                category.Units("mm", "millimeters").Conversion(1.0, "mm", 0.001, "m");  // 1 mm = 0.001 m
+                category.Units("cm", "centimeters").Conversion(1.0, "cm", 0.01, "m");   // 1 cm = 0.01 m
+                category.Units("m", "meters").Conversion(1.0, "m", 1.0, "m");           // 1 m = 1 m
+                category.Units("km", "kilometers").Conversion(1.0, "km", 1000.0, "m");  // 1 km = 1000 m
+            }
+            else if (baseUnit == "cm")
+            {
+                // When centimeters is base unit:
+                category.Units("mm", "millimeters").Conversion(1.0, "mm", 0.1, "cm");   // 1 mm = 0.1 cm
+                category.Units("cm", "centimeters").Conversion(1.0, "cm", 1.0, "cm");   // 1 cm = 1 cm
+                category.Units("m", "meters").Conversion(1.0, "m", 100.0, "cm");        // 1 m = 100 cm
+                category.Units("km", "kilometers").Conversion(1.0, "km", 100000.0, "cm"); // 1 km = 100000 cm
+            }
+            else if (baseUnit == "mm")
+            {
+                // When millimeters is base unit:
+                category.Units("mm", "millimeters").Conversion(1.0, "mm", 1.0, "mm");     // 1 mm = 1 mm
+                category.Units("cm", "centimeters").Conversion(1.0, "cm", 10.0, "mm");    // 1 cm = 10 mm
+                category.Units("m", "meters").Conversion(1.0, "m", 1000.0, "mm");         // 1 m = 1000 mm
+                category.Units("km", "kilometers").Conversion(1.0, "km", 1000000.0, "mm"); // 1 km = 1000000 mm
+            }
             return category;
         }
 
