@@ -40,9 +40,9 @@ namespace FoundryRulesAndUnits.Units
 
 	public class UnitSystem : IUnitSystem
 	{
-		public UnitCategory? length { get;  set;}
-		public UnitCategory? angle { get;  set;}
-		public UnitCategory? storage { get;  set;}
+		public UnitCategory? length { get; set; }
+		public UnitCategory? angle { get; set; }
+		public UnitCategory? storage { get; set; }
 		public UnitCategory? time { get; set; }
 		public UnitCategory? worktime { get; set; }
 		public UnitCategory? mass { get; set; }
@@ -67,23 +67,25 @@ namespace FoundryRulesAndUnits.Units
 
 
 
-	public bool Apply(UnitSystemType type)
-	{
-		// Step 1: Locate the right unit system implementation and configure it
-		// Step 2: Create instance and integrate with platform calls
-		ActiveSystem = type;
-		
-		// Step 3: Call the appropriate configuration method based on type
-		return type switch
+		public bool Apply(UnitSystemType type)
 		{
-			UnitSystemType.MKS => MKS(),
-			UnitSystemType.CGS => CGS(),  
-			UnitSystemType.IPS => IPS(),
-			UnitSystemType.FPS => FPS(),
-			UnitSystemType.mmNs => MMNs(),
-			_ => MKS() // Default fallback
-		};
-	}		private bool MMNs()
+			// Step 1: Locate the right unit system implementation and configure it
+			// Step 2: Create instance and integrate with platform calls
+			ActiveSystem = type;
+
+			// Step 3: Call the appropriate configuration method based on type
+			return type switch
+			{
+				UnitSystemType.MKS => MKS(),
+				UnitSystemType.CGS => CGS(),
+				UnitSystemType.IPS => IPS(),
+				UnitSystemType.FPS => FPS(),
+				UnitSystemType.mmNs => MMNs(),
+				_ => MKS() // Default fallback
+			};
+		}
+
+		private bool MMNs()
 		{
 			return EstablishMMNsUnits();
 		}
@@ -123,7 +125,7 @@ namespace FoundryRulesAndUnits.Units
 				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
 				.Units("px", "pixels")
 				.Conversion(5000, "px", 1, "m");
-			
+
 
 			UnitCategories.Category(length);
 			Length.Category = () => length;
