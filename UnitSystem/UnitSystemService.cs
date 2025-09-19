@@ -124,8 +124,7 @@ namespace FoundryRulesAndUnits.Units
 
 			// Length: METERS as true base unit (MKS system)
 			length = new UnitCategory("Length", new UnitSpec("m", "meters", UnitFamilyName.Length))
-				.AddMetricLengthUnits("m")        // mm, cm, km with exact conversions
-				.AddCrossSystemConversions()      // in, ft with high precision
+				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
 				.Units("px", "pixels")
 				.Conversion(5000, "px", 1, "m");
 			
@@ -278,8 +277,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			// Length: INCHES as true base unit (native storage)
 			length = new UnitCategory("Length", new UnitSpec("in", "inches", UnitFamilyName.Length))
-				.AddImperialLengthUnits("in")     // ft, yd, mi with exact conversions
-				.AddCrossSystemConversions()      // mm, cm, m with exact definitions
+				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
 				.Units("px", "pixels")
 				.Conversion(96, "px", 1, "in");   // Standard 96 DPI
 
@@ -317,8 +315,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			// Length: FEET as true base unit (native storage)
 			length = new UnitCategory("Length", new UnitSpec("ft", "feet", UnitFamilyName.Length))
-				.AddImperialLengthUnits("ft")     // in, yd, mi with exact conversions
-				.AddCrossSystemConversions()      // m, cm with exact definitions
+				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
 				.Units("px", "pixels")
 				.Conversion(1152, "px", 1, "ft"); // 96 DPI * 12 inches/foot
 
@@ -356,8 +353,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			// Length: CENTIMETERS as true base unit (native storage)
 			length = new UnitCategory("Length", new UnitSpec("cm", "centimeters", UnitFamilyName.Length))
-				.AddMetricLengthUnits("cm")       // mm, m, km with exact conversions
-				.AddCrossSystemConversions();     // in, ft with high precision
+				.AddAllLengthUnits();             // UNIFIED: ALL length units with complete coverage
 
 			UnitCategories.Category(length);
 			Length.Category = () => length;
@@ -393,8 +389,7 @@ namespace FoundryRulesAndUnits.Units
 		{
 			// Length: MILLIMETERS as true base unit (native storage)
 			length = new UnitCategory("Length", new UnitSpec("mm", "millimeters", UnitFamilyName.Length))
-				.AddMetricLengthUnits("mm")       // cm, m, km with exact conversions
-				.AddCrossSystemConversions()      // in, ft with high precision
+				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
 				.Units("μm", "micrometers")
 				.Conversion(1000, "μm", 1, "mm"); // Exact: 1000 μm = 1 mm
 

@@ -318,12 +318,49 @@ namespace FoundryRulesAndUnits.Units
 
         /// <summary>
         /// Extension method to add high-precision cross-system conversions
+        /// Adds imperial units (in, ft, yd, mi) with exact conversion factors to metric base units
         /// </summary>
         public static UnitCategory AddCrossSystemConversions(this UnitCategory category)
         {
-            // This method can be used to add high-precision conversions between different unit systems
-            // Implementation depends on the specific unit category
-            // For now, return the category unchanged as conversions are handled by other methods
+            var baseUnit = category.BaseUnits().Name();
+            
+            // Add imperial length units with exact conversion factors
+            if (baseUnit == "m") // Metric base - add imperial conversions
+            {
+                category.Units("in", "inches").Conversion(1.0, "in", 0.0254, "m");        // EXACT by definition
+                category.Units("ft", "feet").Conversion(1.0, "ft", 0.3048, "m");          // EXACT by definition  
+                category.Units("yd", "yards").Conversion(1.0, "yd", 0.9144, "m");         // EXACT by definition
+                category.Units("mi", "miles").Conversion(1.0, "mi", 1609.344, "m");       // EXACT by definition
+            }
+            else if (baseUnit == "cm") // Centimeter base - add imperial conversions
+            {
+                category.Units("in", "inches").Conversion(1.0, "in", 2.54, "cm");         // EXACT by definition
+                category.Units("ft", "feet").Conversion(1.0, "ft", 30.48, "cm");          // EXACT by definition
+                category.Units("yd", "yards").Conversion(1.0, "yd", 91.44, "cm");         // EXACT by definition
+                category.Units("mi", "miles").Conversion(1.0, "mi", 160934.4, "cm");      // EXACT by definition
+            }
+            else if (baseUnit == "mm") // Millimeter base - add imperial conversions
+            {
+                category.Units("in", "inches").Conversion(1.0, "in", 25.4, "mm");         // EXACT by definition
+                category.Units("ft", "feet").Conversion(1.0, "ft", 304.8, "mm");          // EXACT by definition
+                category.Units("yd", "yards").Conversion(1.0, "yd", 914.4, "mm");         // EXACT by definition
+                category.Units("mi", "miles").Conversion(1.0, "mi", 1609344.0, "mm");     // EXACT by definition
+            }
+            else if (baseUnit == "in") // Imperial base - add metric conversions
+            {
+                category.Units("mm", "millimeters").Conversion(1.0, "mm", 1.0/25.4, "in");    // EXACT inverse
+                category.Units("cm", "centimeters").Conversion(1.0, "cm", 1.0/2.54, "in");     // EXACT inverse
+                category.Units("m", "meters").Conversion(1.0, "m", 1.0/0.0254, "in");          // EXACT inverse
+                category.Units("km", "kilometers").Conversion(1.0, "km", 1000.0/0.0254, "in"); // EXACT
+            }
+            else if (baseUnit == "ft") // Feet base - add metric conversions
+            {
+                category.Units("mm", "millimeters").Conversion(1.0, "mm", 1.0/304.8, "ft");    // EXACT inverse
+                category.Units("cm", "centimeters").Conversion(1.0, "cm", 1.0/30.48, "ft");     // EXACT inverse
+                category.Units("m", "meters").Conversion(1.0, "m", 1.0/0.3048, "ft");           // EXACT inverse
+                category.Units("km", "kilometers").Conversion(1.0, "km", 1000.0/0.3048, "ft");  // EXACT
+            }
+            
             return category;
         }
     }
