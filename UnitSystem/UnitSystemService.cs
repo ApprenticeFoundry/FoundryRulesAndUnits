@@ -67,27 +67,23 @@ namespace FoundryRulesAndUnits.Units
 
 
 
-		public bool Apply(UnitSystemType type)
+	public bool Apply(UnitSystemType type)
+	{
+		// Step 1: Locate the right unit system implementation and configure it
+		// Step 2: Create instance and integrate with platform calls
+		ActiveSystem = type;
+		
+		// Step 3: Call the appropriate configuration method based on type
+		return type switch
 		{
-			var success = type switch
-			{
-				UnitSystemType.IPS => IPS(),
-				UnitSystemType.FPS => FPS(),
-				UnitSystemType.MKS => MKS(),
-				UnitSystemType.CGS => CGS(),
-				UnitSystemType.mmNs => MMNs(),
-				_ => throw new NotImplementedException(),
-			};
-
-			if (success)
-			{
-				ActiveSystem = type;
-			}
-
-			return success;
-		}
-
-		private bool MMNs()
+			UnitSystemType.MKS => MKS(),
+			UnitSystemType.CGS => CGS(),  
+			UnitSystemType.IPS => IPS(),
+			UnitSystemType.FPS => FPS(),
+			UnitSystemType.mmNs => MMNs(),
+			_ => MKS() // Default fallback
+		};
+	}		private bool MMNs()
 		{
 			return EstablishMMNsUnits();
 		}
@@ -185,89 +181,6 @@ namespace FoundryRulesAndUnits.Units
 		/// <summary>
 		/// Establishes system-independent categories that are the same for all unit systems.
 		/// </summary>
-		private void EstablishSystemIndependentCategories()
-		{
-			// Angles - same for all systems (radians/degrees/milliradians)
-			angle = new UnitCategory("Angle", new UnitSpec("rad", "radians", UnitFamilyName.Angle))
-				.Units("deg", "degrees")
-				.Units("mrad", "milliradians")
-				.Conversion("deg", "rad", v => Math.PI * v / 180.0)
-				.Conversion("rad", "deg", v => 180.0 * v / Math.PI)
-				.Conversion("mrad", "rad", v => v / 1000.0)
-				.Conversion("rad", "mrad", v => v * 1000.0);
-
-			UnitCategories.Category(angle);
-			Angle.Category = () => angle;
-
-			// Time - same for all systems (seconds-based)
-			time = new UnitCategory("Time", new UnitSpec("s", "seconds", UnitFamilyName.Time))
-				.AddTimeUnits("s");
-
-			UnitCategories.Category(time);
-			Time.Category = () => time;
-
-			// Speed - same for all systems (m/s as base, system-independent compound units)
-			var speed = new UnitCategory("Speed", new UnitSpec("m/s", "meters per second", UnitFamilyName.Speed))
-				.AddSpeedUnits();
-
-			UnitCategories.Category(speed);
-			Speed.Category = () => speed;
-
-			// Data Storage - same for all systems (bytes-based)
-			storage = new UnitCategory("DataStorage", new UnitSpec("KB", "KiloBytes", UnitFamilyName.DataStorage))
-				.Units("GB", "GigaBytes")
-				.Conversion(1000, "KB", 1, "GB")
-				.Units("TB", "TeraBytes")
-				.Conversion(1000000, "KB", 1, "TB")
-				.Units("Bytes", "Bytes")
-				.Conversion(1000, "Bytes", 1, "KB");
-
-			UnitCategories.Category(storage);
-
-			var transfer = new UnitCategory("DataFlow", new UnitSpec("KB/sec", "KiloBytes per second", UnitFamilyName.DataFlow))
-				.Units("Bytes/sec", "Bytes per second")
-				.Conversion(1000, "Bytes/sec", 1, "KB/sec")
-				.Units("GB/sec", "GigaBytes per second")
-				.Conversion(1000, "KB/sec", 1, "GB/sec");
-
-			UnitCategories.Category(transfer);
-
-			// Work Time - same for all systems (hours-based)
-			worktime = new UnitCategory("WorkTime", new UnitSpec("Hrs", "Hours", UnitFamilyName.WorkTime))
-				.Units("Days", "Days")
-				.Conversion(24, "Hrs", 1, "Days")
-				.Units("Wdays", "WorkDays")
-				.Conversion(5.0, "Days", 1.0, "Wdays")
-				.Units("Wks", "Weeks")
-				.Conversion(7.0, "Days", 1.0, "Wks")
-				.Units("Mins", "Minutes")
-				.Conversion(60, "Mins", 1, "Hrs");  // Fixed: was backwards
-
-			UnitCategories.Category(worktime);
-
-			// Quantity - same for all systems (each-based)
-			var quantity = new UnitCategory("Quantity", new UnitSpec("ea", "each", UnitFamilyName.Quantity))  // Fixed spelling
-				.Units("dz", "dozen")
-				.Conversion(1, "dz", 12, "ea")
-				.Units("gr", "gross")
-				.Conversion(1, "gr", 144, "ea");
-
-			UnitCategories.Category(quantity);
-			Quantity.Category = () => quantity;
-
-			var quantityFlow = new UnitCategory("QuantityFlow", new UnitSpec("ea/s", "each per sec", UnitFamilyName.QuantityFlow))  // Fixed spelling
-				.Units("dz/s", "dozen per sec")
-				.Conversion(1, "dz/s", 12, "ea/s")  // Fixed: was "dz/hr"
-				.Units("ea/m", "each per min")
-				.Conversion(1, "ea/m", 60, "ea/s")
-				.Units("ea/day", "each per day")
-				.Conversion(1, "ea/day", 60 * 60 * 24, "ea/s")
-				.Units("ea/hr", "each per hour")
-				.Conversion(1, "ea/hr", 60 * 60, "ea/s");
-
-			UnitCategories.Category(quantityFlow);
-			QuantityFlow.Category = () => quantityFlow;
-		}
 
 		/// <summary>
 		/// Establishes IPS (Inch-Pound-Second) unit system with inches, pounds, and Fahrenheit as base units.

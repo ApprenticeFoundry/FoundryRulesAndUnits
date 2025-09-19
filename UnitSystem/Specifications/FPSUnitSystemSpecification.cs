@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FoundryRulesAndUnits.Units;
 
 namespace FoundryRulesAndUnits.Units.Specifications
 {
@@ -7,11 +8,11 @@ namespace FoundryRulesAndUnits.Units.Specifications
     /// FPS (Foot-Pound-Second) Unit System Specification
     /// Base units: feet, pounds, seconds, Fahrenheit, radians, pound-force
     /// </summary>
-    public class FPSUnitSystemSpecification : IUnitSystemSpecification
+    public class FPSUnitSystemSpecification : BaseUnitSystemSpecification
     {
-        public string SystemName => "FPS";
+        public override string SystemName => "FPS";
         
-        public Dictionary<string, string> GetBaseUnits()
+        public override Dictionary<string, string> GetBaseUnits()
         {
             return new Dictionary<string, string>
             {
@@ -27,213 +28,82 @@ namespace FoundryRulesAndUnits.Units.Specifications
             };
         }
         
-        public Dictionary<string, UnitDefinition> GetUnitDefinitions()
+        public override Dictionary<string, UnitDefinition> GetUnitDefinitions()
         {
             return new Dictionary<string, UnitDefinition>
             {
-                // Length units (feet as base)
-                ["ft"] = new("ft", "feet", "Length"),
-                ["in"] = new("in", "inches", "Length"),
-                ["yd"] = new("yd", "yards", "Length"),
-                ["mi"] = new("mi", "miles", "Length"),
-                ["m"] = new("m", "meters", "Length"),
-                ["cm"] = new("cm", "centimeters", "Length"), 
-                ["mm"] = new("mm", "millimeters", "Length"),
-                ["km"] = new("km", "kilometers", "Length"),
-                ["px"] = new("px", "pixels", "Length"),
+                // Length units (foot as base)
+                ["ft"] = new UnitDefinition("ft", "feet", UnitType.Length, isBaseUnit: true),
+                ["in"] = new UnitDefinition("in", "inches", UnitType.Length, "ft", 1.0/12.0),
+                ["yd"] = new UnitDefinition("yd", "yards", UnitType.Length, "ft", 3.0),
+                ["mi"] = new UnitDefinition("mi", "miles", UnitType.Length, "ft", 5280.0),
                 
-                // Mass units (pounds as base - same as IPS)
-                ["lb"] = new("lb", "pounds", "Mass"),
-                ["oz"] = new("oz", "ounces", "Mass"),
-                ["kg"] = new("kg", "kilograms", "Mass"),
-                ["g"] = new("g", "grams", "Mass"),
-                ["mg"] = new("mg", "milligrams", "Mass"),
+                // Metric length conversions (derived from ft)
+                ["m"] = new UnitDefinition("m", "meters", UnitType.Length, "ft", 1.0/0.3048),
+                ["cm"] = new UnitDefinition("cm", "centimeters", UnitType.Length, "ft", 1.0/0.03048),
+                ["mm"] = new UnitDefinition("mm", "millimeters", UnitType.Length, "ft", 1.0/0.0003048),
+                ["km"] = new UnitDefinition("km", "kilometers", UnitType.Length, "ft", 1.0/304.8),
                 
-                // Force units (pound-force as base - same as IPS)
-                ["lbf"] = new("lbf", "pounds-force", "Force"),
-                ["N"] = new("N", "newtons", "Force"),
-                ["kN"] = new("kN", "kilonewtons", "Force"),
-                ["dyne"] = new("dyne", "dynes", "Force"),
+                // Pixels (standard 96 DPI)
+                ["px"] = new UnitDefinition("px", "pixels", UnitType.Length, "ft", 1.0/1152.0),
                 
-                // Temperature units (Fahrenheit as base - same as IPS)
-                ["F"] = new("F", "Fahrenheit", "Temperature"),
-                ["C"] = new("C", "Celsius", "Temperature"),
-                ["K"] = new("K", "Kelvin", "Temperature"),
+                // Mass units (pound as base)
+                ["lb"] = new UnitDefinition("lb", "pounds", UnitType.Mass, isBaseUnit: true),
+                ["oz"] = new UnitDefinition("oz", "ounces", UnitType.Mass, "lb", 1.0/16.0),
                 
-                // Angle units (same as others)
-                ["rad"] = new("rad", "radians", "Angle"),
-                ["deg"] = new("deg", "degrees", "Angle"),
-                ["mrad"] = new("mrad", "milliradians", "Angle"),
+                // Metric mass conversions
+                ["kg"] = new UnitDefinition("kg", "kilograms", UnitType.Mass, "lb", 1.0/0.453592),
+                ["g"] = new UnitDefinition("g", "grams", UnitType.Mass, "lb", 1.0/453.592),
+                ["mg"] = new UnitDefinition("mg", "milligrams", UnitType.Mass, "lb", 1.0/453592.0),
                 
-                // Time units (same as others)
-                ["s"] = new("s", "seconds", "Time"),
-                ["ms"] = new("ms", "milliseconds", "Time"),
-                ["min"] = new("min", "minutes", "Time"),
-                ["hr"] = new("hr", "hours", "Time"),
-                ["day"] = new("day", "days", "Time"),
+                // Force units (pound-force as base)
+                ["lbf"] = new UnitDefinition("lbf", "pounds-force", UnitType.Force, isBaseUnit: true),
+                ["N"] = new UnitDefinition("N", "newtons", UnitType.Force, "lbf", 1.0/4.44822),
+                ["kN"] = new UnitDefinition("kN", "kilonewtons", UnitType.Force, "lbf", 1.0/0.00444822),
+                ["dyne"] = new UnitDefinition("dyne", "dynes", UnitType.Force, "lbf", 1.0/444822.0),
                 
-                // Area units  
-                ["ft2"] = new("ft2", "square feet", "Area"),
-                ["in2"] = new("in2", "square inches", "Area"),
-                ["yd2"] = new("yd2", "square yards", "Area"),
+                // Temperature units (Fahrenheit as base)
+                ["F"] = new UnitDefinition("F", "Fahrenheit", UnitType.Temperature, isBaseUnit: true),
+                ["C"] = new UnitDefinition("C", "Celsius", UnitType.Temperature, "F", conversionFormula: "(F - 32) * 5/9"),
+                ["K"] = new UnitDefinition("K", "Kelvin", UnitType.Temperature, "F", conversionFormula: "(F - 32) * 5/9 + 273.15"),
                 
-                // Volume units
-                ["ft3"] = new("ft3", "cubic feet", "Volume"),
-                ["in3"] = new("in3", "cubic inches", "Volume"),
-                ["yd3"] = new("yd3", "cubic yards", "Volume"),
+                // Angle units (radian as base)
+                ["rad"] = new UnitDefinition("rad", "radians", UnitType.Angle, isBaseUnit: true),
+                ["deg"] = new UnitDefinition("deg", "degrees", UnitType.Angle, "rad", Math.PI/180.0),
+                ["mrad"] = new UnitDefinition("mrad", "milliradians", UnitType.Angle, "rad", 0.001),
                 
-                // Speed units
-                ["ft/s"] = new("ft/s", "feet per second", "Speed"),
-                ["in/s"] = new("in/s", "inches per second", "Speed"),
-                ["mph"] = new("mph", "miles per hour", "Speed"),
-                ["m/s"] = new("m/s", "meters per second", "Speed"),
-                ["km/h"] = new("km/h", "kilometers per hour", "Speed")
+                // Time units (second as base)
+                ["s"] = new UnitDefinition("s", "seconds", UnitType.Time, isBaseUnit: true),
+                ["ms"] = new UnitDefinition("ms", "milliseconds", UnitType.Time, "s", 0.001),
+                ["min"] = new UnitDefinition("min", "minutes", UnitType.Time, "s", 60.0),
+                ["hr"] = new UnitDefinition("hr", "hours", UnitType.Time, "s", 3600.0),
+                ["day"] = new UnitDefinition("day", "days", UnitType.Time, "s", 86400.0),
+                
+                // Derived units
+                ["ft2"] = new UnitDefinition("ft2", "square feet", UnitType.Area, "ft", 1.0, exponent: 2),
+                ["in2"] = new UnitDefinition("in2", "square inches", UnitType.Area, "ft2", Math.Pow(1.0/12.0, 2)),
+                ["yd2"] = new UnitDefinition("yd2", "square yards", UnitType.Area, "ft2", Math.Pow(3.0, 2)),
+                
+                ["ft3"] = new UnitDefinition("ft3", "cubic feet", UnitType.Volume, "ft", 1.0, exponent: 3),
+                ["in3"] = new UnitDefinition("in3", "cubic inches", UnitType.Volume, "ft3", Math.Pow(1.0/12.0, 3)),
+                ["yd3"] = new UnitDefinition("yd3", "cubic yards", UnitType.Volume, "ft3", Math.Pow(3.0, 3)),
+                
+                ["ft/s"] = new UnitDefinition("ft/s", "feet per second", UnitType.Speed, "ft", 1.0, "s", -1),
+                ["in/s"] = new UnitDefinition("in/s", "inches per second", UnitType.Speed, "ft/s", 1.0/12.0),
+                ["mph"] = new UnitDefinition("mph", "miles per hour", UnitType.Speed, "ft/s", 5280.0/3600.0),
+                ["m/s"] = new UnitDefinition("m/s", "meters per second", UnitType.Speed, "ft/s", 1.0/0.3048),
+                ["cm/s"] = new UnitDefinition("cm/s", "centimeters per second", UnitType.Speed, "ft/s", 1.0/0.03048),
+                ["km/h"] = new UnitDefinition("km/h", "kilometers per hour", UnitType.Speed, "ft/s", 1000.0/(0.3048*3600.0))
             };
         }
         
-        public Dictionary<string, UnitConversion> GetConversions()
+        public override Dictionary<string, UnitConversion> GetBaseUnitConversions()
         {
-            return new Dictionary<string, UnitConversion>
-            {
-                // Length conversions (all relative to foot base)
-                ["ft|in"] = new(12.0),          // EXACT: 1ft = 12in
-                ["in|ft"] = new(1.0/12.0),      // EXACT: 12in = 1ft
-                ["ft|yd"] = new(1.0/3.0),       // EXACT: 3ft = 1yd
-                ["yd|ft"] = new(3.0),           // EXACT: 1yd = 3ft
-                ["ft|mi"] = new(1.0/5280.0),    // EXACT: 5280ft = 1mi
-                ["mi|ft"] = new(5280.0),        // EXACT: 1mi = 5280ft
-                ["in|yd"] = new(1.0/36.0),      // EXACT: 36in = 1yd
-                ["yd|in"] = new(36.0),          // EXACT: 1yd = 36in
-                ["in|mi"] = new(1.0/63360.0),   // EXACT: 63360in = 1mi
-                ["mi|in"] = new(63360.0),       // EXACT: 1mi = 63360in
-                ["yd|mi"] = new(1.0/1760.0),    // EXACT: 1760yd = 1mi
-                ["mi|yd"] = new(1760.0),        // EXACT: 1mi = 1760yd
-                
-                // Metric conversions (via foot base)
-                ["ft|m"] = new(0.3048),         // EXACT: 1ft = 0.3048m
-                ["m|ft"] = new(3.28084),        // EXACT: 1m = 3.28084ft
-                ["ft|cm"] = new(30.48),         // EXACT: 1ft = 30.48cm
-                ["cm|ft"] = new(1.0/30.48),     // EXACT: 1cm = 0.0328084ft
-                ["ft|mm"] = new(304.8),         // EXACT: 1ft = 304.8mm
-                ["mm|ft"] = new(1.0/304.8),     // EXACT: 1mm = 0.00328084ft
-                ["ft|km"] = new(0.0003048),     // EXACT: 1ft = 0.0003048km
-                ["km|ft"] = new(3280.84),       // EXACT: 1km = 3280.84ft
-                
-                // Imperial-to-Metric (derived)
-                ["in|m"] = new(0.0254),         // EXACT: 1in = 0.0254m
-                ["m|in"] = new(39.3701),        // EXACT: 1m = 39.3701in
-                ["yd|m"] = new(0.9144),         // EXACT: 1yd = 0.9144m
-                ["m|yd"] = new(1.09361),        // EXACT: 1m = 1.09361yd
-                ["mi|km"] = new(1.609344),      // EXACT: 1mi = 1.609344km
-                ["km|mi"] = new(0.621371),      // EXACT: 1km = 0.621371mi
-                
-                // Metric-to-Metric (derived)
-                ["m|cm"] = new(100.0),
-                ["cm|m"] = new(0.01),
-                ["m|mm"] = new(1000.0),
-                ["mm|m"] = new(0.001),
-                ["m|km"] = new(0.001),
-                ["km|m"] = new(1000.0),
-                ["cm|mm"] = new(10.0),
-                ["mm|cm"] = new(0.1),
-                
-                // Mass conversions (same as IPS - pounds as base)
-                ["lb|oz"] = new(16.0),          // EXACT: 1lb = 16oz
-                ["oz|lb"] = new(0.0625),        // EXACT: 1oz = 0.0625lb
-                ["lb|kg"] = new(0.453592),      // EXACT: 1lb = 0.453592kg
-                ["kg|lb"] = new(2.20462),       // EXACT: 1kg = 2.20462lb
-                ["lb|g"] = new(453.592),        // EXACT: 1lb = 453.592g
-                ["g|lb"] = new(0.00220462),     // EXACT: 1g = 0.00220462lb
-                ["lb|mg"] = new(453592.0),      // EXACT: 1lb = 453592mg
-                ["mg|lb"] = new(0.00000220462), // EXACT: 1mg = 0.00000220462lb
-                ["oz|kg"] = new(0.0283495),     // EXACT: 1oz = 0.0283495kg
-                ["kg|oz"] = new(35.274),        // EXACT: 1kg = 35.274oz
-                ["g|kg"] = new(0.001),
-                ["kg|g"] = new(1000.0),
-                ["g|mg"] = new(1000.0),
-                ["mg|g"] = new(0.001),
-                
-                // Force conversions (same as IPS - pound-force as base)
-                ["lbf|N"] = new(4.44822),       // EXACT: 1lbf = 4.44822N
-                ["N|lbf"] = new(0.224809),      // EXACT: 1N = 0.224809lbf
-                ["lbf|kN"] = new(0.00444822),   // EXACT: 1lbf = 0.00444822kN
-                ["kN|lbf"] = new(224.809),      // EXACT: 1kN = 224.809lbf
-                ["lbf|dyne"] = new(444822.0),   // EXACT: 1lbf = 444822dyne
-                ["dyne|lbf"] = new(0.00000224809), // EXACT: 1dyne = 0.00000224809lbf
-                ["N|kN"] = new(0.001),
-                ["kN|N"] = new(1000.0),
-                ["N|dyne"] = new(100000.0),
-                ["dyne|N"] = new(0.00001),
-                
-                // Temperature conversions (same as IPS - Fahrenheit as base)
-                ["F|C"] = new(0, "(F - 32) * 5/9"),
-                ["C|F"] = new(0, "C * 9/5 + 32"),
-                ["F|K"] = new(0, "(F - 32) * 5/9 + 273.15"),
-                ["K|F"] = new(0, "(K - 273.15) * 9/5 + 32"),
-                ["C|K"] = new(0, "C + 273.15"),
-                ["K|C"] = new(0, "K - 273.15"),
-                
-                // Angle conversions (same as others)
-                ["rad|deg"] = new(180.0 / Math.PI),
-                ["deg|rad"] = new(Math.PI / 180.0),
-                ["rad|mrad"] = new(1000.0),
-                ["mrad|rad"] = new(0.001),
-                ["deg|mrad"] = new(1000.0 * Math.PI / 180.0),
-                ["mrad|deg"] = new(180.0 / (1000.0 * Math.PI)),
-                
-                // Time conversions (same as others)
-                ["s|ms"] = new(1000.0),
-                ["ms|s"] = new(0.001),
-                ["s|min"] = new(1.0/60.0),
-                ["min|s"] = new(60.0),
-                ["s|hr"] = new(1.0/3600.0),
-                ["hr|s"] = new(3600.0),
-                ["s|day"] = new(1.0/86400.0),
-                ["day|s"] = new(86400.0),
-                ["min|hr"] = new(1.0/60.0),
-                ["hr|min"] = new(60.0),
-                ["hr|day"] = new(1.0/24.0),
-                ["day|hr"] = new(24.0),
-                
-                // Area conversions (square of length conversions)
-                ["ft2|in2"] = new(144.0),       // (12)^2
-                ["in2|ft2"] = new(1.0/144.0),   // (1/12)^2
-                ["ft2|yd2"] = new(1.0/9.0),     // (1/3)^2
-                ["yd2|ft2"] = new(9.0),         // (3)^2
-                ["in2|yd2"] = new(1.0/1296.0),  // (1/36)^2
-                ["yd2|in2"] = new(1296.0),      // (36)^2
-                
-                // Volume conversions (cube of length conversions)
-                ["ft3|in3"] = new(1728.0),      // (12)^3
-                ["in3|ft3"] = new(1.0/1728.0),  // (1/12)^3
-                ["ft3|yd3"] = new(1.0/27.0),    // (1/3)^3
-                ["yd3|ft3"] = new(27.0),        // (3)^3
-                ["in3|yd3"] = new(1.0/46656.0), // (1/36)^3
-                ["yd3|in3"] = new(46656.0),     // (36)^3
-                
-                // Speed conversions
-                ["ft/s|in/s"] = new(12.0),      // Same as ft|in
-                ["in/s|ft/s"] = new(1.0/12.0),  // Same as in|ft
-                ["ft/s|mph"] = new(0.681818),   // 1 ft/s = 0.681818 mph
-                ["mph|ft/s"] = new(1.46667),    // 1 mph = 1.46667 ft/s
-                ["in/s|mph"] = new(0.0568182),  // 1 in/s = 0.0568182 mph
-                ["mph|in/s"] = new(17.6),       // 1 mph = 17.6 in/s
-                ["ft/s|m/s"] = new(0.3048),     // Same as ft|m
-                ["m/s|ft/s"] = new(3.28084),    // Same as m|ft
-                ["in/s|m/s"] = new(0.0254),     // Same as in|m
-                ["m/s|in/s"] = new(39.3701),    // Same as m|in
-                ["m/s|km/h"] = new(3.6),
-                ["km/h|m/s"] = new(1.0/3.6),
-                ["mph|km/h"] = new(1.609344),   // Same as mi|km
-                ["km/h|mph"] = new(0.621371),   // Same as km|mi
-                
-                // Pixels (1152 pixels per foot = 96 DPI * 12 inches/foot)
-                ["ft|px"] = new(1152.0),
-                ["px|ft"] = new(1.0/1152.0)
-            };
+            // 🎯 ZERO hard-coded conversions! Everything is auto-generated!
+            return new Dictionary<string, UnitConversion>();
         }
-        
-        public Dictionary<string, string> GetUnitDisplayNames()
+
+        public override Dictionary<string, string> GetUnitDisplayNames()
         {
             return new Dictionary<string, string>
             {

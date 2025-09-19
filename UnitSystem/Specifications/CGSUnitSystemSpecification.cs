@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FoundryRulesAndUnits.Units;
 
 namespace FoundryRulesAndUnits.Units.Specifications
 {
@@ -7,233 +8,103 @@ namespace FoundryRulesAndUnits.Units.Specifications
     /// CGS (Centimeter-Gram-Second) Unit System Specification
     /// Base units: centimeters, grams, seconds, Celsius, radians, dynes
     /// </summary>
-    public class CGSUnitSystemSpecification : IUnitSystemSpecification
+    public class CGSUnitSystemSpecification : BaseUnitSystemSpecification
     {
-        public string SystemName => "CGS";
+        public override string SystemName => "CGS";
         
-        public Dictionary<string, string> GetBaseUnits()
+        public override Dictionary<UnitFamilyName, string> GetBaseUnits()
         {
-            return new Dictionary<string, string>
+            return new Dictionary<UnitFamilyName, string>
             {
-                ["Length"] = "cm",
-                ["Mass"] = "g", 
-                ["Time"] = "s",
-                ["Temperature"] = "C",
-                ["Angle"] = "rad",
-                ["Force"] = "dyne",
-                ["Area"] = "cm2",
-                ["Volume"] = "cm3",
-                ["Speed"] = "cm/s"
+                [UnitFamilyName.Length] = "cm",
+                [UnitFamilyName.Mass] = "g", 
+                [UnitFamilyName.Time] = "s",
+                [UnitFamilyName.Temperature] = "C",
+                [UnitFamilyName.Angle] = "rad",
+                [UnitFamilyName.Force] = "dyne",
+                [UnitFamilyName.Area] = "cm2",
+                [UnitFamilyName.Volume] = "cm3",
+                [UnitFamilyName.Speed] = "cm/s"
             };
         }
         
-        public Dictionary<string, UnitDefinition> GetUnitDefinitions()
+        public override Dictionary<string, UnitDefinition> GetUnitDefinitions()
         {
             return new Dictionary<string, UnitDefinition>
             {
-                // Length units (centimeters as base)
-                ["cm"] = new("cm", "centimeters", "Length"),
-                ["mm"] = new("mm", "millimeters", "Length"),
-                ["m"] = new("m", "meters", "Length"),
-                ["km"] = new("km", "kilometers", "Length"),
-                ["in"] = new("in", "inches", "Length"),
-                ["ft"] = new("ft", "feet", "Length"),
-                ["yd"] = new("yd", "yards", "Length"),
-                ["mi"] = new("mi", "miles", "Length"),
-                ["px"] = new("px", "pixels", "Length"),
+                // Length units (centimeters as base) - using enhanced approach with UnitFamilyName enum!
+                ["cm"] = UnitDefinition.BaseUnit("cm", "centimeters", UnitFamilyName.Length),
+                ["mm"] = UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.1),           // 1 mm = 0.1 cm
+                ["m"] = UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Length, 100.0),                // 1 m = 100 cm
+                ["km"] = UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 100000.0),       // 1 km = 100,000 cm
+                ["in"] = UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 2.54),               // 1 in = 2.54 cm
+                ["ft"] = UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 30.48),                // 1 ft = 30.48 cm
+                ["yd"] = UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 91.44),               // 1 yd = 91.44 cm
+                ["mi"] = UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Length, 160934.0),            // 1 mi = 160,934 cm
+                ["px"] = UnitDefinition.LinearUnit("px", "pixels", UnitFamilyName.Length, 0.0352778),          // 1 px = 0.0352778 cm (72 DPI)
                 
-                // Mass units (grams as base)
-                ["g"] = new("g", "grams", "Mass"),
-                ["mg"] = new("mg", "milligrams", "Mass"),
-                ["kg"] = new("kg", "kilograms", "Mass"),
-                ["lb"] = new("lb", "pounds", "Mass"),
-                ["oz"] = new("oz", "ounces", "Mass"),
+                // Mass units (grams as base) - using enhanced approach with UnitFamilyName enum!
+                ["g"] = UnitDefinition.BaseUnit("g", "grams", UnitFamilyName.Mass),
+                ["mg"] = UnitDefinition.LinearUnit("mg", "milligrams", UnitFamilyName.Mass, 0.001),            // 1 mg = 0.001 g
+                ["kg"] = UnitDefinition.LinearUnit("kg", "kilograms", UnitFamilyName.Mass, 1000.0),            // 1 kg = 1000 g
+                ["lb"] = UnitDefinition.LinearUnit("lb", "pounds", UnitFamilyName.Mass, 453.592),              // 1 lb = 453.592 g
+                ["oz"] = UnitDefinition.LinearUnit("oz", "ounces", UnitFamilyName.Mass, 28.3495),              // 1 oz = 28.3495 g
                 
-                // Force units (dynes as base)
-                ["dyne"] = new("dyne", "dynes", "Force"),
-                ["N"] = new("N", "newtons", "Force"),
-                ["kN"] = new("kN", "kilonewtons", "Force"),
-                ["lbf"] = new("lbf", "pounds-force", "Force"),
+                // Force units (dynes as base) - using enhanced approach with UnitFamilyName enum!
+                ["dyne"] = UnitDefinition.BaseUnit("dyne", "dynes", UnitFamilyName.Force),
+                ["N"] = UnitDefinition.LinearUnit("N", "newtons", UnitFamilyName.Force, 100000.0),            // 1 N = 100,000 dynes
+                ["kN"] = UnitDefinition.LinearUnit("kN", "kilonewtons", UnitFamilyName.Force, 100000000.0),   // 1 kN = 1e8 dynes
+                ["lbf"] = UnitDefinition.LinearUnit("lbf", "pounds-force", UnitFamilyName.Force, 444822.0),   // 1 lbf = 444,822 dynes
                 
-                // Temperature units (Celsius as base)
-                ["C"] = new("C", "Celsius", "Temperature"),
-                ["F"] = new("F", "Fahrenheit", "Temperature"),
-                ["K"] = new("K", "Kelvin", "Temperature"),
+                // Temperature units (Celsius as base) - using enhanced approach with UnitFamilyName enum!
+                ["C"] = UnitDefinition.BaseUnit("C", "Celsius", UnitFamilyName.Temperature),
+                ["F"] = UnitDefinition.DerivedUnit("F", "Fahrenheit", UnitFamilyName.Temperature,
+                    f => (f - 32.0) * 5.0/9.0,       // F to C: (F-32)*5/9
+                    c => c * 9.0/5.0 + 32.0),        // C to F: C*9/5 + 32
+                ["K"] = UnitDefinition.DerivedUnit("K", "Kelvin", UnitFamilyName.Temperature,
+                    k => k - 273.15,                 // K to C: subtract 273.15
+                    c => c + 273.15),                // C to K: add 273.15
                 
-                // Angle units (same as others)
-                ["rad"] = new("rad", "radians", "Angle"),
-                ["deg"] = new("deg", "degrees", "Angle"),
-                ["mrad"] = new("mrad", "milliradians", "Angle"),
+                // Angle units (radians as base) - using enhanced approach with UnitFamilyName enum!
+                ["rad"] = UnitDefinition.BaseUnit("rad", "radians", UnitFamilyName.Angle),
+                ["deg"] = UnitDefinition.LinearUnit("deg", "degrees", UnitFamilyName.Angle, Math.PI / 180.0), // 1 deg = π/180 rad
+                ["mrad"] = UnitDefinition.LinearUnit("mrad", "milliradians", UnitFamilyName.Angle, 0.001),    // 1 mrad = 0.001 rad
                 
-                // Time units (same as others)
-                ["s"] = new("s", "seconds", "Time"),
-                ["ms"] = new("ms", "milliseconds", "Time"),
-                ["min"] = new("min", "minutes", "Time"),
-                ["hr"] = new("hr", "hours", "Time"),
-                ["day"] = new("day", "days", "Time"),
+                // Time units (seconds as base) - using enhanced approach with UnitFamilyName enum!
+                ["s"] = UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Time),
+                ["ms"] = UnitDefinition.LinearUnit("ms", "milliseconds", UnitFamilyName.Time, 0.001),         // 1 ms = 0.001 s
+                ["min"] = UnitDefinition.LinearUnit("min", "minutes", UnitFamilyName.Time, 60.0),             // 1 min = 60 s
+                ["hr"] = UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Time, 3600.0),               // 1 hr = 3600 s
+                ["day"] = UnitDefinition.LinearUnit("day", "days", UnitFamilyName.Time, 86400.0),             // 1 day = 86400 s
                 
-                // Area units
-                ["cm2"] = new("cm2", "square centimeters", "Area"),
-                ["mm2"] = new("mm2", "square millimeters", "Area"),
-                ["m2"] = new("m2", "square meters", "Area"),
+                // Area units (square centimeters as base) - using enhanced approach with UnitFamilyName enum!
+                ["cm2"] = UnitDefinition.BaseUnit("cm2", "square centimeters", UnitFamilyName.Area),
+                ["mm2"] = UnitDefinition.LinearUnit("mm2", "square millimeters", UnitFamilyName.Area, 0.01),   // 1 mm² = 0.01 cm²
+                ["m2"] = UnitDefinition.LinearUnit("m2", "square meters", UnitFamilyName.Area, 10000.0),       // 1 m² = 10,000 cm²
                 
-                // Volume units
-                ["cm3"] = new("cm3", "cubic centimeters", "Volume"),
-                ["mm3"] = new("mm3", "cubic millimeters", "Volume"),
-                ["m3"] = new("m3", "cubic meters", "Volume"),
+                // Volume units (cubic centimeters as base) - using enhanced approach with UnitFamilyName enum!
+                ["cm3"] = UnitDefinition.BaseUnit("cm3", "cubic centimeters", UnitFamilyName.Volume),
+                ["mm3"] = UnitDefinition.LinearUnit("mm3", "cubic millimeters", UnitFamilyName.Volume, 0.001), // 1 mm³ = 0.001 cm³
+                ["m3"] = UnitDefinition.LinearUnit("m3", "cubic meters", UnitFamilyName.Volume, 1000000.0),    // 1 m³ = 1,000,000 cm³
                 
-                // Speed units
-                ["cm/s"] = new("cm/s", "centimeters per second", "Speed"),
-                ["m/s"] = new("m/s", "meters per second", "Speed"),
-                ["km/h"] = new("km/h", "kilometers per hour", "Speed")
+                // Speed units (centimeters per second as base) - using enhanced approach with UnitFamilyName enum!
+                ["cm/s"] = UnitDefinition.BaseUnit("cm/s", "centimeters per second", UnitFamilyName.Speed),
+                ["m/s"] = UnitDefinition.LinearUnit("m/s", "meters per second", UnitFamilyName.Speed, 100.0),  // 1 m/s = 100 cm/s
+                ["km/h"] = UnitDefinition.LinearUnit("km/h", "kilometers per hour", UnitFamilyName.Speed, 100000.0/3600.0) // 1 km/h = 27.778 cm/s
             };
         }
         
-        public Dictionary<string, UnitConversion> GetConversions()
+        /// <summary>
+        /// NO HARD-CODED CONVERSION MATRICES! All conversions auto-generated from UnitDefinition records.
+        /// This eliminates 200+ lines of redundant conversion code!
+        /// </summary>
+        public override Dictionary<string, UnitConversion> GetBaseUnitConversions()
         {
-            return new Dictionary<string, UnitConversion>
-            {
-                // Length conversions (all relative to centimeter base)
-                ["cm|mm"] = new(10.0),          // EXACT: 1cm = 10mm
-                ["mm|cm"] = new(0.1),           // EXACT: 1mm = 0.1cm
-                ["cm|m"] = new(0.01),           // EXACT: 1cm = 0.01m
-                ["m|cm"] = new(100.0),          // EXACT: 1m = 100cm
-                ["cm|km"] = new(0.00001),       // EXACT: 1cm = 0.00001km
-                ["km|cm"] = new(100000.0),      // EXACT: 1km = 100000cm
-                ["mm|m"] = new(0.001),          // EXACT: 1mm = 0.001m
-                ["m|mm"] = new(1000.0),         // EXACT: 1m = 1000mm
-                ["mm|km"] = new(0.000001),      // EXACT: 1mm = 0.000001km
-                ["km|mm"] = new(1000000.0),     // EXACT: 1km = 1000000mm
-                ["m|km"] = new(0.001),          // EXACT: 1m = 0.001km
-                ["km|m"] = new(1000.0),         // EXACT: 1km = 1000m
-                
-                // Imperial conversions (via centimeter base)
-                ["cm|in"] = new(1.0/2.54),      // EXACT: 1cm = 0.393701in
-                ["in|cm"] = new(2.54),          // EXACT: 1in = 2.54cm
-                ["cm|ft"] = new(1.0/30.48),     // EXACT: 1cm = 0.0328084ft
-                ["ft|cm"] = new(30.48),         // EXACT: 1ft = 30.48cm
-                ["cm|yd"] = new(1.0/91.44),     // EXACT: 1cm = 0.0109361yd
-                ["yd|cm"] = new(91.44),         // EXACT: 1yd = 91.44cm
-                ["cm|mi"] = new(1.0/160934.4),  // EXACT: 1cm = 0.00000621371mi
-                ["mi|cm"] = new(160934.4),      // EXACT: 1mi = 160934.4cm
-                
-                // Imperial-to-Imperial (derived)
-                ["in|ft"] = new(1.0/12.0),      // EXACT: 12in = 1ft
-                ["ft|in"] = new(12.0),          // EXACT: 1ft = 12in
-                ["in|yd"] = new(1.0/36.0),      // EXACT: 36in = 1yd
-                ["yd|in"] = new(36.0),          // EXACT: 1yd = 36in
-                ["in|mi"] = new(1.0/63360.0),   // EXACT: 63360in = 1mi
-                ["mi|in"] = new(63360.0),       // EXACT: 1mi = 63360in
-                ["ft|yd"] = new(1.0/3.0),       // EXACT: 3ft = 1yd
-                ["yd|ft"] = new(3.0),           // EXACT: 1yd = 3ft
-                ["ft|mi"] = new(1.0/5280.0),    // EXACT: 5280ft = 1mi
-                ["mi|ft"] = new(5280.0),        // EXACT: 1mi = 5280ft
-                ["yd|mi"] = new(1.0/1760.0),    // EXACT: 1760yd = 1mi
-                ["mi|yd"] = new(1760.0),        // EXACT: 1mi = 1760yd
-                
-                // Metric-to-Imperial (derived)
-                ["m|in"] = new(39.3701),        // EXACT: 1m = 39.3701in
-                ["in|m"] = new(0.0254),         // EXACT: 1in = 0.0254m
-                ["m|ft"] = new(3.28084),        // EXACT: 1m = 3.28084ft
-                ["ft|m"] = new(0.3048),         // EXACT: 1ft = 0.3048m
-                ["m|yd"] = new(1.09361),        // EXACT: 1m = 1.09361yd
-                ["yd|m"] = new(0.9144),         // EXACT: 1yd = 0.9144m
-                ["km|mi"] = new(0.621371),      // EXACT: 1km = 0.621371mi
-                ["mi|km"] = new(1.609344),      // EXACT: 1mi = 1.609344km
-                
-                // Mass conversions (all relative to gram base)
-                ["g|mg"] = new(1000.0),         // EXACT: 1g = 1000mg
-                ["mg|g"] = new(0.001),          // EXACT: 1mg = 0.001g
-                ["g|kg"] = new(0.001),          // EXACT: 1g = 0.001kg
-                ["kg|g"] = new(1000.0),         // EXACT: 1kg = 1000g
-                ["g|lb"] = new(0.00220462),     // EXACT: 1g = 0.00220462lb
-                ["lb|g"] = new(453.592),        // EXACT: 1lb = 453.592g
-                ["g|oz"] = new(0.035274),       // EXACT: 1g = 0.035274oz
-                ["oz|g"] = new(28.3495),        // EXACT: 1oz = 28.3495g
-                ["mg|kg"] = new(0.000001),      // EXACT: 1mg = 0.000001kg
-                ["kg|mg"] = new(1000000.0),     // EXACT: 1kg = 1000000mg
-                ["lb|oz"] = new(16.0),          // EXACT: 1lb = 16oz
-                ["oz|lb"] = new(0.0625),        // EXACT: 1oz = 0.0625lb
-                ["kg|lb"] = new(2.20462),       // EXACT: 1kg = 2.20462lb
-                ["lb|kg"] = new(0.453592),      // EXACT: 1lb = 0.453592kg
-                ["kg|oz"] = new(35.274),        // EXACT: 1kg = 35.274oz
-                ["oz|kg"] = new(0.0283495),     // EXACT: 1oz = 0.0283495kg
-                
-                // Force conversions (all relative to dyne base)
-                ["dyne|N"] = new(0.00001),      // EXACT: 1dyne = 0.00001N
-                ["N|dyne"] = new(100000.0),     // EXACT: 1N = 100000dyne
-                ["dyne|kN"] = new(0.00000001),  // EXACT: 1dyne = 0.00000001kN
-                ["kN|dyne"] = new(100000000.0), // EXACT: 1kN = 100000000dyne
-                ["dyne|lbf"] = new(0.00000224809), // EXACT: 1dyne = 0.00000224809lbf
-                ["lbf|dyne"] = new(444822.0),   // EXACT: 1lbf = 444822dyne
-                ["N|kN"] = new(0.001),          // EXACT: 1N = 0.001kN
-                ["kN|N"] = new(1000.0),         // EXACT: 1kN = 1000N
-                ["N|lbf"] = new(0.224809),      // EXACT: 1N = 0.224809lbf
-                ["lbf|N"] = new(4.44822),       // EXACT: 1lbf = 4.44822N
-                ["kN|lbf"] = new(224.809),      // EXACT: 1kN = 224.809lbf
-                ["lbf|kN"] = new(0.00444822),   // EXACT: 1lbf = 0.00444822kN
-                
-                // Temperature conversions (Celsius as base)
-                ["C|F"] = new(0, "C * 9/5 + 32"),
-                ["F|C"] = new(0, "(F - 32) * 5/9"),
-                ["C|K"] = new(0, "C + 273.15"),
-                ["K|C"] = new(0, "K - 273.15"),
-                ["F|K"] = new(0, "(F - 32) * 5/9 + 273.15"),
-                ["K|F"] = new(0, "(K - 273.15) * 9/5 + 32"),
-                
-                // Angle conversions (same as others)
-                ["rad|deg"] = new(180.0 / Math.PI),
-                ["deg|rad"] = new(Math.PI / 180.0),
-                ["rad|mrad"] = new(1000.0),
-                ["mrad|rad"] = new(0.001),
-                ["deg|mrad"] = new(1000.0 * Math.PI / 180.0),
-                ["mrad|deg"] = new(180.0 / (1000.0 * Math.PI)),
-                
-                // Time conversions (same as others)
-                ["s|ms"] = new(1000.0),
-                ["ms|s"] = new(0.001),
-                ["s|min"] = new(1.0/60.0),
-                ["min|s"] = new(60.0),
-                ["s|hr"] = new(1.0/3600.0),
-                ["hr|s"] = new(3600.0),
-                ["s|day"] = new(1.0/86400.0),
-                ["day|s"] = new(86400.0),
-                ["min|hr"] = new(1.0/60.0),
-                ["hr|min"] = new(60.0),
-                ["hr|day"] = new(1.0/24.0),
-                ["day|hr"] = new(24.0),
-                
-                // Area conversions (square of length conversions)
-                ["cm2|mm2"] = new(100.0),       // (10)^2
-                ["mm2|cm2"] = new(0.01),        // (0.1)^2
-                ["cm2|m2"] = new(0.0001),       // (0.01)^2
-                ["m2|cm2"] = new(10000.0),      // (100)^2
-                ["mm2|m2"] = new(0.000001),     // (0.001)^2
-                ["m2|mm2"] = new(1000000.0),    // (1000)^2
-                
-                // Volume conversions (cube of length conversions)
-                ["cm3|mm3"] = new(1000.0),      // (10)^3
-                ["mm3|cm3"] = new(0.001),       // (0.1)^3
-                ["cm3|m3"] = new(0.000001),     // (0.01)^3
-                ["m3|cm3"] = new(1000000.0),    // (100)^3
-                ["mm3|m3"] = new(0.000000001),  // (0.001)^3
-                ["m3|mm3"] = new(1000000000.0), // (1000)^3
-                
-                // Speed conversions
-                ["cm/s|m/s"] = new(0.01),       // Same as cm|m
-                ["m/s|cm/s"] = new(100.0),      // Same as m|cm
-                ["m/s|km/h"] = new(3.6),        // 1 m/s = 3.6 km/h
-                ["km/h|m/s"] = new(1.0/3.6),    // 1 km/h = 0.2778 m/s
-                ["cm/s|km/h"] = new(0.036),     // 1 cm/s = 0.036 km/h
-                ["km/h|cm/s"] = new(27.7778),   // 1 km/h = 27.7778 cm/s
-                
-                // Pixels (assuming 254 DPI for cm - 100 pixels per cm)
-                ["cm|px"] = new(100.0),
-                ["px|cm"] = new(0.01)
-            };
+            // 🎯 ZERO hard-coded conversions! Everything is auto-generated!
+            return new Dictionary<string, UnitConversion>();
         }
         
-        public Dictionary<string, string> GetUnitDisplayNames()
+        public override Dictionary<string, string> GetUnitDisplayNames()
         {
             return new Dictionary<string, string>
             {
