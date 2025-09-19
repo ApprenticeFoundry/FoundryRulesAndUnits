@@ -9,45 +9,24 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Mass : MeasuredValue
 	{
-		public static Func<UnitCategory> Category = () =>
-		{
-			return new UnitCategory("Mass");
-		};
-
-		public Mass() :
-			base(UnitFamilyName.Mass)
+		public Mass() : base(UnitFamilyName.Mass)
 		{
 		}
 
-		public Mass(double value, string? units = null) :
-			base(UnitFamilyName.Mass)
+		public Mass(double value, string? units = null) : base(UnitFamilyName.Mass)
 		{
-			Init(Category(), value, units);
+			Init(value, units); // Base class handles everything!
 		}
 
 		public Mass Assign(double value, string? units)
 		{
-			if (units == I)
-			{
-				V = value;
-			}
-			else
-			{
-				Init(Category(), value, units);
-			}
+			Init(value, units); // Base class handles everything!
 			return this;
 		}
 
 		public Mass Assign(Mass source)
 		{
-			if (source.I == I)
-			{
-				V = source.Value();
-			}
-			else
-			{
-				Init(Category(), source.Value(), source.U);
-			}
+			Init(source.Value(), source.U); // Base class handles everything!
 			return this;
 		}
 
@@ -76,27 +55,22 @@ namespace FoundryRulesAndUnits.Units
 			return new Mass(v, "oz");
 		}
 
-		public override double As(string units)
+		public static Mass FromTons(double v)
 		{
-			return ConvertAs(Category(), units);
+			return new Mass(v, "t");
 		}
 
-		public Mass Kilograms(double value)
-		{
-			var cat = Category();
-			var result = cat.ConvertToBaseUnits("kg", value);
-			if (result.success)
-				V = result.value;
-			else
-				V = value;
-			return this;
-		}
+		// As() method inherited from MeasuredValue - no override needed!
 
 		public static bool operator <(Mass left, Mass right) => left.Value() < right.Value();
 		public static bool operator >(Mass left, Mass right) => left.Value() > right.Value();
 
 		public static Mass operator +(Mass left, Mass right) => new(left.Value() + right.Value(), left.Internal());
 		public static Mass operator -(Mass left, Mass right) => new(left.Value() - right.Value(), left.Internal());
+		public static Mass operator *(double left, Mass right) => new(left * right.Value(), right.Internal());
+		public static Mass operator /(Mass left, double right) => new(left.Value() / right, left.Internal());
+
+		public static double operator /(Mass left, Mass right) => left.Value() / right.Value();
 	}
 
 	public class MassJsonConverter : JsonConverter<Mass>

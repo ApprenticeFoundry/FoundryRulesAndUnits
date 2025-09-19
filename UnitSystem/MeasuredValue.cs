@@ -43,35 +43,65 @@ namespace FoundryRulesAndUnits.Units
 		public string U = "";  //reporting  input and output units
 		protected UnitFamilyName F = UnitFamilyName.None;
 
-
+		// Global unit system service - handles ALL unit conversions
+		protected static UnitSystemService Service => UnitSystemService.Instance;
 
 		public MeasuredValue(UnitFamilyName unitFamily)
 		{
 			F = unitFamily;
 			V = default!;
+			// Set internal units to base unit of current system
+			I = Service.GetBaseUnitForFamily(unitFamily);
+			U = I; // Default display units to base units
 		}
 
 
-		public double Init(UnitCategory cat, double value, string? units)
+		/// <summary>
+		/// Initialize with value and units using the global unit system
+		/// </summary>
+		public double Init(double value, string? units = null)
 		{
-			I = cat.BaseUnits().Name();
-			U = units ?? I;
-			V = value;
-
+			units = units ?? Service.GetBaseUnitForFamily(F);
+			
+			// Validate unit belongs to this family
+			if (!Service.IsValidUnit(units, F))
+				throw new ArgumentException($"{units} is not a valid unit for {F}");
+			
+			U = units;
+			I = Service.GetBaseUnitForFamily(F);
+			
+			// Convert to base units for internal storage
 			if (I != U)
 			{
-				var (success, result) = cat.ConvertToBaseUnits(U, value);
-				if (success)
-					V = result;
+				V = Service.Convert(value, U, I);
 			}
 			else
 			{
-				// When input units match internal units, no conversion needed
 				V = value;
 			}
 			return V;
 		}
 
+		/// <summary>
+		/// Legacy method - kept for backward compatibility
+		/// </summary>
+		public double Init(UnitCategory cat, double value, string? units)
+		{
+			// Delegate to new method
+			return Init(value, units);
+		}
+
+		/// <summary>
+		/// Convert current value to specified units using global unit system
+		/// </summary>
+		public virtual double As(string units)
+		{
+			return Service.Convert(V, I, units);
+		}
+
+		/// <summary>
+		/// Legacy method - kept for backward compatibility
+		/// </summary>
 		public double ConvertAs(UnitCategory cat, string units)
 		{
 			var result = cat.ConvertFromBaseUnits(units, V);
@@ -99,10 +129,10 @@ namespace FoundryRulesAndUnits.Units
 			U = units;
 		}
 
-		public virtual double As(string units)
-		{
-			return default!;
-		}
+		// public virtual double As(string units)
+		// {
+		// 	return default!;
+		// }
 
 		/// <summary>
 		/// Checks if this MeasuredValue is compatible with another for mathematical operations

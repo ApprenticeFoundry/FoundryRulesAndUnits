@@ -1,0 +1,213 @@
+using System;
+using System.Collections.Generic;
+using FoundryRulesAndUnits.Units;
+
+namespace FoundryRulesAndUnits.Units.Specifications
+{
+    /// <summary>
+    /// FPS (Foot-Pound-Second) Unit System Specification
+    /// Base units: feet, pounds (mass), seconds, Fahrenheit, degrees, pounds-force
+    /// Uses base unit hub architecture - all conversions go through the base unit
+    /// Appropriate for US structural and civil engineering applications
+    /// </summary>
+    public class FPSUnitSystemSpecification : IUnitSystemSpecification
+    {
+        public string SystemName => "FPS";
+
+        public string SystemDescription => "FPS (Foot-Pound-Second) Unit System with base units: feet, pounds, seconds, Fahrenheit, degrees, pounds-force";
+
+        private List<string>? _cachedUnitSymbols = null;
+        private List<UnitDefinition>? _cachedBaseUnits = null;
+        private Dictionary<UnitFamilyName, UnitDefinition>? _cachedBaseUnitsByFamily = null;
+        private Dictionary<UnitFamilyName, List<UnitDefinition>>? _cachedUnitsByFamily = null;
+        private Dictionary<string, UnitFamilyName>? _cachedSymbolToFamily = null;
+
+        public List<string> GetAllUnitSymbols()
+        {
+            if (_cachedUnitSymbols == null)
+            {
+                _cachedUnitSymbols = new List<string>();
+                foreach (var unit in UnitDefinitions)
+                {
+                    _cachedUnitSymbols.Add(unit.Symbol);
+                }
+            }
+            return _cachedUnitSymbols;
+        }
+
+        public List<UnitDefinition> GetAllBaseUnits()
+        {
+            if (_cachedBaseUnits == null)
+            {
+                _cachedBaseUnits = new List<UnitDefinition>();
+                foreach (var unit in UnitDefinitions)
+                {
+                    if (unit.IsBaseUnit)
+                    {
+                        _cachedBaseUnits.Add(unit);
+                    }
+                }
+            }
+            return _cachedBaseUnits;
+        }
+
+        public Dictionary<UnitFamilyName, UnitDefinition> GetBaseUnitsByFamily()
+        {
+            if (_cachedBaseUnitsByFamily == null)
+            {
+                _cachedBaseUnitsByFamily = new Dictionary<UnitFamilyName, UnitDefinition>();
+                foreach (var unit in UnitDefinitions)
+                {
+                    if (unit.IsBaseUnit)
+                    {
+                        _cachedBaseUnitsByFamily[unit.Family] = unit;
+                    }
+                }
+            }
+            return _cachedBaseUnitsByFamily;
+        }
+
+        public Dictionary<UnitFamilyName, List<UnitDefinition>> GetAllUnitsByFamily()
+        {
+            if (_cachedUnitsByFamily == null)
+            {
+                _cachedUnitsByFamily = new Dictionary<UnitFamilyName, List<UnitDefinition>>();
+                foreach (var unit in UnitDefinitions)
+                {
+                    if (!_cachedUnitsByFamily.ContainsKey(unit.Family))
+                    {
+                        _cachedUnitsByFamily[unit.Family] = new List<UnitDefinition>();
+                    }
+                    _cachedUnitsByFamily[unit.Family].Add(unit);
+                }
+            }
+            return _cachedUnitsByFamily;
+        }
+
+        public Dictionary<string, UnitFamilyName> GetSymbolToFamilyMap()
+        {
+            if (_cachedSymbolToFamily == null)
+            {
+                _cachedSymbolToFamily = new Dictionary<string, UnitFamilyName>();
+                foreach (var unit in UnitDefinitions)
+                {
+                    _cachedSymbolToFamily[unit.Symbol] = unit.Family;
+                }
+            }
+            return _cachedSymbolToFamily;
+        }
+
+        public IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+        {
+            // Length units (feet as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("ft", "feet", UnitFamilyName.Length),
+            UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 1.0/12.0),          // 1 in = 1/12 ft
+            UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 3.0),                // 1 yd = 3 ft
+            UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Length, 5280.0),             // 1 mi = 5280 ft
+            UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Length, 1.0/12000.0),        // 1 mil = 1/12000 ft
+            UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Length, 3.28083989501),      // 1 m = 3.2808 ft
+            UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Length, 0.0328083989501), // 1 cm = 0.03281 ft
+            UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.00328083989501), // 1 mm = 0.003281 ft
+
+            // Mass units (pounds as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("lb", "pounds", UnitFamilyName.Mass),
+            UnitDefinition.LinearUnit("oz", "ounces", UnitFamilyName.Mass, 1.0/16.0),           // 1 oz = 1/16 lb
+            UnitDefinition.LinearUnit("ton", "tons", UnitFamilyName.Mass, 2000.0),              // 1 ton = 2000 lb
+            UnitDefinition.LinearUnit("slug", "slugs", UnitFamilyName.Mass, 32.174),            // 1 slug = 32.174 lb
+            UnitDefinition.LinearUnit("kg", "kilograms", UnitFamilyName.Mass, 2.20462262185),   // 1 kg = 2.2046 lb
+            UnitDefinition.LinearUnit("g", "grams", UnitFamilyName.Mass, 0.00220462262185),     // 1 g = 0.002205 lb
+
+            // Force units (pounds-force as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("lbf", "pounds-force", UnitFamilyName.Force),
+            UnitDefinition.LinearUnit("kip", "kips", UnitFamilyName.Force, 1000.0),             // 1 kip = 1000 lbf
+            UnitDefinition.LinearUnit("ozf", "ounces-force", UnitFamilyName.Force, 1.0/16.0),   // 1 ozf = 1/16 lbf
+            UnitDefinition.LinearUnit("N", "newtons", UnitFamilyName.Force, 0.224808943),       // 1 N = 0.2248 lbf
+            UnitDefinition.LinearUnit("kN", "kilonewtons", UnitFamilyName.Force, 224.808943),   // 1 kN = 224.8 lbf
+
+            // Temperature units (Fahrenheit as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("F", "Fahrenheit", UnitFamilyName.Temperature),
+            UnitDefinition.DerivedUnit("C", "Celsius", UnitFamilyName.Temperature,
+                c => c * 9.0/5.0 + 32.0,         // C to F: C*9/5 + 32
+                f => (f - 32.0) * 5.0/9.0),       // F to C: (F-32)*5/9
+            UnitDefinition.DerivedUnit("K", "Kelvin", UnitFamilyName.Temperature,
+                k => (k - 273.15) * 9.0/5.0 + 32.0,    // K to F: (K-273.15)*9/5 + 32
+                f => (f - 32.0) * 5.0/9.0 + 273.15),   // F to K: (F-32)*5/9 + 273.15
+
+            // Angle units (degrees as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("deg", "degrees", UnitFamilyName.Angle),
+            UnitDefinition.LinearUnit("rad", "radians", UnitFamilyName.Angle, 180.0 / Math.PI), // 1 rad = 180/π deg
+            UnitDefinition.LinearUnit("rev", "revolutions", UnitFamilyName.Angle, 360.0),       // 1 rev = 360 deg
+
+            // Time units (seconds as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Time),
+            UnitDefinition.LinearUnit("min", "minutes", UnitFamilyName.Time, 60.0),             // 1 min = 60 s
+            UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Time, 3600.0),              // 1 hr = 3600 s
+            UnitDefinition.LinearUnit("day", "days", UnitFamilyName.Time, 86400.0),             // 1 day = 86400 s
+
+            // Area units (square feet as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("ft2", "square feet", UnitFamilyName.Area),
+            UnitDefinition.LinearUnit("in2", "square inches", UnitFamilyName.Area, 1.0/144.0),  // 1 in² = 1/144 ft²
+            UnitDefinition.LinearUnit("yd2", "square yards", UnitFamilyName.Area, 9.0),         // 1 yd² = 9 ft²
+            UnitDefinition.LinearUnit("acre", "acres", UnitFamilyName.Area, 43560.0),           // 1 acre = 43,560 ft²
+            UnitDefinition.LinearUnit("m2", "square meters", UnitFamilyName.Area, 10.7639),     // 1 m² = 10.764 ft²
+
+            // Volume units (cubic feet as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("ft3", "cubic feet", UnitFamilyName.Volume),
+            UnitDefinition.LinearUnit("in3", "cubic inches", UnitFamilyName.Volume, 1.0/1728.0), // 1 in³ = 1/1728 ft³
+            UnitDefinition.LinearUnit("yd3", "cubic yards", UnitFamilyName.Volume, 27.0),        // 1 yd³ = 27 ft³
+            UnitDefinition.LinearUnit("gal", "gallons", UnitFamilyName.Volume, 0.133681),        // 1 gal = 0.1337 ft³
+            UnitDefinition.LinearUnit("m3", "cubic meters", UnitFamilyName.Volume, 35.3147),     // 1 m³ = 35.315 ft³
+
+            // Speed units (feet per second as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("ft/s", "feet per second", UnitFamilyName.Speed),
+            UnitDefinition.LinearUnit("mph", "miles per hour", UnitFamilyName.Speed, 1.46667),  // 1 mph = 1.467 ft/s
+            UnitDefinition.LinearUnit("ft/min", "feet per minute", UnitFamilyName.Speed, 1.0/60.0), // 1 ft/min = 1/60 ft/s
+            UnitDefinition.LinearUnit("in/s", "inches per second", UnitFamilyName.Speed, 1.0/12.0), // 1 in/s = 1/12 ft/s
+            UnitDefinition.LinearUnit("m/s", "meters per second", UnitFamilyName.Speed, 3.28084), // 1 m/s = 3.281 ft/s
+
+            // Distance units (miles as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("mi", "miles", UnitFamilyName.Distance),
+            UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Distance, 1.0/5280.0),       // 1 ft = 1/5280 mi
+            UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Distance, 1.0/1760.0),      // 1 yd = 1/1760 mi
+            UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Distance, 0.621371),   // 1 km = 0.6214 mi
+            UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Distance, 0.000621371),     // 1 m = 0.0006214 mi
+
+            // Pressure units (pounds per square foot as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("psf", "pounds per square foot", UnitFamilyName.Pressure),
+            UnitDefinition.LinearUnit("psi", "pounds per square inch", UnitFamilyName.Pressure, 144.0), // 1 psi = 144 psf
+            UnitDefinition.LinearUnit("kip/ft2", "kips per square foot", UnitFamilyName.Pressure, 1000.0), // 1 kip/ft² = 1000 psf
+            UnitDefinition.LinearUnit("atm", "atmospheres", UnitFamilyName.Pressure, 2116.22),  // 1 atm = 2116.22 psf
+            UnitDefinition.LinearUnit("Pa", "pascals", UnitFamilyName.Pressure, 0.0208854),     // 1 Pa = 0.02089 psf
+            UnitDefinition.LinearUnit("kPa", "kilopascals", UnitFamilyName.Pressure, 20.8854),  // 1 kPa = 20.885 psf
+
+            // Energy units (foot-pounds as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("ft·lbf", "foot-pounds", UnitFamilyName.Energy),
+            UnitDefinition.LinearUnit("in·lbf", "inch-pounds", UnitFamilyName.Energy, 1.0/12.0), // 1 in·lbf = 1/12 ft·lbf
+            UnitDefinition.LinearUnit("BTU", "British thermal units", UnitFamilyName.Energy, 778.169), // 1 BTU = 778.169 ft·lbf
+            UnitDefinition.LinearUnit("J", "joules", UnitFamilyName.Energy, 0.737562),           // 1 J = 0.7376 ft·lbf
+            UnitDefinition.LinearUnit("kWh", "kilowatt-hours", UnitFamilyName.Energy, 2655224.0), // 1 kWh = 2,655,224 ft·lbf
+
+            // Power units (horsepower as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("hp", "horsepower", UnitFamilyName.Power),
+            UnitDefinition.LinearUnit("ft·lbf/s", "foot-pounds per second", UnitFamilyName.Power, 1.0/550.0), // 1 ft·lbf/s = 1/550 hp
+            UnitDefinition.LinearUnit("BTU/hr", "BTU per hour", UnitFamilyName.Power, 0.000393), // 1 BTU/hr = 0.000393 hp
+            UnitDefinition.LinearUnit("W", "watts", UnitFamilyName.Power, 0.00134102),           // 1 W = 0.001341 hp
+            UnitDefinition.LinearUnit("kW", "kilowatts", UnitFamilyName.Power, 1.34102),         // 1 kW = 1.341 hp
+
+            // Frequency units (hertz as base) - same across all systems
+            UnitDefinition.BaseUnit("Hz", "hertz", UnitFamilyName.Frequency),
+            UnitDefinition.LinearUnit("kHz", "kilohertz", UnitFamilyName.Frequency, 1000.0),    // 1 kHz = 1000 Hz
+            UnitDefinition.LinearUnit("rpm", "revolutions per minute", UnitFamilyName.Frequency, 1.0/60.0), // 1 rpm = 1/60 Hz
+
+            // Voltage units (volts as base) - same across all systems
+            UnitDefinition.BaseUnit("V", "volts", UnitFamilyName.Voltage),
+            UnitDefinition.LinearUnit("mV", "millivolts", UnitFamilyName.Voltage, 0.001),       // 1 mV = 0.001 V
+            UnitDefinition.LinearUnit("kV", "kilovolts", UnitFamilyName.Voltage, 1000.0),       // 1 kV = 1000 V
+
+            // Current units (amperes as base) - same across all systems
+            UnitDefinition.BaseUnit("A", "amperes", UnitFamilyName.Current),
+            UnitDefinition.LinearUnit("mA", "milliamperes", UnitFamilyName.Current, 0.001),     // 1 mA = 0.001 A
+            UnitDefinition.LinearUnit("kA", "kiloamperes", UnitFamilyName.Current, 1000.0)      // 1 kA = 1000 A
+        };
+    }
+}

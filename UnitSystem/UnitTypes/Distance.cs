@@ -1,76 +1,55 @@
 using System;
 using System.Collections.Generic;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[JsonConverter(typeof(DistanceJsonConverter))]
 	public class Distance : MeasuredValue
 	{
-		public static Func<UnitCategory> Category = () =>
-		{
-			return new UnitCategory("Distance");
-		};
+		public Distance() : base(UnitFamilyName.Length) { }
 
-		public Distance() :
-			base(UnitFamilyName.Length)
+		public Distance(double value, string? units = null) : base(UnitFamilyName.Length)
 		{
+			Init(value, units);
 		}
 
-		public Distance(double value, string? units) :
-			base(UnitFamilyName.Length)
-		{
-			Init(Category(), value, units);
-		}
+		// Factory methods
+		public static Distance FromMeters(double value) => new(value, "m");
+		public static Distance FromKilometers(double value) => new(value, "km");
+		public static Distance FromMiles(double value) => new(value, "mi");
+		public static Distance FromFeet(double value) => new(value, "ft");
+		public static Distance FromInches(double value) => new(value, "in");
 
-		public Distance Assign(double value, string? units)
-		{
-			if (units == I)
-			{
-				V = value;
-			}
-			else
-			{
-				Init(Category(), value, units);
-			}
-			return this;
-		}
+		// Utility methods
+		public double Diff(Length other) => Value() - other.Value();
+		public double Diff(double other) => Value() - other;
+		public double Sum(Length other) => Value() + other.Value();
+		public double Sum(double other) => Value() + other;
 
-		public Distance Copy()
-		{
-			return new Distance(Value(), Internal());
-		}
-
-		public double Diff(Length other)
-		{
-			return Value() - other.Value();
-		}
-		public double Diff(double other)
-		{
-			return Value() - other;
-		}
-		public double Sum(Length other)
-		{
-			return Value() + other.Value();
-		}
-
-		public double Sum(double other)
-		{
-			return Value() + other;
-		}
-
-
-
-		public override double As(string units)
-		{
-			return ConvertAs(Category(), units);
-		}
-
-		public static Distance operator +(Distance left, double right) => new(left.Value() + right, left.Internal());
-		public static Distance operator -(Distance left, double right) => new(left.Value() - right, left.Internal());
-
+		// Arithmetic operators
 		public static Distance operator +(Distance left, Distance right) => new(left.Value() + right.Value(), left.Internal());
 		public static Distance operator -(Distance left, Distance right) => new(left.Value() - right.Value(), left.Internal());
+		public static Distance operator +(Distance left, double right) => new(left.Value() + right, left.Internal());
+		public static Distance operator -(Distance left, double right) => new(left.Value() - right, left.Internal());
+		public static Distance operator *(Distance distance, double scalar) => new(distance.Value() * scalar, distance.Internal());
+		public static Distance operator *(double scalar, Distance distance) => new(scalar * distance.Value(), distance.Internal());
+		public static Distance operator /(Distance distance, double scalar) => new(distance.Value() / scalar, distance.Internal());
+		public static double operator /(Distance left, Distance right) => left.Value() / right.Value();
+	}
 
+	public class DistanceJsonConverter : JsonConverter<Distance>
+	{
+		public override Distance Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+		{
+			return MeasuredValue.ReadJSON<Distance>(ref reader, typeToConvert);
+		}
+
+		public override void Write(Utf8JsonWriter writer, Distance dataValue, JsonSerializerOptions options)
+		{
+			// Writing handled by base serialization
+		}
 	}
 }

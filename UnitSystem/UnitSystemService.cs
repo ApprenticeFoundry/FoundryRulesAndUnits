@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using FoundryRulesAndUnits.Units;
+using FoundryRulesAndUnits.Units.Specifications;
 
 namespace FoundryRulesAndUnits.Units
 {
@@ -12,326 +12,109 @@ namespace FoundryRulesAndUnits.Units
 		FPS,
 		MKS,
 		CGS,
-		mmNs
+		mmNs,
+		SI
 	}
 
-
-	public class UnitCategoryService
+	/// <summary>
+	/// Global Unit System Service - Set once, use everywhere
+	/// Provides application-wide consistent unit system access
+	/// </summary>
+	public class UnitSystemService
 	{
-		protected Dictionary<UnitFamilyName, UnitCategory> CategoryLookup { get; private set; } = new();
-
-		public void Category(UnitCategory category)
-		{
-			CategoryLookup.Add(category.UnitFamily(), category);
-		}
-
-		public List<UnitCategory> Categories()
-		{
-			return CategoryLookup.Values.ToList();
-		}
-	}
-
-	public interface IUnitSystem
-	{
-		List<UnitCategory> Categories();
-		bool Apply(UnitSystemType type);
-		void SetPixelsPerMeter(double pixelsPerMeter);
-	}
-
-	public class UnitSystem : IUnitSystem
-	{
-		public UnitCategory? length { get; set; }
-		public UnitCategory? angle { get; set; }
-		public UnitCategory? storage { get; set; }
-		public UnitCategory? time { get; set; }
-		public UnitCategory? worktime { get; set; }
-		public UnitCategory? mass { get; set; }
-		public UnitCategory? force { get; set; }
-		public UnitCategory? temperature { get; set; }
+		private static UnitSystemService? _instance;
+		private IUnitSystemSpecification _currentSystem;
 
 		/// <summary>
-		/// Track the currently active unit system for base unit accuracy
+		/// Singleton instance - globally accessible throughout application
 		/// </summary>
-		public UnitSystemType ActiveSystem { get; private set; } = UnitSystemType.MKS;
+		public static UnitSystemService Instance => _instance ??= new UnitSystemService();
 
-		public UnitCategoryService UnitCategories { get; set; } = new();
+		/// <summary>
+		/// Current active unit system - all conversions use this
+		/// </summary>
+		public IUnitSystemSpecification Current => _currentSystem;
 
-		public List<UnitCategory> Categories()
+		/// <summary>
+		/// Currently active system type
+		/// </summary>
+		public UnitSystemType ActiveType { get; private set; }
+
+		private UnitSystemService()
 		{
-			return UnitCategories.Categories();
+			// Default to MKS system
+			SetUnitSystem(UnitSystemType.MKS);
 		}
 
-		public double Square(double v) { return v * v; }
-
-		public double Cube(double v) { return v * v * v; }
-
-
-
-		public bool Apply(UnitSystemType type)
+		/// <summary>
+		/// Set the unit system for the entire application
+		/// Call once at startup, everything else just works
+		/// </summary>
+		public void SetUnitSystem(UnitSystemType type)
 		{
-			// Step 1: Locate the right unit system implementation and configure it
-			// Step 2: Create instance and integrate with platform calls
-			ActiveSystem = type;
-
-			// Step 3: Call the appropriate configuration method based on type
-			return type switch
+			_currentSystem = type switch
 			{
-				UnitSystemType.MKS => MKS(),
-				UnitSystemType.CGS => CGS(),
-				UnitSystemType.IPS => IPS(),
-				UnitSystemType.FPS => FPS(),
-				UnitSystemType.mmNs => MMNs(),
-				_ => MKS() // Default fallback
+				UnitSystemType.MKS => new MKSUnitSystemSpecification(),
+				UnitSystemType.SI => new SIUnitSystemSpecification(),
+				UnitSystemType.CGS => new CGSUnitSystemSpecification(),
+				UnitSystemType.FPS => new FPSUnitSystemSpecification(),
+				UnitSystemType.IPS => new IPSUnitSystemSpecification(),
+				UnitSystemType.mmNs => new mmNsUnitSystemSpecification(),
+				_ => new MKSUnitSystemSpecification()
 			};
-		}
 
-		private bool MMNs()
-		{
-			return EstablishMMNsUnits();
-		}
-
-		private bool CGS()
-		{
-			return EstablishCGSUnits();
-		}
-
-		private bool MKS()
-		{
-			return EstablishMKSUnits(); // Renamed from EstablishCommonUnit
-		}
-
-		private bool FPS()
-		{
-			return EstablishFPSUnits();
-		}
-
-		private bool IPS()
-		{
-			return EstablishIPSUnits();
-		}
-
-		public void SetPixelsPerMeter(double pixelsPerMeter)
-		{
-			length?.Conversion(pixelsPerMeter, "px", 1.0, "m");
-		}
-
-		public bool EstablishMKSUnits()
-		{
-
-			//var PixelsPerInch = 40; // 70; pixels per in or SRS machine
-
-			// Length: METERS as true base unit (MKS system)
-			length = new UnitCategory("Length", new UnitSpec("m", "meters", UnitFamilyName.Length))
-				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
-				.Units("px", "pixels")
-				.Conversion(5000, "px", 1, "m");
-
-
-			UnitCategories.Category(length);
-			Length.Category = () => length;
-
-			// Mass: KILOGRAMS as true base unit (MKS system)
-			mass = new UnitCategory("Mass", new UnitSpec("kg", "kilograms", UnitFamilyName.Mass))
-				.AddMassUnits("kg");              // g, mg, lb, oz with conversions
-
-			UnitCategories.Category(mass);
-			Mass.Category = () => mass;
-
-			// Force: NEWTONS as true base unit (MKS system)  
-			force = new UnitCategory("Force", new UnitSpec("N", "newtons", UnitFamilyName.Force))
-				.AddForceUnits("N");              // kN, dyne, lbf with conversions
-
-			UnitCategories.Category(force);
-			Force.Category = () => force;
-
-			// Temperature: CELSIUS as base unit (MKS system)
-			temperature = new UnitCategory("Temperature", new UnitSpec("C", "Celsius", UnitFamilyName.Temperature))
-				.AddTemperatureConversions();     // F, K with exact formulas
-
-			UnitCategories.Category(temperature);
-			Temperature.Category = () => temperature;
-
-			// System-independent categories
-			EstablishSystemIndependentCategories();
-
-			// Derived categories with proper base unit adaptation
-			var area = new UnitCategory("Area", new UnitSpec("m2", "sq meters", UnitFamilyName.Area))
-				.Units("cm2", "sq centimeters")
-				.Conversion(Square(100), "cm2", 1, "m2")
-				.Units("km2", "sq kilometers")  // Fixed: was "km2" for cubic
-				.Conversion(1, "km2", Square(1000), "m2")
-				.Units("mm2", "sq millimeters")
-				.Conversion(Square(1000), "mm2", 1, "m2");
-
-			UnitCategories.Category(area);
-			Area.Category = () => area;
-
-			var volume = new UnitCategory("Volume", new UnitSpec("m3", "cubic meters", UnitFamilyName.Volume))
-				.Units("cm3", "cubic centimeters")
-				.Conversion(Cube(100), "cm3", 1, "m3")
-				.Units("km3", "cubic kilometers")  // Fixed: was "km2"
-				.Conversion(1, "km3", Cube(1000), "m3")
-				.Units("mm3", "cubic millimeters")
-				.Conversion(Cube(1000), "mm3", 1, "m3");
-
-			UnitCategories.Category(volume);
-			Volume.Category = () => volume;
-
-			return true;
+			ActiveType = type;
 		}
 
 		/// <summary>
-		/// Establishes system-independent categories that are the same for all unit systems.
+		/// Convert between any two units in the current system
 		/// </summary>
-
-		/// <summary>
-		/// Establishes IPS (Inch-Pound-Second) unit system with inches, pounds, and Fahrenheit as base units.
-		/// </summary>
-		/// <returns>True if successful</returns>
-		private bool EstablishIPSUnits()
+		public double Convert(double value, string fromUnit, string toUnit)
 		{
-			// Length: INCHES as true base unit (native storage)
-			length = new UnitCategory("Length", new UnitSpec("in", "inches", UnitFamilyName.Length))
-				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
-				.Units("px", "pixels")
-				.Conversion(96, "px", 1, "in");   // Standard 96 DPI
+			var fromDef = _currentSystem.UnitDefinitions.FirstOrDefault(u => u.Symbol == fromUnit);
+			var toDef = _currentSystem.UnitDefinitions.FirstOrDefault(u => u.Symbol == toUnit);
 
-			UnitCategories.Category(length);
-			Length.Category = () => length;
+			if (fromDef == null) throw new ArgumentException($"Unknown unit: {fromUnit}");
+			if (toDef == null) throw new ArgumentException($"Unknown unit: {toUnit}");
+			if (fromDef.Family != toDef.Family) throw new ArgumentException($"Cannot convert {fromUnit} to {toUnit} - different unit families");
 
-			// Mass: POUNDS as true base unit (native storage)
-			mass = new UnitCategory("Mass", new UnitSpec("lb", "pounds", UnitFamilyName.Mass))
-				.AddMassUnits("lb");              // oz, ton, kg, g with conversions
-
-			UnitCategories.Category(mass);
-
-			// Force: POUND-FORCE as true base unit (IPS system)
-			force = new UnitCategory("Force", new UnitSpec("lbf", "pounds-force", UnitFamilyName.Force))
-				.AddForceUnits("lbf");            // N, dyne with conversions
-
-			UnitCategories.Category(force);
-
-			// Temperature: FAHRENHEIT as base unit (native storage)
-			temperature = new UnitCategory("Temperature", new UnitSpec("F", "Fahrenheit", UnitFamilyName.Temperature))
-				.AddTemperatureConversions();     // C, K with exact formulas
-
-			UnitCategories.Category(temperature);
-			Temperature.Category = () => temperature;
-
-			EstablishSystemIndependentCategories();
-			return true;
+			// Hub-and-spoke conversion: from → base → to
+			var baseValue = fromDef.ConvertToBase(value);
+			return toDef.ConvertFromBase(baseValue);
 		}
 
 		/// <summary>
-		/// Establishes FPS (Foot-Pound-Second) unit system with feet, pounds, and Fahrenheit as base units.
+		/// Check if a unit is valid in the current system
 		/// </summary>
-		/// <returns>True if successful</returns>
-		private bool EstablishFPSUnits()
+		public bool IsValidUnit(string unit) => _currentSystem.GetAllUnitSymbols().Contains(unit);
+
+		/// <summary>
+		/// Check if a unit belongs to the specified family
+		/// </summary>
+		public bool IsValidUnit(string unit, UnitFamilyName family)
 		{
-			// Length: FEET as true base unit (native storage)
-			length = new UnitCategory("Length", new UnitSpec("ft", "feet", UnitFamilyName.Length))
-				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
-				.Units("px", "pixels")
-				.Conversion(1152, "px", 1, "ft"); // 96 DPI * 12 inches/foot
-
-			UnitCategories.Category(length);
-			Length.Category = () => length;
-
-			// Mass: POUNDS as true base unit (same as IPS)
-			mass = new UnitCategory("Mass", new UnitSpec("lb", "pounds", UnitFamilyName.Mass))
-				.AddMassUnits("lb");
-
-			UnitCategories.Category(mass);
-
-			// Force: POUND-FORCE as true base unit (same as IPS)
-			force = new UnitCategory("Force", new UnitSpec("lbf", "pounds-force", UnitFamilyName.Force))
-				.AddForceUnits("lbf");
-
-			UnitCategories.Category(force);
-
-			// Temperature: FAHRENHEIT as base unit (same as IPS)
-			temperature = new UnitCategory("Temperature", new UnitSpec("F", "Fahrenheit", UnitFamilyName.Temperature))
-				.AddTemperatureConversions();
-
-			UnitCategories.Category(temperature);
-			Temperature.Category = () => temperature;
-
-			EstablishSystemIndependentCategories();
-			return true;
+			var symbolToFamily = _currentSystem.GetSymbolToFamilyMap();
+			return symbolToFamily.ContainsKey(unit) && symbolToFamily[unit] == family;
 		}
 
 		/// <summary>
-		/// Establishes CGS (Centimeter-Gram-Second) unit system with centimeters, grams, and dynes as base units.
+		/// Get all units for a specific family in the current system
 		/// </summary>
-		/// <returns>True if successful</returns>
-		private bool EstablishCGSUnits()
+		public List<string> GetUnitsForFamily(UnitFamilyName family)
 		{
-			// Length: CENTIMETERS as true base unit (native storage)
-			length = new UnitCategory("Length", new UnitSpec("cm", "centimeters", UnitFamilyName.Length))
-				.AddAllLengthUnits();             // UNIFIED: ALL length units with complete coverage
-
-			UnitCategories.Category(length);
-			Length.Category = () => length;
-
-			// Mass: GRAMS as true base unit (native storage)
-			mass = new UnitCategory("Mass", new UnitSpec("g", "grams", UnitFamilyName.Mass))
-				.AddMassUnits("g");               // mg, kg, lb, oz with conversions
-
-			UnitCategories.Category(mass);
-
-			// Force: DYNES as true base unit (CGS specific)
-			force = new UnitCategory("Force", new UnitSpec("dyne", "dynes", UnitFamilyName.Force))
-				.AddForceUnits("dyne");           // N, lbf with conversions
-
-			UnitCategories.Category(force);
-
-			// Temperature: CELSIUS as base unit
-			temperature = new UnitCategory("Temperature", new UnitSpec("C", "Celsius", UnitFamilyName.Temperature))
-				.AddTemperatureConversions();
-
-			UnitCategories.Category(temperature);
-			Temperature.Category = () => temperature;
-
-			EstablishSystemIndependentCategories();
-			return true;
+			var unitsByFamily = _currentSystem.GetAllUnitsByFamily();
+			return unitsByFamily.ContainsKey(family) 
+				? unitsByFamily[family].Select(u => u.Symbol).ToList()
+				: new List<string>();
 		}
 
 		/// <summary>
-		/// Establishes mmNs (Millimeter-Newton-Second) unit system with millimeters, newtons, and grams as base units.
+		/// Get the base unit for a family in the current system
 		/// </summary>
-		/// <returns>True if successful</returns>
-		private bool EstablishMMNsUnits()
+		public string GetBaseUnitForFamily(UnitFamilyName family)
 		{
-			// Length: MILLIMETERS as true base unit (native storage)
-			length = new UnitCategory("Length", new UnitSpec("mm", "millimeters", UnitFamilyName.Length))
-				.AddAllLengthUnits()              // UNIFIED: ALL length units with complete coverage
-				.Units("μm", "micrometers")
-				.Conversion(1000, "μm", 1, "mm"); // Exact: 1000 μm = 1 mm
-
-			UnitCategories.Category(length);
-			Length.Category = () => length;
-
-			// Force: NEWTONS as true base unit (same as MKS)
-			force = new UnitCategory("Force", new UnitSpec("N", "newtons", UnitFamilyName.Force))
-				.AddForceUnits("N");              // kN, dyne, lbf with conversions
-
-			UnitCategories.Category(force);
-
-			// Mass: GRAMS as base unit (derived from force via F=ma)
-			mass = new UnitCategory("Mass", new UnitSpec("g", "grams", UnitFamilyName.Mass))
-				.AddMassUnits("g");
-
-			UnitCategories.Category(mass);
-
-			// Temperature: CELSIUS as base unit
-			temperature = new UnitCategory("Temperature", new UnitSpec("C", "Celsius", UnitFamilyName.Temperature))
-				.AddTemperatureConversions();
-
-			UnitCategories.Category(temperature);
-			Temperature.Category = () => temperature;
-
-			EstablishSystemIndependentCategories();
-			return true;
+			var baseUnits = _currentSystem.GetBaseUnitsByFamily();
+			return baseUnits.ContainsKey(family) ? baseUnits[family].Symbol : "";
 		}
 	}
 }

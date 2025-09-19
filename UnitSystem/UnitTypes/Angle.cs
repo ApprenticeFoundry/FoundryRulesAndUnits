@@ -9,46 +9,24 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Angle : MeasuredValue
 	{
-		public static Func<UnitCategory> Category = () =>
-		{
-			return new UnitCategory("Angle");
-		};
-
-		public Angle() :
-			base(UnitFamilyName.Angle)
+		public Angle() : base(UnitFamilyName.Angle)
 		{
 		}
 
-
-		public Angle(double value, string? units=null) :
-			base(UnitFamilyName.Angle)
+		public Angle(double value, string? units = null) : base(UnitFamilyName.Angle)
 		{
-			Init(Category(), value, units);
+			Init(value, units); // Base class handles everything!
 		}
 
 		public Angle Assign(double value, string? units)
 		{
-			if (units == I)
-			{
-				V = value;
-			}
-			else
-			{
-				Init(Category(), value, units);
-			}
+			Init(value, units); // Base class handles everything!
 			return this;
 		}
 
 		public Angle Assign(Angle source)
 		{
-			if (source.I == I)
-			{
-				V = source.Value();
-			}
-			else
-			{
-				Init(Category(), source.Value(), source.U);
-			}
+			Init(source.Value(), source.U); // Base class handles everything!
 			return this;
 		}
 
@@ -67,19 +45,11 @@ namespace FoundryRulesAndUnits.Units
 			return new Angle(v, "rad");
 		}
 
-		public override double As(string units)
-		{
-			return ConvertAs(Category(), units);
-		}
+		// As() method inherited from MeasuredValue - no override needed!
 
 		public Angle Degrees(double value)
 		{
-			var cat = Category();
-			var result = cat.ConvertToBaseUnits("deg", value);
-			if (result.success)
-				V = result.value;
-			else
-				V = value;
+			Init(value, "deg"); // Base class handles validation and conversion!
 			return this;
 		}
 

@@ -7,72 +7,41 @@ using FoundryRulesAndUnits.Extensions;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[JsonConverter(typeof(TemperatureJsonConverter))]
 	public class Temperature : MeasuredValue
 	{
+		public Temperature() : base(UnitFamilyName.Temperature) { }
 
-		public static Func<UnitCategory> Category = () =>
+		public Temperature(double value, string? units = null) : base(UnitFamilyName.Temperature)
 		{
-			return new UnitCategory("Temperature");
-		};
-
-		public Temperature() :
-			base(UnitFamilyName.Temperature)
-		{
-			//$"Temperature constructor".WriteInfo();
+			Init(value, units);
 		}
 
-		public Temperature(double value, string? units = null) :
-			base(UnitFamilyName.Temperature)
-		{
-			Init(Category(), value, units);
-		}
+		// Factory methods
+		public static Temperature FromCelsius(double value) => new(value, "°C");
+		public static Temperature FromFahrenheit(double value) => new(value, "°F");
+		public static Temperature FromKelvin(double value) => new(value, "K");
+		public static Temperature FromRankine(double value) => new(value, "°R");
 
-		public Temperature Assign(double value, string? units=null)
-		{
-			if (units == I || units == null)
-			{
-				V = value;
-			}
-			else
-			{
-				Init(Category(), value, units);
-			}
-			return this;
-		}
-
-		public Temperature Assign(Temperature source)
-		{
-			if (source.I == I)
-			{
-				V = source.Value();
-			}
-			else
-			{
-				Init(Category(), source.Value(), source.U);
-			}
-			return this;
-		}
-		public override double As(string units)
-		{
-			return ConvertAs(Category(), units);
-		}
-
+		// Arithmetic operators
 		public static Temperature operator +(Temperature left, Temperature right) => new(left.Value() + right.Value(), left.Internal());
 		public static Temperature operator -(Temperature left, Temperature right) => new(left.Value() - right.Value(), left.Internal());
-	
-	
-		public class TemperatureJsonConverter : JsonConverter<Temperature>
-		{
-			public override Temperature Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-			{
-				return MeasuredValue.ReadJSON<Temperature>(ref reader, typeToConvert);
-			}
+		public static Temperature operator *(Temperature temp, double scalar) => new(temp.Value() * scalar, temp.Internal());
+		public static Temperature operator *(double scalar, Temperature temp) => new(scalar * temp.Value(), temp.Internal());
+		public static Temperature operator /(Temperature temp, double scalar) => new(temp.Value() / scalar, temp.Internal());
+		public static double operator /(Temperature left, Temperature right) => left.Value() / right.Value();
+	}
 
-			public override void Write(Utf8JsonWriter writer, Temperature dataValue, JsonSerializerOptions options)
-			{
-				//dataValue.V = 200;
-			}
+	public class TemperatureJsonConverter : JsonConverter<Temperature>
+	{
+		public override Temperature Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+		{
+			return MeasuredValue.ReadJSON<Temperature>(ref reader, typeToConvert);
 		}
 
+		public override void Write(Utf8JsonWriter writer, Temperature dataValue, JsonSerializerOptions options)
+		{
+			// Writing handled by base serialization
+		}
 	}
 }

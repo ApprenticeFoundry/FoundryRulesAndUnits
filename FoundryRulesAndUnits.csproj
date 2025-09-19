@@ -7,8 +7,7 @@
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <IsPackable>true</IsPackable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <OutputType>Exe</OutputType>
-    <StartupObject>FoundryRulesAndUnits.Testing.Program</StartupObject>
+    <OutputType>Library</OutputType>
 
 
     <Title>Apprentice Foundry Rules and Units</Title>

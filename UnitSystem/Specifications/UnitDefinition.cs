@@ -34,8 +34,8 @@ public record UnitDefinition(
     /// </summary>
     public static UnitDefinition LinearUnit(string symbol, string name, UnitFamilyName family, double factor) =>
         new(symbol, name, family, false,
-            toBase: x => x * factor,      // e.g., inches to feet: x * (1/12)
-            fromBase: x => x / factor);   // e.g., feet to inches: x / (1/12) = x * 12
+            x => x * factor,      // e.g., inches to feet: x * (1/12)
+            x => x / factor);   // e.g., feet to inches: x / (1/12) = x * 12
 
     /// <summary>
     /// Convert any value from this unit to any other unit in the same family
@@ -48,7 +48,7 @@ public record UnitDefinition(
 
     public double ConvertFromBase(double value)
     {
-        return FromBaseUnit?.Invoke(value) ?? throw new InvalidOperationException($"No FromBaseUnit function for {targetUnit.Symbol}");
+        return FromBaseUnit?.Invoke(value) ?? throw new InvalidOperationException($"No FromBaseUnit function for {Symbol}");
     }
 
     /// <summary>
