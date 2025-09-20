@@ -106,14 +106,7 @@ namespace FoundryRulesAndUnits.Units
 			return V;
 		}
 
-		/// <summary>
-		/// Legacy method - kept for backward compatibility
-		/// </summary>
-		public double Init(UnitCategory cat, double value, string? units)
-		{
-			// Delegate to new method
-			return Init(value, units);
-		}
+
 
 		/// <summary>
 		/// Convert current value to specified units using global unit system
@@ -123,14 +116,7 @@ namespace FoundryRulesAndUnits.Units
 			return GlobalUnitSystem.Convert(V, I, units);
 		}
 
-		/// <summary>
-		/// Legacy method - kept for backward compatibility
-		/// </summary>
-		public double ConvertAs(UnitCategory cat, string units)
-		{
-			var result = cat.ConvertFromBaseUnits(units, V);
-			return result.value;
-		}
+
 
 		public int ValueAsInt() { return (int)V; }
 		public double Value() { return V; }

@@ -64,7 +64,6 @@ namespace FoundryRulesAndUnits.Units
 
 		// Legacy compatibility methods
 		public double AsPixels() => As("px"); // Convert to pixels using unit system
-		public static UnitCategory Category() => new("Length"); // Legacy compatibility method
 		
 		public static bool operator <(Length left, Length right) => left.Value() < right.Value();
 		public static bool operator >(Length left, Length right) => left.Value() > right.Value();

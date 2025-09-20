@@ -65,12 +65,7 @@ namespace FoundryRulesAndUnits.Units
 
 		#endregion
 
-		#region Legacy Compatibility
 
-		[Obsolete("Use factory methods like FromOhms() for new code. This method is maintained for backward compatibility.")]
-		public static Func<UnitCategory> Category = () => new UnitCategory("Resistance");
-
-		#endregion
 	}
 
 	#region JSON Converter

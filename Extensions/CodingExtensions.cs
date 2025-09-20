@@ -68,7 +68,7 @@ namespace FoundryRulesAndUnits.Extensions
 			node.WriteTo(writer);
 			writer.Flush();
 
-			var options = UnitSpec.JsonHydrateOptions(true);
+			var options = JsonUtilities.CreateOptions(true);
 			var result = JsonSerializer.Deserialize(stream.ToArray(), type, options);
 			return result;
 		}
@@ -87,7 +87,7 @@ namespace FoundryRulesAndUnits.Extensions
 			node.WriteTo(writer);
 			writer.Flush();
 
-			var options = UnitSpec.JsonHydrateOptions(true);
+			var options = JsonUtilities.CreateOptions(true);
 			var result = JsonSerializer.Deserialize(stream.ToArray(), type, options);
 			return result!;
 		}
@@ -100,7 +100,7 @@ namespace FoundryRulesAndUnits.Extensions
 			node?.WriteTo(writer);
 			writer.Flush();
 
-			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var options = JsonUtilities.CreateOptions(includeFields);
 			var result = JsonSerializer.Deserialize<ContextWrapper<T>>(stream.ToArray(), options) as ContextWrapper<T>;
 
 			return result!;
@@ -121,7 +121,7 @@ namespace FoundryRulesAndUnits.Extensions
 			node?.WriteTo(writer);
 			writer.Flush();
 
-			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var options = JsonUtilities.CreateOptions(includeFields);
 			var result = JsonSerializer.Deserialize<T>(stream.ToArray(), options) as T;
 
 			return result!;
@@ -137,7 +137,7 @@ namespace FoundryRulesAndUnits.Extensions
 			writer.Flush();
 
 
-			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var options = JsonUtilities.CreateOptions(includeFields);
 			var result = JsonSerializer.Deserialize<List<T>>(stream.ToArray(), options) as List<T>;
 
 			return result!;
@@ -146,7 +146,7 @@ namespace FoundryRulesAndUnits.Extensions
 		public static string Dehydrate<T>(T target, bool includeFields) where T : class
 		{
 
-			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var options = JsonUtilities.CreateOptions(includeFields);
 			var result = JsonSerializer.Serialize(target, typeof(T), options);
 			return result;
 		}
@@ -154,7 +154,7 @@ namespace FoundryRulesAndUnits.Extensions
 		public static string Dehydrate(object target, Type type, bool includeFields)
 		{
 
-			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var options = JsonUtilities.CreateOptions(includeFields);
 			var result = JsonSerializer.Serialize(target, type, options);
 			return result;
 		}
@@ -162,14 +162,14 @@ namespace FoundryRulesAndUnits.Extensions
 		public static string DehydrateList<T>(List<T> target, bool includeFields) where T : class
 		{
 
-			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var options = JsonUtilities.CreateOptions(includeFields);
 			var result = JsonSerializer.Serialize(target, options);
 			return result;
 		}
 
 		public static string DehydrateWrapper<T>(ContextWrapper<T> target, bool includeFields) where T : class
 		{
-			var options = UnitSpec.JsonHydrateOptions(includeFields);
+			var options = JsonUtilities.CreateOptions(includeFields);
 			var result = JsonSerializer.Serialize(target, options);
 			return result!;
 		}

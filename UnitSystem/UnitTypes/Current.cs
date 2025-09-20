@@ -64,12 +64,7 @@ namespace FoundryRulesAndUnits.Units
 
 		#endregion
 
-		#region Legacy Compatibility
 
-		[Obsolete("Use factory methods like FromAmperes() for new code. This method is maintained for backward compatibility.")]
-		public static Func<UnitCategory> Category = () => new UnitCategory("Current");
-
-		#endregion
 	}
 
 	#region JSON Converter

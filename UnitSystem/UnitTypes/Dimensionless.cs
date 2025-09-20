@@ -75,32 +75,7 @@ namespace FoundryRulesAndUnits.Units
 
 		#endregion
 
-		#region Legacy Compatibility
 
-		[Obsolete("Use factory methods like FromValue() for new code. This method is maintained for backward compatibility.")]
-		public static Func<UnitCategory> Category = () =>
-		{
-			return new UnitCategory("dimensionless")
-				.Units("count", "Count")
-				.Units("ratio", "Ratio")
-				.Units("factor", "Factor")
-				.Units("scalar", "Scalar")
-				.Units("1", "Unity")
-				.Units("each", "Each")
-				.Units("pcs", "Pieces")
-				.Units("units", "Units")
-				// All these are equivalent - no conversions needed
-				.Conversion(1.0, "dimensionless", 1.0, "count")
-				.Conversion(1.0, "dimensionless", 1.0, "ratio")
-				.Conversion(1.0, "dimensionless", 1.0, "factor")
-				.Conversion(1.0, "dimensionless", 1.0, "scalar")
-				.Conversion(1.0, "dimensionless", 1.0, "1")
-				.Conversion(1.0, "dimensionless", 1.0, "each")
-				.Conversion(1.0, "dimensionless", 1.0, "pcs")
-				.Conversion(1.0, "dimensionless", 1.0, "units");
-		};
-
-		#endregion
 	}
 
 	#region JSON Converter

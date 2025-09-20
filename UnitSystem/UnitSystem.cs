@@ -51,6 +51,32 @@ public interface IUnitSystem
     /// Get the base unit for a family in the current system
     /// </summary>
     string GetBaseUnitForFamily(UnitFamilyName family);
+
+    // NEW: Enhanced services replacing UnitCategory functionality
+    
+    /// <summary>
+    /// Get detailed unit metadata for a specific unit symbol
+    /// Replaces UnitCategory unit lookup functionality
+    /// </summary>
+    UnitDefinition? GetUnitMetadata(string unitSymbol);
+
+    /// <summary>
+    /// Get all known units in the current system
+    /// Replaces UnitCategory.Units() functionality
+    /// </summary>
+    List<UnitDefinition> GetAllKnownUnits();
+
+    /// <summary>
+    /// Get all units organized by family
+    /// Replaces complex UnitCategory traversal
+    /// </summary>
+    Dictionary<UnitFamilyName, List<UnitDefinition>> GetAllUnitsByFamily();
+
+    /// <summary>
+    /// Get all valid unit symbols in the current system
+    /// Useful for validation and UI population
+    /// </summary>
+    List<string> GetAllUnitSymbols();
 }
 
 
@@ -153,21 +179,45 @@ public class UnitSystem : IUnitSystem
         return baseUnits.ContainsKey(family) ? baseUnits[family].Symbol : "";
     }
 
+    // NEW: Enhanced services replacing UnitCategory functionality
+    
     /// <summary>
-    /// Legacy Categories method - returns all unit categories for backward compatibility
+    /// Get detailed unit metadata for a specific unit symbol
+    /// Replaces UnitCategory unit lookup functionality
     /// </summary>
-    public List<UnitCategory> Categories()
+    public UnitDefinition? GetUnitMetadata(string unitSymbol)
     {
-        var categories = new List<UnitCategory>();
-        foreach (var family in Enum.GetValues<UnitFamilyName>())
-        {
-            if (family != UnitFamilyName.None)
-            {
-                categories.Add(new UnitCategory(family.ToString()));
-            }
-        }
-        return categories;
+        return _currentSystem.UnitDefinitions.FirstOrDefault(u => u.Symbol == unitSymbol);
     }
+
+    /// <summary>
+    /// Get all known units in the current system
+    /// Replaces UnitCategory.Units() functionality
+    /// </summary>
+    public List<UnitDefinition> GetAllKnownUnits()
+    {
+        return _currentSystem.UnitDefinitions.ToList();
+    }
+
+    /// <summary>
+    /// Get all units organized by family
+    /// Replaces complex UnitCategory traversal
+    /// </summary>
+    public Dictionary<UnitFamilyName, List<UnitDefinition>> GetAllUnitsByFamily()
+    {
+        return _currentSystem.GetAllUnitsByFamily();
+    }
+
+    /// <summary>
+    /// Get all valid unit symbols in the current system
+    /// Useful for validation and UI population
+    /// </summary>
+    public List<string> GetAllUnitSymbols()
+    {
+        return _currentSystem.GetAllUnitSymbols();
+    }
+
+
 }
 
 

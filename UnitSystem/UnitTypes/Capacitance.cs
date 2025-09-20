@@ -63,12 +63,7 @@ namespace FoundryRulesAndUnits.Units
 
 		#endregion
 
-		#region Legacy Compatibility
 
-		[Obsolete("Use factory methods like FromFarads() for new code. This method is maintained for backward compatibility.")]
-		public static Func<UnitCategory> Category = () => new UnitCategory("Capacitance");
-
-		#endregion
 	}
 
 	#region JSON Converter
