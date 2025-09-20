@@ -10,24 +10,23 @@ namespace FoundryRulesAndUnits.Units
 	public class Angle : MeasuredValue
 	{
 		/// <summary>
-		/// Backward compatibility constructor
-		/// </summary>
-		/// <summary>
-
 		/// Backward compatibility constructor for JSON deserialization
-
 		/// </summary>
-
 		public Angle(double value, string units) : base()
-
 		{
-
 			V = value;
-
 			I = units;
-
 			U = units;
+		}
 
+		/// <summary>
+		/// Backward compatibility constructor - single value assumes degrees
+		/// </summary>
+		public Angle(double value) : base()
+		{
+			V = value;
+			I = "deg"; // Default to degrees
+			U = "deg";
 		}
 
 		/// <summary>

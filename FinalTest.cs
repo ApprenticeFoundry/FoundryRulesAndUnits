@@ -89,9 +89,9 @@ class FinalArchitectureTest
             
             // Test generic Create<T> method
             Console.WriteLine("\n✓ Testing Generic Create<T> Method:");
-            var genericLength = unitSystem.Create<Length>(3.5, "ft");
-            var genericMass = unitSystem.Create<Mass>(500, "g");
-            var genericArea = unitSystem.Create<Area>(100, "cm2");
+            var genericLength = unitSystem.CreateLength(3.5, "ft");
+            var genericMass = unitSystem.CreateMass(500, "g");
+            var genericArea = unitSystem.CreateArea(100, "cm2");
             
             Console.WriteLine($"  Create<Length>: {genericLength.Value()} {genericLength.Internal()}");
             Console.WriteLine($"  Create<Mass>: {genericMass.Value()} {genericMass.Internal()}");

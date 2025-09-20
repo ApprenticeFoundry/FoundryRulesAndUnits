@@ -30,6 +30,14 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 		/// <summary>
+		/// Backward compatibility constructor - single value assumes base unit
+		/// </summary>
+		public Length(double value) : base()
+		{
+			V = value;
+			I = "m"; // Default to meters
+			U = "m";
+		}		/// <summary>
 		/// Constructor with UnitGroup injection - preferred for factory pattern
 		/// </summary>
 		public Length(UnitGroup unitGroup) : base(unitGroup)

@@ -166,14 +166,7 @@ public interface IUnitSystem
     /// </summary>
     MeasuredValue CreateMeasuredValue(UnitFamilyName family, double value = 0, string? units = null);
 
-    /// <summary>
-    /// Create a strongly-typed measurement instance using C# generics
-    /// </summary>
-    /// <typeparam name="T">The measurement type to create (must inherit from MeasuredValue)</typeparam>
-    /// <param name="value">Initial value</param>
-    /// <param name="units">Initial units</param>
-    /// <returns>Strongly-typed measurement instance</returns>
-    T Create<T>(double value = 0, string? units = null) where T : MeasuredValue;
+
 
     // Static convenience methods for quick unit system creation and measurement creation
 

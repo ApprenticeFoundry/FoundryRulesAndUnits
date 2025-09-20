@@ -10,10 +10,23 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(ForceJsonConverter))]
 	public class Force : MeasuredValue
 	{
+		/// <summary>
+		/// Constructor with UnitGroup injection - preferred
+		/// </summary>
 		public Force(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Force)
 				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Force}", nameof(unitGroup));
+		}
+
+		/// <summary>
+		/// Backward compatibility constructor for JSON deserialization
+		/// </summary>
+		public Force(double value, string units) : base()
+		{
+			V = value;
+			I = units;
+			U = units;
 		}
 
 		// Static factory methods removed - use UnitFactory instead

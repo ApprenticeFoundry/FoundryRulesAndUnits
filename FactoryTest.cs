@@ -25,13 +25,13 @@ namespace FoundryRulesAndUnits
             Console.WriteLine($"Area: {area.Value()} {area.Internal()}");
             
             // Test generic Create<T> method
-            var genericLength = unitSystem.Create<Length>(3.5, "ft");
+            var genericLength = unitSystem.CreateLength(3.5, "ft");
             Console.WriteLine($"Generic Length: {genericLength.Value()} {genericLength.Internal()}");
             
-            var genericMass = unitSystem.Create<Mass>(500, "g");
+            var genericMass = unitSystem.CreateMass(500, "g");
             Console.WriteLine($"Generic Mass: {genericMass.Value()} {genericMass.Internal()}");
             
-            var genericArea = unitSystem.Create<Area>(100, "cm²");
+            var genericArea = unitSystem.CreateArea(100, "cm²");
             Console.WriteLine($"Generic Area: {genericArea.Value()} {genericArea.Internal()}");
             
             // Test static unit system creation convenience methods

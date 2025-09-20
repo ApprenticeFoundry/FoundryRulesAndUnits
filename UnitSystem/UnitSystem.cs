@@ -295,17 +295,7 @@ public class UnitSystem : IUnitSystem
         return GetFactory().CreateMeasuredValue(family, value, units);
     }
 
-    /// <summary>
-    /// Create a strongly-typed measurement instance using C# generics
-    /// </summary>
-    /// <typeparam name="T">The measurement type to create (must inherit from MeasuredValue)</typeparam>
-    /// <param name="value">Initial value</param>
-    /// <param name="units">Initial units</param>
-    /// <returns>Strongly-typed measurement instance</returns>
-    public T Create<T>(double value = 0, string? units = null) where T : MeasuredValue
-    {
-        return GetFactory().Create<T>(value, units);
-    }
+
 
 }
 
