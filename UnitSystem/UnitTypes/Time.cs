@@ -9,30 +9,70 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(TimeJsonConverter))]
 	public class Time : MeasuredValue
 	{
-		public Time() : base(UnitFamilyName.Time) { }
+		#region Constructors and Factory Methods
 
-		public Time(double value, string? units = null) : base(UnitFamilyName.Time)
+		// UnitGroup injection constructor (preferred for new code)
+		public Time(UnitGroup unitGroup) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Time)
+				throw new ArgumentException($"Expected UnitGroup for Time, got {unitGroup.Family}");
+		}
+
+		public Time(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		{
+			if (unitGroup.Family != UnitFamilyName.Time)
+				throw new ArgumentException($"Expected UnitGroup for Time, got {unitGroup.Family}");
 			Init(value, units);
 		}
 
-		// Static properties
-		public static Time Zero => new(0, "s");
+		/// <summary>
+		/// Backward compatibility constructor for JSON deserialization
+		/// </summary>
+		public Time(double value, string units) : base()
+		{
+			V = value;
+			I = units;
+			U = units;
+		}
 
-		// Factory methods
-		public static Time FromSeconds(double value) => new(value, "s");
-		public static Time FromMinutes(double value) => new(value, "min");
-		public static Time FromHours(double value) => new(value, "hr");
-		public static Time FromDays(double value) => new(value, "day");
-		public static Time FromWeeks(double value) => new(value, "week");
-		public static Time FromYears(double value) => new(value, "year");
+		#endregion
 
 		// Arithmetic operators
-		public static Time operator +(Time left, Time right) => new(left.Value() + right.Value(), left.Internal());
-		public static Time operator -(Time left, Time right) => new(left.Value() - right.Value(), left.Internal());
-		public static Time operator *(Time time, double scalar) => new(time.Value() * scalar, time.Internal());
-		public static Time operator *(double scalar, Time time) => new(scalar * time.Value(), time.Internal());
-		public static Time operator /(Time time, double scalar) => new(time.Value() / scalar, time.Internal());
+		public static Time operator +(Time left, Time right) 
+		{
+			var result = new Time(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Time operator -(Time left, Time right) 
+		{
+			var result = new Time(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Time operator *(Time time, double scalar) 
+		{
+			var result = new Time(time.UnitGroup);
+			result.Init(time.Value() * scalar, time.Internal());
+			return result;
+		}
+		
+		public static Time operator *(double scalar, Time time) 
+		{
+			var result = new Time(time.UnitGroup);
+			result.Init(scalar * time.Value(), time.Internal());
+			return result;
+		}
+		
+		public static Time operator /(Time time, double scalar) 
+		{
+			var result = new Time(time.UnitGroup);
+			result.Init(time.Value() / scalar, time.Internal());
+			return result;
+		}
+		
 		public static double operator /(Time left, Time right) => left.Value() / right.Value();
 	}
 

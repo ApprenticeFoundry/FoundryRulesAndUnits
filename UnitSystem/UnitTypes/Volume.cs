@@ -9,27 +9,68 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(VolumeJsonConverter))]
 	public class Volume : MeasuredValue
 	{
-		public Volume() : base(UnitFamilyName.Volume) { }
+		/// <summary>
+		/// Gets the UnitFamily for Volume measurements
+		/// </summary>
+		public override UnitFamilyName UnitFamily => UnitFamilyName.Volume;
 
-		public Volume(double value, string? units = null) : base(UnitFamilyName.Volume)
+		/// <summary>
+		/// Constructor with UnitGroup injection - preferred
+		/// </summary>
+		public Volume(UnitGroup unitGroup) : base(unitGroup)
 		{
-			Init(value, units);
+			if (unitGroup.Family != UnitFamilyName.Volume)
+				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Volume}", nameof(unitGroup));
 		}
 
-		// Factory methods
-		public static Volume FromLiters(double value) => new(value, "L");
-		public static Volume FromMilliliters(double value) => new(value, "mL");
-		public static Volume FromGallons(double value) => new(value, "gal");
-		public static Volume FromCubicMeters(double value) => new(value, "m³");
-		public static Volume FromCubicInches(double value) => new(value, "in³");
-		public static Volume FromCubicFeet(double value) => new(value, "ft³");
+		/// <summary>
+		/// Backward compatibility constructor for JSON deserialization
+		/// </summary>
+		public Volume(double value, string units) : base()
+		{
+			V = value;
+			I = units;
+			U = units;
+		}
+
+		// Static factory methods removed - use UnitFactory instead
 
 		// Arithmetic operators
-		public static Volume operator +(Volume left, Volume right) => new(left.Value() + right.Value(), left.Internal());
-		public static Volume operator -(Volume left, Volume right) => new(left.Value() - right.Value(), left.Internal());
-		public static Volume operator *(Volume volume, double scalar) => new(volume.Value() * scalar, volume.Internal());
-		public static Volume operator *(double scalar, Volume volume) => new(scalar * volume.Value(), volume.Internal());
-		public static Volume operator /(Volume volume, double scalar) => new(volume.Value() / scalar, volume.Internal());
+		public static Volume operator +(Volume left, Volume right) 
+		{
+			var result = new Volume(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Volume operator -(Volume left, Volume right) 
+		{
+			var result = new Volume(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Volume operator *(Volume volume, double scalar) 
+		{
+			var result = new Volume(volume.UnitGroup);
+			result.Init(volume.Value() * scalar, volume.Internal());
+			return result;
+		}
+		
+		public static Volume operator *(double scalar, Volume volume) 
+		{
+			var result = new Volume(volume.UnitGroup);
+			result.Init(scalar * volume.Value(), volume.Internal());
+			return result;
+		}
+		
+		public static Volume operator /(Volume volume, double scalar) 
+		{
+			var result = new Volume(volume.UnitGroup);
+			result.Init(volume.Value() / scalar, volume.Internal());
+			return result;
+		}
+		
 		public static double operator /(Volume left, Volume right) => left.Value() / right.Value();
 	}
 

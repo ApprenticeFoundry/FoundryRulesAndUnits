@@ -10,94 +10,15 @@ namespace FoundryRulesAndUnits.Units.Specifications
     /// Uses base unit hub architecture - all conversions go through the base unit
     /// Appropriate for US structural and civil engineering applications
     /// </summary>
-    public class FPSUnitSystemSpecification : IUnitSystemSpecification
+    public class FPSUnitSystemSpecification : UnitSystemSpecificationBase
     {
-        public string SystemName => "FPS";
+        public override string SystemName => "FPS";
 
-        public string SystemDescription => "FPS (Foot-Pound-Second) Unit System with base units: feet, pounds, seconds, Fahrenheit, degrees, pounds-force";
+        public override string SystemDescription => "FPS (Foot-Pound-Second) Unit System with base units: feet, pounds, seconds, Fahrenheit, degrees, pounds-force";
 
-        private List<string>? _cachedUnitSymbols = null;
-        private List<UnitDefinition>? _cachedBaseUnits = null;
-        private Dictionary<UnitFamilyName, UnitDefinition>? _cachedBaseUnitsByFamily = null;
-        private Dictionary<UnitFamilyName, List<UnitDefinition>>? _cachedUnitsByFamily = null;
-        private Dictionary<string, UnitFamilyName>? _cachedSymbolToFamily = null;
+        public override UnitSystemType SystemType => UnitSystemType.FPS;
 
-        public List<string> GetAllUnitSymbols()
-        {
-            if (_cachedUnitSymbols == null)
-            {
-                _cachedUnitSymbols = new List<string>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    _cachedUnitSymbols.Add(unit.Symbol);
-                }
-            }
-            return _cachedUnitSymbols;
-        }
-
-        public List<UnitDefinition> GetAllBaseUnits()
-        {
-            if (_cachedBaseUnits == null)
-            {
-                _cachedBaseUnits = new List<UnitDefinition>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    if (unit.IsBaseUnit)
-                    {
-                        _cachedBaseUnits.Add(unit);
-                    }
-                }
-            }
-            return _cachedBaseUnits;
-        }
-
-        public Dictionary<UnitFamilyName, UnitDefinition> GetBaseUnitsByFamily()
-        {
-            if (_cachedBaseUnitsByFamily == null)
-            {
-                _cachedBaseUnitsByFamily = new Dictionary<UnitFamilyName, UnitDefinition>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    if (unit.IsBaseUnit)
-                    {
-                        _cachedBaseUnitsByFamily[unit.Family] = unit;
-                    }
-                }
-            }
-            return _cachedBaseUnitsByFamily;
-        }
-
-        public Dictionary<UnitFamilyName, List<UnitDefinition>> GetAllUnitsByFamily()
-        {
-            if (_cachedUnitsByFamily == null)
-            {
-                _cachedUnitsByFamily = new Dictionary<UnitFamilyName, List<UnitDefinition>>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    if (!_cachedUnitsByFamily.ContainsKey(unit.Family))
-                    {
-                        _cachedUnitsByFamily[unit.Family] = new List<UnitDefinition>();
-                    }
-                    _cachedUnitsByFamily[unit.Family].Add(unit);
-                }
-            }
-            return _cachedUnitsByFamily;
-        }
-
-        public Dictionary<string, UnitFamilyName> GetSymbolToFamilyMap()
-        {
-            if (_cachedSymbolToFamily == null)
-            {
-                _cachedSymbolToFamily = new Dictionary<string, UnitFamilyName>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    _cachedSymbolToFamily[unit.Symbol] = unit.Family;
-                }
-            }
-            return _cachedSymbolToFamily;
-        }
-
-        public IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+        public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
         {
             // Length units (feet as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("ft", "feet", UnitFamilyName.Length),

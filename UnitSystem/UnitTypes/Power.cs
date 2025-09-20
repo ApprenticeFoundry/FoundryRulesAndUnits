@@ -9,12 +9,49 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(PowerJsonConverter))]
 	public class Power : MeasuredValue
 	{
-		public Power() : base(UnitFamilyName.Power) { }
+		#region Constructors and Factory Methods
 
-		public Power(double value, string? units = null) : base(UnitFamilyName.Power)
+		// UnitGroup injection constructor (preferred for new code)
+		public Power(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Power)
+				throw new ArgumentException($"Expected UnitGroup for Power, got {unitGroup.Family}");
+		}
+
+		public Power(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Power)
+				throw new ArgumentException($"Expected UnitGroup for Power, got {unitGroup.Family}");
 			Init(value, units);
 		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Power(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
+		}
+
+		#endregion
 
 		// Factory methods
 		public static Power FromWatts(double value) => new(value, "W");

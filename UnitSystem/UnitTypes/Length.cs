@@ -9,13 +9,33 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Length : MeasuredValue
 	{
-		public Length() : base(UnitFamilyName.Length)
+		/// <summary>
+		/// Gets the UnitFamily for Length measurements
+		/// </summary>
+		public override UnitFamilyName UnitFamily => UnitFamilyName.Length;
+
+		/// <summary>
+		/// Static property for factory methods to determine unit family without instantiation
+		/// </summary>
+		public static UnitFamilyName StaticUnitFamily => UnitFamilyName.Length;
+
+		/// <summary>
+		/// Backward compatibility constructor for JSON deserialization
+		/// </summary>
+		public Length(double value, string units) : base()
 		{
+			V = value;
+			I = units;
+			U = units;
 		}
 
-		public Length(double value, string? units = null) : base(UnitFamilyName.Length)
+		/// <summary>
+		/// Constructor with UnitGroup injection - preferred for factory pattern
+		/// </summary>
+		public Length(UnitGroup unitGroup) : base(unitGroup)
 		{
-			Init(value, units); // Base class handles everything!
+			if (unitGroup.Family != UnitFamilyName.Length)
+				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Length}", nameof(unitGroup));
 		}
 
 		public Length Assign(double value, string? units)

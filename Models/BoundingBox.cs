@@ -5,13 +5,13 @@ namespace FoundryRulesAndUnits.Models
 	[System.Serializable]
 	public class BoundingBox
 	{
-		public Length width = new(10);
-		public Length height = new(20);
-		public Length depth = new(30);
+		public Length width = new(10, "m");
+		public Length height = new(20, "m");
+		public Length depth = new(30, "m");
 
-		public Length pinX = new(0);
-		public Length pinY = new(0);
-		public Length pinZ = new(0);
+		public Length pinX = new(0, "m");
+		public Length pinY = new(0, "m");
+		public Length pinZ = new(0, "m");
 
 		public double scaleX = 1;
 		public double scaleY = 1;

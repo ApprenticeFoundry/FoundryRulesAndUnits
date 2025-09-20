@@ -9,12 +9,49 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(DurationJsonConverter))]
 	public class Duration : MeasuredValue
 	{
-		public Duration() : base(UnitFamilyName.Duration) { }
+		#region Constructors and Factory Methods
 
-		public Duration(double value, string? units = null) : base(UnitFamilyName.Duration)
+		// UnitGroup injection constructor (preferred for new code)
+		public Duration(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Duration)
+				throw new ArgumentException($"Expected UnitGroup for Duration, got {unitGroup.Family}");
+		}
+
+		public Duration(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Duration)
+				throw new ArgumentException($"Expected UnitGroup for Duration, got {unitGroup.Family}");
 			Init(value, units);
 		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Duration(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
+		}
+
+		#endregion
 
 		// Static properties
 		public static Duration Zero => new(0, "s");

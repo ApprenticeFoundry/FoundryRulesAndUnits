@@ -1,5 +1,6 @@
 using FoundryRulesAndUnits.Extensions;
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -18,7 +19,7 @@ namespace FoundryRulesAndUnits.Units
 	}
 
 
-    [JsonDerivedType(typeof(Temperature))]
+	[JsonDerivedType(typeof(Temperature))]
 	[JsonDerivedType(typeof(Length))]
 	[JsonDerivedType(typeof(Angle))]
 	[JsonDerivedType(typeof(Area))]
@@ -43,61 +44,60 @@ namespace FoundryRulesAndUnits.Units
 		public string U = "";  //reporting  input and output units
 		protected UnitFamilyName F = UnitFamilyName.None;
 
-		// Global unit system - handles ALL unit conversions (no more singleton!)
-		private static IUnitSystem _globalUnitSystem = new UnitSystem();
-		protected static IUnitSystem GlobalUnitSystem => _globalUnitSystem;
+		// UnitGroup injection - contains all unit conversion logic for this family
+		protected UnitGroup _unitGroup;
 
 		/// <summary>
-		/// Public access to the global unit system for extensions and other code
+		/// Gets the UnitFamily for this measurement type
+		/// Override in derived classes to specify the correct family
 		/// </summary>
-		public static IUnitSystem GlobalSystem => _globalUnitSystem;
+		public virtual UnitFamilyName UnitFamily => UnitFamilyName.None;
 
 		/// <summary>
-		/// Set the global unit system for all MeasuredValue instances
-		/// Call once at application startup
+		/// Constructor with UnitGroup injection - preferred for new code
+		/// Use UnitFactory to create instances with proper UnitGroup injection
 		/// </summary>
-		public static void SetGlobalUnitSystem(IUnitSystem unitSystem)
+		public MeasuredValue(UnitGroup unitGroup)
 		{
-			_globalUnitSystem = unitSystem ?? throw new ArgumentNullException(nameof(unitSystem));
-		}
-
-		/// <summary>
-		/// Set the global unit system type for all MeasuredValue instances
-		/// Call once at application startup
-		/// </summary>
-		public static void SetGlobalUnitSystem(UnitSystemType systemType)
-		{
-			_globalUnitSystem.Apply(systemType);
-		}
-
-		public MeasuredValue(UnitFamilyName unitFamily)
-		{
-			F = unitFamily;
+			_unitGroup = unitGroup ?? throw new ArgumentNullException(nameof(unitGroup));
+			F = unitGroup.Family;
 			V = default!;
-			// Set internal units to base unit of current system
-			I = GlobalUnitSystem.GetBaseUnitForFamily(unitFamily);
+			// Set internal units to base unit from injected UnitGroup
+			I = unitGroup.BaseUnit.Symbol;
 			U = I; // Default display units to base units
 		}
 
-
 		/// <summary>
-		/// Initialize with value and units using the global unit system
+		/// Parameterless constructor for JSON deserialization only
+		/// WARNING: UnitGroup will be null - conversion methods will have limited functionality
+		/// </summary>
+		protected MeasuredValue()
+		{
+			_unitGroup = null!; // Will be null for JSON deserialization
+			F = UnitFamilyName.None;
+			V = default!;
+			I = "";
+			U = "";
+		}
+			/// <summary>
+		/// Initialize with value and units using injected UnitGroup
 		/// </summary>
 		public double Init(double value, string? units = null)
 		{
-			units = units ?? GlobalUnitSystem.GetBaseUnitForFamily(F);
-			
+			// Use injected UnitGroup - all family conversions handled here
+			units = units ?? _unitGroup.BaseUnit.Symbol;
+
 			// Validate unit belongs to this family
-			if (!GlobalUnitSystem.IsValidUnit(units, F))
+			if (!_unitGroup.IsValidUnit(units))
 				throw new ArgumentException($"{units} is not a valid unit for {F}");
-			
+
 			U = units;
-			I = GlobalUnitSystem.GetBaseUnitForFamily(F);
-			
-			// Convert to base units for internal storage
+			I = _unitGroup.BaseUnit.Symbol;
+
+			// Convert to base units for internal storage using UnitGroup
 			if (I != U)
 			{
-				V = GlobalUnitSystem.Convert(value, U, I);
+				V = _unitGroup.Convert(value, U, I);
 			}
 			else
 			{
@@ -106,17 +106,22 @@ namespace FoundryRulesAndUnits.Units
 			return V;
 		}
 
-
-
 		/// <summary>
-		/// Convert current value to specified units using global unit system
+		/// Convert current value to specified units using injected UnitGroup
 		/// </summary>
 		public virtual double As(string units)
 		{
-			return GlobalUnitSystem.Convert(V, I, units);
+			if (_unitGroup != null)
+			{
+				// Use injected UnitGroup - all family conversions handled here
+				return _unitGroup.Convert(V, I, units);
+			}
+			else
+			{
+				// Minimal fallback for JSON deserialization - same unit only
+				return units == I ? V : throw new InvalidOperationException($"Unit conversion requires UnitGroup injection. Cannot convert from {I} to {units}");
+			}
 		}
-
-
 
 		public int ValueAsInt() { return (int)V; }
 		public double Value() { return V; }
@@ -143,6 +148,17 @@ namespace FoundryRulesAndUnits.Units
 		// {
 		// 	return default!;
 		// }
+
+		/// <summary>
+		/// Public property to access the injected UnitGroup
+		/// </summary>
+		public UnitGroup UnitGroup
+		{
+			get
+			{
+				return _unitGroup ?? throw new InvalidOperationException("MeasuredValue must have an injected UnitGroup. Use UnitFactory to create instances.");
+			}
+		}
 
 		/// <summary>
 		/// Checks if this MeasuredValue is compatible with another for mathematical operations
@@ -182,24 +198,24 @@ namespace FoundryRulesAndUnits.Units
 
 			return operation switch
 			{
-				"+" or "-" when thisType == otherType => 
+				"+" or "-" when thisType == otherType =>
 					UnitOperationResult.Valid($"Can {operation} same unit types: {thisType.Name}", thisType),
-				
-				"+" or "-" when thisType != otherType => 
+
+				"+" or "-" when thisType != otherType =>
 					UnitOperationResult.Invalid($"Cannot {operation} different unit types: {thisType.Name} {operation} {otherType.Name}"),
-				
-				"*" when thisType == typeof(Length) && otherType == typeof(Length) => 
+
+				"*" when thisType == typeof(Length) && otherType == typeof(Length) =>
 					UnitOperationResult.Valid("Length * Length = Area", typeof(Area)),
-				
-				"/" when thisType == typeof(Length) && otherType == typeof(Time) => 
+
+				"/" when thisType == typeof(Length) && otherType == typeof(Time) =>
 					UnitOperationResult.Valid("Length / Time = Speed", typeof(Speed)),
-				
-				"/" when thisType == otherType => 
+
+				"/" when thisType == otherType =>
 					UnitOperationResult.Valid($"{thisType.Name} / {otherType.Name} = dimensionless ratio", typeof(Dimensionless)),
-				
-				"*" or "/" => 
+
+				"*" or "/" =>
 					UnitOperationResult.Warning($"Multiplication/division of {thisType.Name} * {otherType.Name} - result type unclear"),
-				
+
 				_ => UnitOperationResult.Invalid($"Unknown operation: {operation}")
 			};
 		}
@@ -225,6 +241,7 @@ namespace FoundryRulesAndUnits.Units
 			return $"{Value()}({Internal()}) {Units()}";
 		}
 
+		[SuppressMessage("Trimming", "IL2070:DynamicallyAccessedMembers", Justification = "Legacy JSON deserialization requires backward compatibility constructors")]
 		public static T ReadJSON<T>(ref Utf8JsonReader reader, Type typeToConvert) where T : MeasuredValue
 		{
 			double value = 0;
@@ -273,6 +290,7 @@ namespace FoundryRulesAndUnits.Units
 
 	public class MeasuredValueJsonConverter : JsonConverter<MeasuredValue>
 	{
+		[SuppressMessage("Trimming", "IL2070:DynamicallyAccessedMembers", Justification = "Legacy JSON deserialization")]
 		public override MeasuredValue Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
 			return MeasuredValue.ReadJSON<MeasuredValue>(ref reader, typeToConvert);

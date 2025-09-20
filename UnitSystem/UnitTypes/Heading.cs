@@ -12,11 +12,44 @@ namespace FoundryRulesAndUnits.Units
 	{
 		#region Constructors and Factory Methods
 
-		public Heading() : base(UnitFamilyName.Heading) { }
+		// UnitGroup injection constructor (preferred for new code)
+		public Heading(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Heading)
+				throw new ArgumentException($"Expected UnitGroup for Heading, got {unitGroup.Family}");
+		}
 
-		public Heading(double value, string? units = null) : base(UnitFamilyName.Heading)
+		public Heading(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Heading)
+				throw new ArgumentException($"Expected UnitGroup for Heading, got {unitGroup.Family}");
 			Init(value, units);
+		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Heading(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
 		}
 
 		// Factory methods for common heading units
@@ -27,11 +60,7 @@ namespace FoundryRulesAndUnits.Units
 		#endregion
 
 		#region Unit Conversion
-
-		public override double As(string units)
-		{
-			return GlobalUnitSystem.Convert(Value(), Internal(), units);
-		}
+		// As() method inherited from MeasuredValue with UnitGroup conversion
 
 		#endregion
 
@@ -70,7 +99,7 @@ namespace FoundryRulesAndUnits.Units
 
 		public Heading Degrees(double value)
 		{
-			V = GlobalUnitSystem.Convert(value, "deg", Internal());
+			V = _unitGroup.Convert(value, "deg", Internal());
 			return this;
 		}
 

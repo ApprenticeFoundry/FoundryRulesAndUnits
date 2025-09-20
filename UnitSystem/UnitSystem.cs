@@ -7,80 +7,6 @@ using FoundryRulesAndUnits.Units.Specifications;
 namespace FoundryRulesAndUnits.Units;
 
 /// <summary>
-/// Unified IUnitSystem interface providing complete unit system functionality
-/// Replaces the previous UnitSystemService singleton pattern with a cleaner approach
-/// </summary>
-public interface IUnitSystem
-{
-    /// <summary>
-    /// Current active unit system specification
-    /// </summary>
-    IUnitSystemSpecification Current { get; }
-
-    /// <summary>
-    /// Currently active system type
-    /// </summary>
-    UnitSystemType ActiveType { get; }
-
-    /// <summary>
-    /// Set/change the unit system type
-    /// </summary>
-    void Apply(UnitSystemType systemType);
-
-    /// <summary>
-    /// Convert value between any two units in the current system
-    /// </summary>
-    double Convert(double value, string fromUnit, string toUnit);
-
-    /// <summary>
-    /// Check if a unit is valid in the current system
-    /// </summary>
-    bool IsValidUnit(string unit);
-
-    /// <summary>
-    /// Check if a unit belongs to the specified family
-    /// </summary>
-    bool IsValidUnit(string unit, UnitFamilyName family);
-
-    /// <summary>
-    /// Get all units for a specific family in the current system
-    /// </summary>
-    List<string> GetUnitsForFamily(UnitFamilyName family);
-
-    /// <summary>
-    /// Get the base unit for a family in the current system
-    /// </summary>
-    string GetBaseUnitForFamily(UnitFamilyName family);
-
-    // NEW: Enhanced services replacing UnitCategory functionality
-    
-    /// <summary>
-    /// Get detailed unit metadata for a specific unit symbol
-    /// Replaces UnitCategory unit lookup functionality
-    /// </summary>
-    UnitDefinition? GetUnitMetadata(string unitSymbol);
-
-    /// <summary>
-    /// Get all known units in the current system
-    /// Replaces UnitCategory.Units() functionality
-    /// </summary>
-    List<UnitDefinition> GetAllKnownUnits();
-
-    /// <summary>
-    /// Get all units organized by family
-    /// Replaces complex UnitCategory traversal
-    /// </summary>
-    Dictionary<UnitFamilyName, List<UnitDefinition>> GetAllUnitsByFamily();
-
-    /// <summary>
-    /// Get all valid unit symbols in the current system
-    /// Useful for validation and UI population
-    /// </summary>
-    List<string> GetAllUnitSymbols();
-}
-
-
-/// <summary>
 /// Complete UnitSystem implementation with all conversion functionality
 /// No longer depends on UnitSystemService - everything is self-contained
 /// </summary>
@@ -107,6 +33,11 @@ public class UnitSystem : IUnitSystem
     public UnitSystem(UnitSystemType systemType)
     {
         Apply(systemType);
+    }
+
+    public static List<UnitFamilyName> GetAllUnitFamilies()
+    {
+        return Enum.GetValues<UnitFamilyName>().Where(f => f != UnitFamilyName.None).ToList();
     }
 
     /// <summary>
@@ -165,7 +96,7 @@ public class UnitSystem : IUnitSystem
     public List<string> GetUnitsForFamily(UnitFamilyName family)
     {
         var unitsByFamily = _currentSystem.GetAllUnitsByFamily();
-        return unitsByFamily.ContainsKey(family) 
+        return unitsByFamily.ContainsKey(family)
             ? unitsByFamily[family].Select(u => u.Symbol).ToList()
             : new List<string>();
     }
@@ -180,7 +111,7 @@ public class UnitSystem : IUnitSystem
     }
 
     // NEW: Enhanced services replacing UnitCategory functionality
-    
+
     /// <summary>
     /// Get detailed unit metadata for a specific unit symbol
     /// Replaces UnitCategory unit lookup functionality
@@ -217,6 +148,164 @@ public class UnitSystem : IUnitSystem
         return _currentSystem.GetAllUnitSymbols();
     }
 
+    // NEW: Factory methods for simplified measurement creation
+
+    private UnitFactory? _cachedFactory;
+
+    /// <summary>
+    /// Create a UnitFactory for this unit system for advanced usage
+    /// </summary>
+    public UnitFactory GetFactory()
+    {
+        // Cache the factory to avoid recreating UnitGroups repeatedly
+        if (_cachedFactory == null || _cachedFactory.SystemType != ActiveType)
+        {
+            _cachedFactory = new UnitFactory(ActiveType);
+        }
+        return _cachedFactory;
+    }
+
+    // Quick measurement creation methods using the current system
+
+    /// <summary>
+    /// Create a Length measurement with the current unit system
+    /// </summary>
+    public Length CreateLength(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateLength(value, units);
+    }
+
+    /// <summary>
+    /// Create an Angle measurement with the current unit system
+    /// </summary>
+    public Angle CreateAngle(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateAngle(value, units);
+    }
+
+    /// <summary>
+    /// Create a Temperature measurement with the current unit system
+    /// </summary>
+    public Temperature CreateTemperature(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateTemperature(value, units);
+    }
+
+    /// <summary>
+    /// Create a Mass measurement with the current unit system
+    /// </summary>
+    public Mass CreateMass(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateMass(value, units);
+    }
+
+    /// <summary>
+    /// Create a Time measurement with the current unit system
+    /// </summary>
+    public Time CreateTime(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateTime(value, units);
+    }
+
+    /// <summary>
+    /// Create a Speed measurement with the current unit system
+    /// </summary>
+    public Speed CreateSpeed(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateSpeed(value, units);
+    }
+
+    /// <summary>
+    /// Create an Area measurement with the current unit system
+    /// </summary>
+    public Area CreateArea(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateArea(value, units);
+    }
+
+    /// <summary>
+    /// Create a Volume measurement with the current unit system
+    /// </summary>
+    public Volume CreateVolume(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateVolume(value, units);
+    }
+
+    /// <summary>
+    /// Create a Force measurement with the current unit system
+    /// </summary>
+    public Force CreateForce(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateForce(value, units);
+    }
+
+    /// <summary>
+    /// Create a Power measurement with the current unit system
+    /// </summary>
+    public Power CreatePower(double value = 0, string? units = null)
+    {
+        return GetFactory().CreatePower(value, units);
+    }
+
+    /// <summary>
+    /// Create a Voltage measurement with the current unit system
+    /// </summary>
+    public Voltage CreateVoltage(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateVoltage(value, units);
+    }
+
+    /// <summary>
+    /// Create a Current measurement with the current unit system
+    /// </summary>
+    public Current CreateCurrent(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateCurrent(value, units);
+    }
+
+    /// <summary>
+    /// Create a Resistance measurement with the current unit system
+    /// </summary>
+    public Resistance CreateResistance(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateResistance(value, units);
+    }
+
+    /// <summary>
+    /// Create a Capacitance measurement with the current unit system
+    /// </summary>
+    public Capacitance CreateCapacitance(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateCapacitance(value, units);
+    }
+
+    /// <summary>
+    /// Create a Frequency measurement with the current unit system
+    /// </summary>
+    public Frequency CreateFrequency(double value = 0, string? units = null)
+    {
+        return GetFactory().CreateFrequency(value, units);
+    }
+
+    /// <summary>
+    /// Create a generic MeasuredValue for any unit family
+    /// </summary>
+    public MeasuredValue CreateMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
+    {
+        return GetFactory().CreateMeasuredValue(family, value, units);
+    }
+
+    /// <summary>
+    /// Create a strongly-typed measurement instance using C# generics
+    /// </summary>
+    /// <typeparam name="T">The measurement type to create (must inherit from MeasuredValue)</typeparam>
+    /// <param name="value">Initial value</param>
+    /// <param name="units">Initial units</param>
+    /// <returns>Strongly-typed measurement instance</returns>
+    public T Create<T>(double value = 0, string? units = null) where T : MeasuredValue
+    {
+        return GetFactory().Create<T>(value, units);
+    }
 
 }
 

@@ -9,13 +9,34 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Mass : MeasuredValue
 	{
-		public Mass() : base(UnitFamilyName.Mass)
+		/// <summary>
+		/// Gets the UnitFamily for Mass measurements
+		/// </summary>
+		public override UnitFamilyName UnitFamily => UnitFamilyName.Mass;
+
+		/// <summary>
+		/// Backward compatibility constructor for JSON deserialization
+		/// </summary>
+
+		public Mass(double value, string units) : base()
+
 		{
+
+			V = value;
+
+			I = units;
+
+			U = units;
+
 		}
 
-		public Mass(double value, string? units = null) : base(UnitFamilyName.Mass)
+		/// <summary>
+		/// Constructor with UnitGroup injection - preferred
+		/// </summary>
+		public Mass(UnitGroup unitGroup) : base(unitGroup)
 		{
-			Init(value, units); // Base class handles everything!
+			if (unitGroup.Family != UnitFamilyName.Mass)
+				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Mass}", nameof(unitGroup));
 		}
 
 		public Mass Assign(double value, string? units)
@@ -32,43 +53,45 @@ namespace FoundryRulesAndUnits.Units
 
 		public Mass Copy()
 		{
-			return new Mass(Value(), Internal());
+			var copy = new Mass(UnitGroup);
+			copy.Init(Value(), Internal());
+			return copy;
 		}
 
-		public static Mass FromKilograms(double v)
-		{
-			return new Mass(v, "kg");
-		}
-
-		public static Mass FromGrams(double v)
-		{
-			return new Mass(v, "g");
-		}
-
-		public static Mass FromPounds(double v)
-		{
-			return new Mass(v, "lb");
-		}
-
-		public static Mass FromOunces(double v)
-		{
-			return new Mass(v, "oz");
-		}
-
-		public static Mass FromTons(double v)
-		{
-			return new Mass(v, "t");
-		}
+		// Static factory methods removed - use UnitFactory instead
 
 		// As() method inherited from MeasuredValue - no override needed!
 
 		public static bool operator <(Mass left, Mass right) => left.Value() < right.Value();
 		public static bool operator >(Mass left, Mass right) => left.Value() > right.Value();
 
-		public static Mass operator +(Mass left, Mass right) => new(left.Value() + right.Value(), left.Internal());
-		public static Mass operator -(Mass left, Mass right) => new(left.Value() - right.Value(), left.Internal());
-		public static Mass operator *(double left, Mass right) => new(left * right.Value(), right.Internal());
-		public static Mass operator /(Mass left, double right) => new(left.Value() / right, left.Internal());
+		public static Mass operator +(Mass left, Mass right) 
+		{
+			var result = new Mass(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Mass operator -(Mass left, Mass right) 
+		{
+			var result = new Mass(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Mass operator *(double left, Mass right) 
+		{
+			var result = new Mass(right.UnitGroup);
+			result.Init(left * right.Value(), right.Internal());
+			return result;
+		}
+		
+		public static Mass operator /(Mass left, double right) 
+		{
+			var result = new Mass(left.UnitGroup);
+			result.Init(left.Value() / right, left.Internal());
+			return result;
+		}
 
 		public static double operator /(Mass left, Mass right) => left.Value() / right.Value();
 	}

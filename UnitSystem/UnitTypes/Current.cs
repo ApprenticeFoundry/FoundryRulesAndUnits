@@ -11,11 +11,44 @@ namespace FoundryRulesAndUnits.Units
 	{
 		#region Constructors and Factory Methods
 
-		public Current() : base(UnitFamilyName.Current) { }
+		// UnitGroup injection constructor (preferred for new code)
+		public Current(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Current)
+				throw new ArgumentException($"Expected UnitGroup for Current, got {unitGroup.Family}");
+		}
 
-		public Current(double value, string? units = null) : base(UnitFamilyName.Current)
+		public Current(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Current)
+				throw new ArgumentException($"Expected UnitGroup for Current, got {unitGroup.Family}");
 			Init(value, units);
+		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Current(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
 		}
 
 		// Factory methods for common current units
@@ -29,11 +62,7 @@ namespace FoundryRulesAndUnits.Units
 		#endregion
 
 		#region Unit Conversion
-
-		public override double As(string units)
-		{
-			return GlobalUnitSystem.Convert(Value(), Internal(), units);
-		}
+		// As() method inherited from MeasuredValue with UnitGroup conversion
 
 		#endregion
 

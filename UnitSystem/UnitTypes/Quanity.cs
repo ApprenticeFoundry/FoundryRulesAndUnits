@@ -9,12 +9,49 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(QuantityJsonConverter))]
 	public class Quantity : MeasuredValue
 	{
-		public Quantity() : base(UnitFamilyName.Quantity) { }
+		#region Constructors and Factory Methods
 
-		public Quantity(double value, string? units = null) : base(UnitFamilyName.Quantity)
+		// UnitGroup injection constructor (preferred for new code)
+		public Quantity(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Quantity)
+				throw new ArgumentException($"Expected UnitGroup for Quantity, got {unitGroup.Family}");
+		}
+
+		public Quantity(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Quantity)
+				throw new ArgumentException($"Expected UnitGroup for Quantity, got {unitGroup.Family}");
 			Init(value, units);
 		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Quantity(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
+		}
+
+		#endregion
 
 		// Factory methods
 		public static Quantity FromEach(double value) => new(value, "ea");

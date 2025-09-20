@@ -10,25 +10,74 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(TemperatureJsonConverter))]
 	public class Temperature : MeasuredValue
 	{
-		public Temperature() : base(UnitFamilyName.Temperature) { }
+		/// <summary>
+		/// Backward compatibility constructor
+		/// </summary>
+		/// <summary>
 
-		public Temperature(double value, string? units = null) : base(UnitFamilyName.Temperature)
+		/// Backward compatibility constructor for JSON deserialization
+
+		/// </summary>
+
+		public Temperature(double value, string units) : base()
+
 		{
-			Init(value, units);
+
+			V = value;
+
+			I = units;
+
+			U = units;
+
 		}
 
-		// Factory methods
-		public static Temperature FromCelsius(double value) => new(value, "°C");
-		public static Temperature FromFahrenheit(double value) => new(value, "°F");
-		public static Temperature FromKelvin(double value) => new(value, "K");
-		public static Temperature FromRankine(double value) => new(value, "°R");
+		/// <summary>
+		/// Constructor with UnitGroup injection - use UnitFactory to create instances
+		/// </summary>
+		public Temperature(UnitGroup unitGroup) : base(unitGroup)
+		{
+			if (unitGroup.Family != UnitFamilyName.Temperature)
+				throw new ArgumentException($"UnitGroup must be for Temperature family, got {unitGroup.Family}");
+		}
+
+		// Static factory methods removed - use UnitFactory instead
 
 		// Arithmetic operators
-		public static Temperature operator +(Temperature left, Temperature right) => new(left.Value() + right.Value(), left.Internal());
-		public static Temperature operator -(Temperature left, Temperature right) => new(left.Value() - right.Value(), left.Internal());
-		public static Temperature operator *(Temperature temp, double scalar) => new(temp.Value() * scalar, temp.Internal());
-		public static Temperature operator *(double scalar, Temperature temp) => new(scalar * temp.Value(), temp.Internal());
-		public static Temperature operator /(Temperature temp, double scalar) => new(temp.Value() / scalar, temp.Internal());
+		public static Temperature operator +(Temperature left, Temperature right) 
+		{
+			var result = new Temperature(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Temperature operator -(Temperature left, Temperature right) 
+		{
+			var result = new Temperature(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Temperature operator *(Temperature temp, double scalar) 
+		{
+			var result = new Temperature(temp.UnitGroup);
+			result.Init(temp.Value() * scalar, temp.Internal());
+			return result;
+		}
+		
+		public static Temperature operator *(double scalar, Temperature temp) 
+		{
+			var result = new Temperature(temp.UnitGroup);
+			result.Init(scalar * temp.Value(), temp.Internal());
+			return result;
+		}
+		
+		public static Temperature operator /(Temperature temp, double scalar) 
+		{
+			var result = new Temperature(temp.UnitGroup);
+			result.Init(temp.Value() / scalar, temp.Internal());
+			return result;
+		}
+		
 		public static double operator /(Temperature left, Temperature right) => left.Value() / right.Value();
 	}
 

@@ -11,11 +11,44 @@ namespace FoundryRulesAndUnits.Units
 	{
 		#region Constructors and Factory Methods
 
-		public DataStorage() : base(UnitFamilyName.DataStorage) { }
+		// UnitGroup injection constructor (preferred for new code)
+		public DataStorage(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.DataStorage)
+				throw new ArgumentException($"Expected UnitGroup for DataStorage, got {unitGroup.Family}");
+		}
 
-		public DataStorage(double value, string? units = null) : base(UnitFamilyName.DataStorage)
+		public DataStorage(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.DataStorage)
+				throw new ArgumentException($"Expected UnitGroup for DataStorage, got {unitGroup.Family}");
 			Init(value, units);
+		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public DataStorage(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
 		}
 
 		// Factory methods for common data storage units
@@ -33,11 +66,7 @@ namespace FoundryRulesAndUnits.Units
 		#endregion
 
 		#region Unit Conversion
-
-		public override double As(string units)
-		{
-			return GlobalUnitSystem.Convert(Value(), Internal(), units);
-		}
+		// As() method inherited from MeasuredValue with UnitGroup conversion
 
 		#endregion
 

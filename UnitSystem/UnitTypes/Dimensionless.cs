@@ -11,11 +11,28 @@ namespace FoundryRulesAndUnits.Units
 	{
 		#region Constructors and Factory Methods
 
-		public Dimensionless() : base(UnitFamilyName.None) { }
+		// UnitGroup injection constructor (preferred for new code)
+		public Dimensionless(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.None)
+				throw new ArgumentException($"Expected UnitGroup for None (Dimensionless), got {unitGroup.Family}");
+		}
 
-		public Dimensionless(double value, string? units = null) : base(UnitFamilyName.None)
+		public Dimensionless(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.None)
+				throw new ArgumentException($"Expected UnitGroup for None (Dimensionless), got {unitGroup.Family}");
 			Init(value, units ?? "dimensionless");
+		}
+
+		/// <summary>
+		/// Backward compatibility constructor for JSON deserialization
+		/// </summary>
+		public Dimensionless(double value, string units) : base()
+		{
+			V = value;
+			I = units;
+			U = units;
 		}
 
 		// Factory methods for common dimensionless values
@@ -31,10 +48,7 @@ namespace FoundryRulesAndUnits.Units
 
 		#region Unit Conversion
 
-		public override double As(string units)
-		{
-			return GlobalUnitSystem.Convert(Value(), Internal(), units);
-		}
+		// As() method inherited from MeasuredValue with UnitGroup conversion
 
 		#endregion
 

@@ -10,29 +10,54 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(ForceJsonConverter))]
 	public class Force : MeasuredValue
 	{
-		public Force() : base(UnitFamilyName.Force) { }
-
-		public Force(double value, string? units = null) : base(UnitFamilyName.Force)
+		public Force(UnitGroup unitGroup) : base(unitGroup)
 		{
-			Init(value, units);
+			if (unitGroup.Family != UnitFamilyName.Force)
+				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Force}", nameof(unitGroup));
 		}
 
-		// Factory methods
-		public static Force FromNewtons(double value) => new(value, "N");
-		public static Force FromKilonewtons(double value) => new(value, "kN");
-		public static Force FromPoundForce(double value) => new(value, "lbf");
-		public static Force FromDynes(double value) => new(value, "dyne");
+		// Static factory methods removed - use UnitFactory instead
 
 		// Comparison operators
 		public static bool operator <(Force left, Force right) => left.Value() < right.Value();
 		public static bool operator >(Force left, Force right) => left.Value() > right.Value();
 
 		// Arithmetic operators
-		public static Force operator +(Force left, Force right) => new(left.Value() + right.Value(), left.Internal());
-		public static Force operator -(Force left, Force right) => new(left.Value() - right.Value(), left.Internal());
-		public static Force operator *(Force force, double scalar) => new(force.Value() * scalar, force.Internal());
-		public static Force operator *(double scalar, Force force) => new(scalar * force.Value(), force.Internal());
-		public static Force operator /(Force force, double scalar) => new(force.Value() / scalar, force.Internal());
+		public static Force operator +(Force left, Force right) 
+		{
+			var result = new Force(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Force operator -(Force left, Force right) 
+		{
+			var result = new Force(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Force operator *(Force force, double scalar) 
+		{
+			var result = new Force(force.UnitGroup);
+			result.Init(force.Value() * scalar, force.Internal());
+			return result;
+		}
+		
+		public static Force operator *(double scalar, Force force) 
+		{
+			var result = new Force(force.UnitGroup);
+			result.Init(scalar * force.Value(), force.Internal());
+			return result;
+		}
+		
+		public static Force operator /(Force force, double scalar) 
+		{
+			var result = new Force(force.UnitGroup);
+			result.Init(force.Value() / scalar, force.Internal());
+			return result;
+		}
+		
 		public static double operator /(Force left, Force right) => left.Value() / right.Value();
 	}
 

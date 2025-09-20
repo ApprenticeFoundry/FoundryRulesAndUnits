@@ -11,12 +11,44 @@ namespace FoundryRulesAndUnits.Units
 	{
 		#region Constructors and Factory Methods
 
-		public Resistance() : base(UnitFamilyName.Resistance) { }
+		// UnitGroup injection constructor (preferred for new code)
+		public Resistance(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Resistance)
+				throw new ArgumentException($"Expected UnitGroup for Resistance, got {unitGroup.Family}");
+		}
 
-
-		public Resistance(double value, string? units = null) : base(UnitFamilyName.Resistance)
+		public Resistance(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Resistance)
+				throw new ArgumentException($"Expected UnitGroup for Resistance, got {unitGroup.Family}");
 			Init(value, units);
+		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Resistance(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
 		}
 
 		// Factory methods for common resistance units
@@ -30,11 +62,7 @@ namespace FoundryRulesAndUnits.Units
 		#endregion
 
 		#region Unit Conversion
-
-		public override double As(string units)
-		{
-			return GlobalUnitSystem.Convert(Value(), Internal(), units);
-		}
+		// As() method inherited from MeasuredValue with UnitGroup conversion
 
 		#endregion
 

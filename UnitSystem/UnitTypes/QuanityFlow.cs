@@ -11,11 +11,44 @@ namespace FoundryRulesAndUnits.Units
 	{
 		#region Constructors and Factory Methods
 
-		public QuantityFlow() : base(UnitFamilyName.QuantityFlow) { }
+		// UnitGroup injection constructor (preferred for new code)
+		public QuantityFlow(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.QuantityFlow)
+				throw new ArgumentException($"Expected UnitGroup for QuantityFlow, got {unitGroup.Family}");
+		}
 
-		public QuantityFlow(double value, string? units = null) : base(UnitFamilyName.QuantityFlow)
+		public QuantityFlow(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.QuantityFlow)
+				throw new ArgumentException($"Expected UnitGroup for QuantityFlow, got {unitGroup.Family}");
 			Init(value, units);
+		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public QuantityFlow(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
 		}
 
 		// Factory methods for common quantity flow units
@@ -29,11 +62,7 @@ namespace FoundryRulesAndUnits.Units
 		#endregion
 
 		#region Unit Conversion
-
-		public override double As(string units)
-		{
-			return GlobalUnitSystem.Convert(Value(), Internal(), units);
-		}
+		// As() method inherited from MeasuredValue with UnitGroup conversion
 
 		#endregion
 

@@ -9,27 +9,74 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(AreaJsonConverter))]
 	public class Area : MeasuredValue
 	{
-		public Area() : base(UnitFamilyName.Area) { }
+		/// <summary>
+		/// Gets the UnitFamily for Area measurements
+		/// </summary>
+		public override UnitFamilyName UnitFamily => UnitFamilyName.Area;
 
-		public Area(double value, string? units = null) : base(UnitFamilyName.Area)
+		/// <summary>
+		/// Backward compatibility constructor for JSON deserialization
+		/// </summary>
+
+		public Area(double value, string units) : base()
+
 		{
-			Init(value, units);
+
+			V = value;
+
+			I = units;
+
+			U = units;
+
 		}
 
-		// Factory methods
-		public static Area FromSquareMeters(double value) => new(value, "m²");
-		public static Area FromSquareKilometers(double value) => new(value, "km²");
-		public static Area FromSquareFeet(double value) => new(value, "ft²");
-		public static Area FromSquareInches(double value) => new(value, "in²");
-		public static Area FromAcres(double value) => new(value, "ac");
-		public static Area FromHectares(double value) => new(value, "ha");
+		/// <summary>
+		/// Constructor with UnitGroup injection - preferred
+		/// </summary>
+		public Area(UnitGroup unitGroup) : base(unitGroup)
+		{
+			if (unitGroup.Family != UnitFamilyName.Area)
+				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Area}", nameof(unitGroup));
+		}
+
+		// Static factory methods removed - use UnitFactory instead
 
 		// Arithmetic operators
-		public static Area operator +(Area left, Area right) => new(left.Value() + right.Value(), left.Internal());
-		public static Area operator -(Area left, Area right) => new(left.Value() - right.Value(), left.Internal());
-		public static Area operator *(Area area, double scalar) => new(area.Value() * scalar, area.Internal());
-		public static Area operator *(double scalar, Area area) => new(scalar * area.Value(), area.Internal());
-		public static Area operator /(Area area, double scalar) => new(area.Value() / scalar, area.Internal());
+		public static Area operator +(Area left, Area right) 
+		{
+			var result = new Area(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Area operator -(Area left, Area right) 
+		{
+			var result = new Area(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Area operator *(Area area, double scalar) 
+		{
+			var result = new Area(area.UnitGroup);
+			result.Init(area.Value() * scalar, area.Internal());
+			return result;
+		}
+		
+		public static Area operator *(double scalar, Area area) 
+		{
+			var result = new Area(area.UnitGroup);
+			result.Init(scalar * area.Value(), area.Internal());
+			return result;
+		}
+		
+		public static Area operator /(Area area, double scalar) 
+		{
+			var result = new Area(area.UnitGroup);
+			result.Init(area.Value() / scalar, area.Internal());
+			return result;
+		}
+		
 		public static double operator /(Area left, Area right) => left.Value() / right.Value();
 	}
 

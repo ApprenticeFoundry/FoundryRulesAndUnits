@@ -20,6 +20,8 @@ public interface IUnitSystemSpecification
     /// </summary>
     List<UnitDefinition> GetAllBaseUnits();
 
+    Dictionary<UnitFamilyName, UnitGroup> GetUnitGroups();
+
     /// <summary>
     /// Gets a dictionary mapping each unit family to its base unit (cached for performance)
     /// </summary>

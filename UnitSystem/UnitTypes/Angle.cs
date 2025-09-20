@@ -9,13 +9,34 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Angle : MeasuredValue
 	{
-		public Angle() : base(UnitFamilyName.Angle)
+		/// <summary>
+		/// Backward compatibility constructor
+		/// </summary>
+		/// <summary>
+
+		/// Backward compatibility constructor for JSON deserialization
+
+		/// </summary>
+
+		public Angle(double value, string units) : base()
+
 		{
+
+			V = value;
+
+			I = units;
+
+			U = units;
+
 		}
 
-		public Angle(double value, string? units = null) : base(UnitFamilyName.Angle)
+		/// <summary>
+		/// Constructor with UnitGroup injection - use UnitFactory to create instances
+		/// </summary>
+		public Angle(UnitGroup unitGroup) : base(unitGroup)
 		{
-			Init(value, units); // Base class handles everything!
+			if (unitGroup.Family != UnitFamilyName.Angle)
+				throw new ArgumentException($"UnitGroup must be for Angle family, got {unitGroup.Family}");
 		}
 
 		public Angle Assign(double value, string? units)

@@ -9,12 +9,49 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(FrequencyJsonConverter))]
 	public class Frequency : MeasuredValue
 	{
-		public Frequency() : base(UnitFamilyName.Frequency) { }
+		#region Constructors and Factory Methods
 
-		public Frequency(double value, string? units = null) : base(UnitFamilyName.Frequency)
+		// UnitGroup injection constructor (preferred for new code)
+		public Frequency(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Frequency)
+				throw new ArgumentException($"Expected UnitGroup for Frequency, got {unitGroup.Family}");
+		}
+
+		public Frequency(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Frequency)
+				throw new ArgumentException($"Expected UnitGroup for Frequency, got {unitGroup.Family}");
 			Init(value, units);
 		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Frequency(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
+		}
+
+		#endregion
 
 		// Factory methods
 		public static Frequency FromHertz(double value) => new(value, "Hz");

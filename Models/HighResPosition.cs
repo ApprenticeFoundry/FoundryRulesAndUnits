@@ -20,13 +20,13 @@ namespace FoundryRulesAndUnits.Models
 
 		public HighResPosition()
 		{
-			xLoc = new(0);
-			yLoc = new(0);
-			zLoc = new(0);
+			xLoc = new(0, "m");
+			yLoc = new(0, "m");
+			zLoc = new(0, "m");
 
-			xAng = new(0);
-			yAng = new(0);
-			zAng = new(0);
+			xAng = new(0, "deg");
+			yAng = new(0, "deg");
+			zAng = new(0, "deg");
 		}
 		public HighResPosition(HighResPosition source): this()
 		{

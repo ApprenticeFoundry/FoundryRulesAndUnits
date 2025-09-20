@@ -9,12 +9,49 @@ namespace FoundryRulesAndUnits.Units
 	[JsonConverter(typeof(DistanceJsonConverter))]
 	public class Distance : MeasuredValue
 	{
-		public Distance() : base(UnitFamilyName.Length) { }
+		#region Constructors and Factory Methods
 
-		public Distance(double value, string? units = null) : base(UnitFamilyName.Length)
+		// UnitGroup injection constructor (preferred for new code)
+		public Distance(UnitGroup unitGroup) : base(unitGroup) 
+		{ 
+			if (unitGroup.Family != UnitFamilyName.Length)
+				throw new ArgumentException($"Expected UnitGroup for Length, got {unitGroup.Family}");
+		}
+
+		public Distance(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
 		{
+			if (unitGroup.Family != UnitFamilyName.Length)
+				throw new ArgumentException($"Expected UnitGroup for Length, got {unitGroup.Family}");
 			Init(value, units);
 		}
+
+		/// <summary>
+
+
+		/// Backward compatibility constructor for JSON deserialization
+
+
+		/// </summary>
+
+
+		public Distance(double value, string units) : base()
+
+
+		{
+
+
+			V = value;
+
+
+			I = units;
+
+
+			U = units;
+
+
+		}
+
+		#endregion
 
 		// Factory methods
 		public static Distance FromMeters(double value) => new(value, "m");
