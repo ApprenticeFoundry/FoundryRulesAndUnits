@@ -33,7 +33,7 @@ namespace FoundryRulesAndUnits.Units
 
 		public override double As(string units)
 		{
-			return UnitSystemService.Instance.Convert(Value(), Internal(), units);
+			return GlobalUnitSystem.Convert(Value(), Internal(), units);
 		}
 
 		#endregion

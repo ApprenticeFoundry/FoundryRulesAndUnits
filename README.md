@@ -7,7 +7,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 ## 🚀 Key Features
 
 ### **Modern Architecture**
-- **Global Unit System Service**: Centralized, singleton-based unit management
+- **Unified Unit System**: Clean IUnitSystem interface handling all conversions (no singletons!)
 - **Type-Safe Conversions**: Strongly-typed unit operations with compile-time safety
 - **24+ Unit Types**: Complete coverage from Length/Mass to specialized units like Frequency/Resistance
 - **Factory Methods**: Intuitive construction with `Length.FromMeters(5.0)`, `Temperature.FromCelsius(25)`
@@ -40,9 +40,12 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 ```csharp
 using FoundryRulesAndUnits.Units;
 
-// Initialize the unit system (do this once at app startup)
-var unitService = UnitSystemService.Instance;
-unitService.SetUnitSystem(UnitSystemType.SI); // or MKS, CGS, FPS, IPS, mmNs
+// Initialize the global unit system (do this once at app startup)
+MeasuredValue.SetGlobalUnitSystem(UnitSystemType.SI); // or MKS, CGS, FPS, IPS, mmNs
+
+// Alternatively, set it with a UnitSystem instance
+var unitSystem = new UnitSystem(UnitSystemType.SI);
+MeasuredValue.SetGlobalUnitSystem(unitSystem);
 ```
 
 ## 💡 Quick Start Examples
@@ -116,18 +119,21 @@ if (length1 > length2) {
 - JSON serialization support
 - Full backward compatibility
 
-### **Unit System Service**
+### **Unit System Management**
 ```csharp
-// Global service manages all conversions
-var service = UnitSystemService.Instance;
+// Global unit system manages all conversions (clean, no singletons!)
+var globalSystem = MeasuredValue.GlobalSystem;
 
 // Switch unit systems at runtime
-service.SetUnitSystem(UnitSystemType.FPS);  // Switch to Imperial
-var converted = service.Convert(100, "m", "ft"); // 328.084 feet
+globalSystem.Apply(UnitSystemType.FPS);  // Switch to Imperial
+var converted = globalSystem.Convert(100, "m", "ft"); // 328.084 feet
+
+// Or change globally for all measurements
+MeasuredValue.SetGlobalUnitSystem(UnitSystemType.FPS);
 
 // Validation
-bool isValid = service.IsValidUnit("mph");  // true
-var units = service.GetUnitsForFamily(UnitFamilyName.Length); // ["m", "cm", "km", ...]
+bool isValid = globalSystem.IsValidUnit("mph");  // true
+var units = globalSystem.GetUnitsForFamily(UnitFamilyName.Length); // ["m", "cm", "km", ...]
 ```
 
 ## 🔄 Backward Compatibility
@@ -136,7 +142,7 @@ var units = service.GetUnitsForFamily(UnitFamilyName.Length); // ["m", "cm", "km
 For existing codebases, we provide full compatibility:
 
 ```csharp
-// Legacy UnitSystem class (wraps modern service)
+// Legacy UnitSystem class (now contains all functionality directly)
 var unitSystem = new UnitSystem(UnitSystemType.MKS);
 unitSystem.Apply(UnitSystemType.SI);
 var categories = unitSystem.Categories();
@@ -147,7 +153,7 @@ bool known = UnitCategoryExtensions.IsKnownUnit("mph");   // true
 
 // Legacy Length methods
 var length = new Length(100, "m");
-var category = Length.Category();        // UnitCategory
+var category = Length.Category();        // UnitCategory (marked obsolete)
 double pixels = length.AsPixels();       // UI conversion
 ```
 
@@ -172,9 +178,9 @@ var convertedValue = length.As("ft");   // Same conversion API
 ### **Key Benefits of Modern Classes**
 1. **Factory Methods**: `Length.FromMeters()` vs `new Length(value, "m")`
 2. **Enhanced Operators**: Full arithmetic support including scalar operations
-3. **Better Performance**: Direct integration with UnitSystemService
+3. **Better Performance**: Direct integration with global unit system
 4. **JSON Serialization**: Built-in JSON converter support
-5. **Cleaner Code**: No UnitCategory dependencies
+5. **Cleaner Code**: No singleton dependencies, clean architecture!
 
 ## 🧪 Testing & Validation
 
@@ -186,9 +192,9 @@ var convertedValue = length.As("ft");   // Same conversion API
 ### **Validation Examples**
 ```csharp
 // Unit system validation
-var service = UnitSystemService.Instance;
-Debug.Assert(service.IsValidUnit("kg"));
-Debug.Assert(service.Convert(1000, "g", "kg") == 1.0);
+var globalSystem = MeasuredValue.GlobalSystem;
+Debug.Assert(globalSystem.IsValidUnit("kg"));
+Debug.Assert(globalSystem.Convert(1000, "g", "kg") == 1.0);
 
 // Measurement validation  
 var length = Length.FromKilometers(1.0);
@@ -200,10 +206,9 @@ Debug.Assert(Math.Abs(length.As("m") - 1000.0) < 0.001);
 ```
 FoundryRulesAndUnits/
 ├── UnitSystem/
-│   ├── UnitSystemService.cs          # Global conversion service
-│   ├── MeasuredValue.cs              # Base class for all units
+│   ├── MeasuredValue.cs              # Base class with global unit system
+│   ├── UnitSystem.cs                 # Complete IUnitSystem implementation  
 │   ├── UnitCategory.cs               # Legacy compatibility (+ enum)
-│   ├── UnitSystem.cs                 # Legacy wrapper class
 │   ├── Specifications/               # Unit system definitions
 │   │   ├── IUnitSystemSpecification.cs
 │   │   ├── SISpecification.cs        # SI unit definitions

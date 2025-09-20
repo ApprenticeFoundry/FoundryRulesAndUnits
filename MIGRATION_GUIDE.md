@@ -1,4 +1,14 @@
-# FoundryRulesAndUnits Migration Guide
+# FoundryRulesAndUnits Migr### Basic Setup
+```csharp
+using FoundryRulesAndUnits.Units;
+
+// Initialize once at application startup
+MeasuredValue.SetGlobalUnitSystem(UnitSystemType.SI);  // Choose your system
+
+// Or with a UnitSystem instance
+var unitSystem = new UnitSystem(UnitSystemType.SI);
+MeasuredValue.SetGlobalUnitSystem(unitSystem);
+```ide
 
 ## 🎯 Overview
 
@@ -7,7 +17,7 @@ This guide helps you migrate from legacy unit systems to the modernized FoundryR
 ## 🚀 What's New in v8.0
 
 ### **Major Architectural Changes**
-- **Global UnitSystemService**: Centralized singleton replacing distributed UnitCategory classes
+- **Unified Unit System**: Clean IUnitSystem interface replacing singleton patterns
 - **Modernized Unit Classes**: **ALL 24/24 classes updated** with clean factory methods and enhanced operators
 - **Enhanced Performance**: Direct conversion paths eliminating lookup overhead
 - **Type Safety**: Strongly-typed operations with compile-time validation
@@ -117,9 +127,12 @@ var categories = unitSystem.Categories();
 
 **Modern Initialization:**
 ```csharp
-var service = UnitSystemService.Instance;
-service.SetUnitSystem(UnitSystemType.MKS);
-// Categories available through service.Current if needed
+// Global approach (recommended)
+MeasuredValue.SetGlobalUnitSystem(UnitSystemType.MKS);
+
+// Or instance approach
+var unitSystem = new UnitSystem(UnitSystemType.MKS);
+var categories = unitSystem.Categories();
 ```
 
 ## 📋 Unit Class Status Reference
@@ -188,13 +201,13 @@ var unitSystem = new UnitSystem();
 unitSystem.Apply(UnitSystemType.SI);
 
 // After (both work, choose your preference)
-// Option A: Legacy wrapper (for existing code)
+// Option A: Legacy instance approach (for existing code)
 var unitSystem = new UnitSystem();
 unitSystem.Apply(UnitSystemType.SI);
 
-// Option B: Modern service (for new code)
-var service = UnitSystemService.Instance;
-service.SetUnitSystem(UnitSystemType.SI);
+// Option B: Modern global approach (for new code)
+MeasuredValue.SetGlobalUnitSystem(UnitSystemType.SI);
+var globalSystem = MeasuredValue.GlobalSystem;
 ```
 
 ## 🧪 Testing Your Migration
@@ -204,8 +217,8 @@ service.SetUnitSystem(UnitSystemType.SI);
 public void ValidateMigration()
 {
     // 1. Unit system initialization
-    var service = UnitSystemService.Instance;
-    service.SetUnitSystem(UnitSystemType.SI);
+    MeasuredValue.SetGlobalUnitSystem(UnitSystemType.SI);
+    var globalSystem = MeasuredValue.GlobalSystem;
     
     // 2. Basic conversions work
     var length = Length.FromMeters(1000);

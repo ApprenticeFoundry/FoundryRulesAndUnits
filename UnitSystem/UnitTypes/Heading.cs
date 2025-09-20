@@ -30,7 +30,7 @@ namespace FoundryRulesAndUnits.Units
 
 		public override double As(string units)
 		{
-			return UnitSystemService.Instance.Convert(Value(), Internal(), units);
+			return GlobalUnitSystem.Convert(Value(), Internal(), units);
 		}
 
 		#endregion
@@ -70,7 +70,7 @@ namespace FoundryRulesAndUnits.Units
 
 		public Heading Degrees(double value)
 		{
-			V = UnitSystemService.Instance.Convert(value, "deg", Internal());
+			V = GlobalUnitSystem.Convert(value, "deg", Internal());
 			return this;
 		}
 
@@ -106,7 +106,7 @@ namespace FoundryRulesAndUnits.Units
 		#region Legacy Compatibility
 
 		[Obsolete("Use factory methods like FromDegrees() for new code. This method is maintained for backward compatibility.")]
-		public static Func<UnitCategory> Category = () => new UnitCategory("Heading");
+		public static UnitCategory Category { get; } = new UnitCategory("Heading");
 
 		#endregion
 	}

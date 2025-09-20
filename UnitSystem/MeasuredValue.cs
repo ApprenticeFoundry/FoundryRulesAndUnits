@@ -43,15 +43,39 @@ namespace FoundryRulesAndUnits.Units
 		public string U = "";  //reporting  input and output units
 		protected UnitFamilyName F = UnitFamilyName.None;
 
-		// Global unit system service - handles ALL unit conversions
-		protected static UnitSystemService Service => UnitSystemService.Instance;
+		// Global unit system - handles ALL unit conversions (no more singleton!)
+		private static IUnitSystem _globalUnitSystem = new UnitSystem();
+		protected static IUnitSystem GlobalUnitSystem => _globalUnitSystem;
+
+		/// <summary>
+		/// Public access to the global unit system for extensions and other code
+		/// </summary>
+		public static IUnitSystem GlobalSystem => _globalUnitSystem;
+
+		/// <summary>
+		/// Set the global unit system for all MeasuredValue instances
+		/// Call once at application startup
+		/// </summary>
+		public static void SetGlobalUnitSystem(IUnitSystem unitSystem)
+		{
+			_globalUnitSystem = unitSystem ?? throw new ArgumentNullException(nameof(unitSystem));
+		}
+
+		/// <summary>
+		/// Set the global unit system type for all MeasuredValue instances
+		/// Call once at application startup
+		/// </summary>
+		public static void SetGlobalUnitSystem(UnitSystemType systemType)
+		{
+			_globalUnitSystem.Apply(systemType);
+		}
 
 		public MeasuredValue(UnitFamilyName unitFamily)
 		{
 			F = unitFamily;
 			V = default!;
 			// Set internal units to base unit of current system
-			I = Service.GetBaseUnitForFamily(unitFamily);
+			I = GlobalUnitSystem.GetBaseUnitForFamily(unitFamily);
 			U = I; // Default display units to base units
 		}
 
@@ -61,19 +85,19 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public double Init(double value, string? units = null)
 		{
-			units = units ?? Service.GetBaseUnitForFamily(F);
+			units = units ?? GlobalUnitSystem.GetBaseUnitForFamily(F);
 			
 			// Validate unit belongs to this family
-			if (!Service.IsValidUnit(units, F))
+			if (!GlobalUnitSystem.IsValidUnit(units, F))
 				throw new ArgumentException($"{units} is not a valid unit for {F}");
 			
 			U = units;
-			I = Service.GetBaseUnitForFamily(F);
+			I = GlobalUnitSystem.GetBaseUnitForFamily(F);
 			
 			// Convert to base units for internal storage
 			if (I != U)
 			{
-				V = Service.Convert(value, U, I);
+				V = GlobalUnitSystem.Convert(value, U, I);
 			}
 			else
 			{
@@ -96,7 +120,7 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public virtual double As(string units)
 		{
-			return Service.Convert(V, I, units);
+			return GlobalUnitSystem.Convert(V, I, units);
 		}
 
 		/// <summary>

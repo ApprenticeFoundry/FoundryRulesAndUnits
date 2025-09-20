@@ -19,9 +19,9 @@ namespace FoundryRulesAndUnits.Extensions
             if (string.IsNullOrEmpty(unit))
                 return UnitFamilyName.None;
 
-            // Use the global unit system service to determine unit family
-            var service = UnitSystemService.Instance;
-            var symbolToFamilyMap = service.Current.GetSymbolToFamilyMap();
+            // Use the global unit system to determine unit family
+            var globalSystem = MeasuredValue.GlobalSystem;
+            var symbolToFamilyMap = globalSystem.Current.GetSymbolToFamilyMap();
             
             if (symbolToFamilyMap.TryGetValue(unit, out var family))
             {
@@ -39,8 +39,8 @@ namespace FoundryRulesAndUnits.Extensions
             if (string.IsNullOrEmpty(unit))
                 return false;
 
-            var service = UnitSystemService.Instance;
-            return service.IsValidUnit(unit);
+            var globalSystem = MeasuredValue.GlobalSystem;
+            return globalSystem.IsValidUnit(unit);
         }
 
         /// <summary>
@@ -48,8 +48,8 @@ namespace FoundryRulesAndUnits.Extensions
         /// </summary>
         public static List<string> GetUnitsForFamily(UnitFamilyName family)
         {
-            var service = UnitSystemService.Instance;
-            return service.GetUnitsForFamily(family);
+            var globalSystem = MeasuredValue.GlobalSystem;
+            return globalSystem.GetUnitsForFamily(family);
         }
 
         /// <summary>
