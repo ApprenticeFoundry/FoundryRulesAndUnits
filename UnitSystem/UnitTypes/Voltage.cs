@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(VoltageJsonConverter))]
 	public class Voltage : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -90,23 +87,5 @@ namespace FoundryRulesAndUnits.Units
 
 	}
 
-	#region JSON Converter
 
-	public class VoltageJsonConverter : JsonConverter<Voltage>
-	{
-		public override Voltage Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Voltage>(ref reader, typeToConvert);
-		}
-
-		public override void Write(Utf8JsonWriter writer, Voltage value, JsonSerializerOptions options)
-		{
-			writer.WriteStartObject();
-			writer.WriteNumber("value", value.Value());
-			writer.WriteString("units", value.Internal());
-			writer.WriteEndObject();
-		}
-	}
-
-	#endregion
 }

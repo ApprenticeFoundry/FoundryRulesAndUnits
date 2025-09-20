@@ -1,13 +1,10 @@
 using FoundryRulesAndUnits.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(HeadingJsonConverter))]
 	public class Heading : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -135,29 +132,5 @@ namespace FoundryRulesAndUnits.Units
 
 	}
 
-	#region JSON Converter
 
-	public class HeadingJsonConverter : JsonConverter<Heading>
-	{
-		public override Heading Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			using (JsonDocument doc = JsonDocument.ParseValue(ref reader))
-			{
-				var root = doc.RootElement;
-				var value = root.GetProperty("value").GetDouble();
-				var units = root.GetProperty("units").GetString();
-				return new Heading(value, units);
-			}
-		}
-
-		public override void Write(Utf8JsonWriter writer, Heading value, JsonSerializerOptions options)
-		{
-			writer.WriteStartObject();
-			writer.WriteNumber("value", value.Value());
-			writer.WriteString("units", value.Internal());
-			writer.WriteEndObject();
-		}
-	}
-
-	#endregion
 }

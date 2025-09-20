@@ -67,9 +67,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Length CreateLength(double value = 0, string? units = null)
         {
-            var length = new Length(_unitGroups[UnitFamilyName.Length]);
-            if (value != 0 || units != null)
-                length.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Length];
+            var length = new Length(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            length.Init(value, defaultUnit);
             return length;
         }
 
@@ -78,9 +79,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Angle CreateAngle(double value = 0, string? units = null)
         {
-            var angle = new Angle(_unitGroups[UnitFamilyName.Angle]);
-            if (value != 0 || units != null)
-                angle.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Angle];
+            var angle = new Angle(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            angle.Init(value, defaultUnit);
             return angle;
         }
 
@@ -89,9 +91,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Temperature CreateTemperature(double value = 0, string? units = null)
         {
-            var temperature = new Temperature(_unitGroups[UnitFamilyName.Temperature]);
-            if (value != 0 || units != null)
-                temperature.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Temperature];
+            var temperature = new Temperature(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            temperature.Init(value, defaultUnit);
             return temperature;
         }
 
@@ -100,9 +103,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Mass CreateMass(double value = 0, string? units = null)
         {
-            var mass = new Mass(_unitGroups[UnitFamilyName.Mass]);
-            if (value != 0 || units != null)
-                mass.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Mass];
+            var mass = new Mass(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            mass.Init(value, defaultUnit);
             return mass;
         }
 
@@ -111,9 +115,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Time CreateTime(double value = 0, string? units = null)
         {
-            var time = new Time(_unitGroups[UnitFamilyName.Time]);
-            if (value != 0 || units != null)
-                time.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Time];
+            var time = new Time(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            time.Init(value, defaultUnit);
             return time;
         }
 
@@ -122,9 +127,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Speed CreateSpeed(double value = 0, string? units = null)
         {
-            var speed = new Speed(_unitGroups[UnitFamilyName.Speed]);
-            if (value != 0 || units != null)
-                speed.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Speed];
+            var speed = new Speed(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            speed.Init(value, defaultUnit);
             return speed;
         }
 
@@ -133,9 +139,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Area CreateArea(double value = 0, string? units = null)
         {
-            var area = new Area(_unitGroups[UnitFamilyName.Area]);
-            if (value != 0 || units != null)
-                area.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Area];
+            var area = new Area(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            area.Init(value, defaultUnit);
             return area;
         }
 
@@ -144,9 +151,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Volume CreateVolume(double value = 0, string? units = null)
         {
-            var volume = new Volume(_unitGroups[UnitFamilyName.Volume]);
-            if (value != 0 || units != null)
-                volume.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Volume];
+            var volume = new Volume(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            volume.Init(value, defaultUnit);
             return volume;
         }
 
@@ -155,9 +163,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Force CreateForce(double value = 0, string? units = null)
         {
-            var force = new Force(_unitGroups[UnitFamilyName.Force]);
-            if (value != 0 || units != null)
-                force.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Force];
+            var force = new Force(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            force.Init(value, defaultUnit);
             return force;
         }
 
@@ -166,9 +175,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Current CreateCurrent(double value = 0, string? units = null)
         {
-            var current = new Current(_unitGroups[UnitFamilyName.Current]);
-            if (value != 0 || units != null)
-                current.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Current];
+            var current = new Current(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            current.Init(value, defaultUnit);
             return current;
         }
 
@@ -177,9 +187,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public DataFlow CreateDataFlow(double value = 0, string? units = null)
         {
-            var dataFlow = new DataFlow(_unitGroups[UnitFamilyName.DataFlow]);
-            if (value != 0 || units != null)
-                dataFlow.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.DataFlow];
+            var dataFlow = new DataFlow(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            dataFlow.Init(value, defaultUnit);
             return dataFlow;
         }
 
@@ -188,9 +199,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public DataStorage CreateDataStorage(double value = 0, string? units = null)
         {
-            var dataStorage = new DataStorage(_unitGroups[UnitFamilyName.DataStorage]);
-            if (value != 0 || units != null)
-                dataStorage.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.DataStorage];
+            var dataStorage = new DataStorage(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            dataStorage.Init(value, defaultUnit);
             return dataStorage;
         }
 
@@ -199,9 +211,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Frequency CreateFrequency(double value = 0, string? units = null)
         {
-            var frequency = new Frequency(_unitGroups[UnitFamilyName.Frequency]);
-            if (value != 0 || units != null)
-                frequency.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Frequency];
+            var frequency = new Frequency(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            frequency.Init(value, defaultUnit);
             return frequency;
         }
 
@@ -210,9 +223,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Percent CreatePercent(double value = 0, string? units = null)
         {
-            var percent = new Percent(_unitGroups[UnitFamilyName.Percent]);
-            if (value != 0 || units != null)
-                percent.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Percent];
+            var percent = new Percent(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            percent.Init(value, defaultUnit);
             return percent;
         }
 
@@ -221,9 +235,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Distance CreateDistance(double value = 0, string? units = null)
         {
-            var distance = new Distance(_unitGroups[UnitFamilyName.Length]);
-            if (value != 0 || units != null)
-                distance.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Length];
+            var distance = new Distance(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            distance.Init(value, defaultUnit);
             return distance;
         }
 
@@ -232,9 +247,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Power CreatePower(double value = 0, string? units = null)
         {
-            var power = new Power(_unitGroups[UnitFamilyName.Power]);
-            if (value != 0 || units != null)
-                power.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Power];
+            var power = new Power(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            power.Init(value, defaultUnit);
             return power;
         }
 
@@ -243,9 +259,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Voltage CreateVoltage(double value = 0, string? units = null)
         {
-            var voltage = new Voltage(_unitGroups[UnitFamilyName.Voltage]);
-            if (value != 0 || units != null)
-                voltage.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Voltage];
+            var voltage = new Voltage(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            voltage.Init(value, defaultUnit);
             return voltage;
         }
 
@@ -254,9 +271,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Resistance CreateResistance(double value = 0, string? units = null)
         {
-            var resistance = new Resistance(_unitGroups[UnitFamilyName.Resistance]);
-            if (value != 0 || units != null)
-                resistance.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Resistance];
+            var resistance = new Resistance(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            resistance.Init(value, defaultUnit);
             return resistance;
         }
 
@@ -265,9 +283,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Capacitance CreateCapacitance(double value = 0, string? units = null)
         {
-            var capacitance = new Capacitance(_unitGroups[UnitFamilyName.Capacitance]);
-            if (value != 0 || units != null)
-                capacitance.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Capacitance];
+            var capacitance = new Capacitance(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            capacitance.Init(value, defaultUnit);
             return capacitance;
         }
 
@@ -276,9 +295,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Duration CreateDuration(double value = 0, string? units = null)
         {
-            var duration = new Duration(_unitGroups[UnitFamilyName.Duration]);
-            if (value != 0 || units != null)
-                duration.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Duration];
+            var duration = new Duration(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            duration.Init(value, defaultUnit);
             return duration;
         }
 
@@ -287,9 +307,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Dimensionless CreateDimensionless(double value = 0, string? units = null)
         {
-            var dimensionless = new Dimensionless(_unitGroups[UnitFamilyName.None]);
-            if (value != 0 || units != null)
-                dimensionless.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.None];
+            var dimensionless = new Dimensionless(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            dimensionless.Init(value, defaultUnit);
             return dimensionless;
         }
 
@@ -298,9 +319,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Heading CreateHeading(double value = 0, string? units = null)
         {
-            var heading = new Heading(_unitGroups[UnitFamilyName.Heading]);
-            if (value != 0 || units != null)
-                heading.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Heading];
+            var heading = new Heading(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            heading.Init(value, defaultUnit);
             return heading;
         }
 
@@ -309,9 +331,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public Quantity CreateQuantity(double value = 0, string? units = null)
         {
-            var quantity = new Quantity(_unitGroups[UnitFamilyName.Quantity]);
-            if (value != 0 || units != null)
-                quantity.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.Quantity];
+            var quantity = new Quantity(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            quantity.Init(value, defaultUnit);
             return quantity;
         }
 
@@ -320,9 +343,10 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public QuantityFlow CreateQuantityFlow(double value = 0, string? units = null)
         {
-            var quantityFlow = new QuantityFlow(_unitGroups[UnitFamilyName.QuantityFlow]);
-            if (value != 0 || units != null)
-                quantityFlow.Init(value, units);
+            var unitGroup = _unitGroups[UnitFamilyName.QuantityFlow];
+            var quantityFlow = new QuantityFlow(unitGroup);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            quantityFlow.Init(value, defaultUnit);
             return quantityFlow;
         }
 
@@ -335,8 +359,8 @@ namespace FoundryRulesAndUnits.Units
                 throw new ArgumentException($"Unit family {family} not available in {_systemType} system");
 
             var measuredValue = new MeasuredValue(unitGroup);
-            if (value != 0 || units != null)
-                measuredValue.Init(value, units);
+            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
+            measuredValue.Init(value, defaultUnit);
             return measuredValue;
         }
 

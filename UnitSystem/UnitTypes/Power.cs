@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(PowerJsonConverter))]
 	public class Power : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -69,16 +66,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Power left, Power right) => left.Value() / right.Value();
 	}
 
-	public class PowerJsonConverter : JsonConverter<Power>
-	{
-		public override Power Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Power>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Power dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

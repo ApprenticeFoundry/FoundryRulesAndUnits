@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using FoundryRulesAndUnits.Extensions;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(TemperatureJsonConverter))]
 	public class Temperature : MeasuredValue
 	{
 		/// <summary>
@@ -81,16 +78,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Temperature left, Temperature right) => left.Value() / right.Value();
 	}
 
-	public class TemperatureJsonConverter : JsonConverter<Temperature>
-	{
-		public override Temperature Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Temperature>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Temperature dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

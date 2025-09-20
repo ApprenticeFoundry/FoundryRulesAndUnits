@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(CapacitanceJsonConverter))]
 	public class Capacitance : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -95,29 +92,5 @@ namespace FoundryRulesAndUnits.Units
 
 	}
 
-	#region JSON Converter
 
-	public class CapacitanceJsonConverter : JsonConverter<Capacitance>
-	{
-		public override Capacitance Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			using (JsonDocument doc = JsonDocument.ParseValue(ref reader))
-			{
-				var root = doc.RootElement;
-				var value = root.GetProperty("value").GetDouble();
-				var units = root.GetProperty("units").GetString();
-				return new Capacitance(value, units);
-			}
-		}
-
-		public override void Write(Utf8JsonWriter writer, Capacitance value, JsonSerializerOptions options)
-		{
-			writer.WriteStartObject();
-			writer.WriteNumber("value", value.Value());
-			writer.WriteString("units", value.Internal());
-			writer.WriteEndObject();
-		}
-	}
-
-	#endregion
 }

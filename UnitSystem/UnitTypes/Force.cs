@@ -1,13 +1,10 @@
 using FoundryRulesAndUnits.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(ForceJsonConverter))]
 	public class Force : MeasuredValue
 	{
 		/// <summary>
@@ -74,16 +71,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Force left, Force right) => left.Value() / right.Value();
 	}
 
-	public class ForceJsonConverter : JsonConverter<Force>
-	{
-		public override Force Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Force>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Force dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

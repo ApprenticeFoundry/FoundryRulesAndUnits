@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(AreaJsonConverter))]
 	public class Area : MeasuredValue
 	{
 		/// <summary>
@@ -80,16 +77,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Area left, Area right) => left.Value() / right.Value();
 	}
 
-	public class AreaJsonConverter : JsonConverter<Area>
-	{
-		public override Area Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Area>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Area dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

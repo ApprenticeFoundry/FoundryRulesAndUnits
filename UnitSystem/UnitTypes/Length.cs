@@ -1,8 +1,6 @@
 using FoundryRulesAndUnits.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
@@ -109,17 +107,6 @@ namespace FoundryRulesAndUnits.Units
 		public static Volume operator *(Length left, Area right) => new(left.Value() * right.Value(), "m3");
 	}
 
-	public class LengthJsonConverter : JsonConverter<Length>
-	{
-		public override Length Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Length>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Length dataValue, JsonSerializerOptions options)
-		{
-			//dataValue.V = 200;
-		}
-	}
 
 }

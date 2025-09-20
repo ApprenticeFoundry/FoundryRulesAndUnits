@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(VolumeJsonConverter))]
 	public class Volume : MeasuredValue
 	{
 		/// <summary>
@@ -74,16 +71,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Volume left, Volume right) => left.Value() / right.Value();
 	}
 
-	public class VolumeJsonConverter : JsonConverter<Volume>
-	{
-		public override Volume Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Volume>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Volume dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

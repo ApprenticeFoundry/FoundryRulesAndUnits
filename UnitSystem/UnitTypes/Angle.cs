@@ -1,8 +1,6 @@
 using FoundryRulesAndUnits.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
@@ -81,17 +79,6 @@ namespace FoundryRulesAndUnits.Units
 
 	}
 
-	public class AngleJsonConverter : JsonConverter<Angle>
-	{
-		public override Angle Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Angle>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Angle dataValue, JsonSerializerOptions options)
-		{
-			//dataValue.V = 200;
-		}
-	}
 
 }

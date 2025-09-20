@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(QuantityJsonConverter))]
 	public class Quantity : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -76,16 +73,5 @@ namespace FoundryRulesAndUnits.Units
 		public static QuantityFlow operator /(Quantity left, Time right) => new(left.Value() / right.Value(), "ea/s");
 	}
 
-	public class QuantityJsonConverter : JsonConverter<Quantity>
-	{
-		public override Quantity Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Quantity>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Quantity dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

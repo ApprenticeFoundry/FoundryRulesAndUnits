@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(FrequencyJsonConverter))]
 	public class Frequency : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -69,16 +66,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Frequency left, Frequency right) => left.Value() / right.Value();
 	}
 
-	public class FrequencyJsonConverter : JsonConverter<Frequency>
-	{
-		public override Frequency Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Frequency>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Frequency dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

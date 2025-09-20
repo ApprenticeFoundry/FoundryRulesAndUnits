@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(TimeJsonConverter))]
 	public class Time : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -76,16 +73,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Time left, Time right) => left.Value() / right.Value();
 	}
 
-	public class TimeJsonConverter : JsonConverter<Time>
-	{
-		public override Time Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Time>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Time dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

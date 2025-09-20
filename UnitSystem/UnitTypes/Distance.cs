@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(DistanceJsonConverter))]
 	public class Distance : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -77,16 +74,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Distance left, Distance right) => left.Value() / right.Value();
 	}
 
-	public class DistanceJsonConverter : JsonConverter<Distance>
-	{
-		public override Distance Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Distance>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Distance dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

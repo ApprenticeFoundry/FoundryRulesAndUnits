@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(SpeedJsonConverter))]
 	public class Speed : MeasuredValue
 	{
 		#region Constructors and Factory Methods
@@ -92,16 +89,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Speed left, Speed right) => left.Value() / right.Value();
 	}
 
-	public class SpeedJsonConverter : JsonConverter<Speed>
-	{
-		public override Speed Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Speed>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Speed dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

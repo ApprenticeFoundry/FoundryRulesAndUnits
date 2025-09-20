@@ -1,8 +1,6 @@
 using FoundryRulesAndUnits.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
@@ -96,16 +94,5 @@ namespace FoundryRulesAndUnits.Units
 		public static double operator /(Mass left, Mass right) => left.Value() / right.Value();
 	}
 
-	public class MassJsonConverter : JsonConverter<Mass>
-	{
-		public override Mass Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Mass>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Mass dataValue, JsonSerializerOptions options)
-		{
-			//dataValue.V = 200;
-		}
-	}
 }
