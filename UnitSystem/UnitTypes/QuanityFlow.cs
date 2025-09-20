@@ -1,40 +1,103 @@
 using System;
 using System.Collections.Generic;
-
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[JsonConverter(typeof(QuantityFlowJsonConverter))]
 	public class QuantityFlow : MeasuredValue
 	{
-		public static Func<UnitCategory> Category = () =>
-		{
-			return new UnitCategory("QuanityFlow");
-		};
+		#region Constructors and Factory Methods
 
-		public QuantityFlow() :
-			base(UnitFamilyName.QuantityFlow)
+		public QuantityFlow() : base(UnitFamilyName.QuantityFlow) { }
+
+		public QuantityFlow(double value, string? units = null) : base(UnitFamilyName.QuantityFlow)
 		{
+			Init(value, units);
 		}
 
-		public QuantityFlow(double value, string? units = null) :
-			base(UnitFamilyName.QuantityFlow)
-		{
-			Init(Category(), value, units);
-		}
+		// Factory methods for common quantity flow units
+		public static QuantityFlow FromUnitsPerSecond(double value) => new(value, "ea/s");
+		public static QuantityFlow FromUnitsPerMinute(double value) => new(value, "ea/min");
+		public static QuantityFlow FromUnitsPerHour(double value) => new(value, "ea/hr");
+		public static QuantityFlow FromItemsPerSecond(double value) => new(value, "items/s");
+		public static QuantityFlow FromItemsPerMinute(double value) => new(value, "items/min");
+		public static QuantityFlow FromItemsPerHour(double value) => new(value, "items/hr");
 
+		#endregion
 
+		#region Unit Conversion
 
 		public override double As(string units)
 		{
-			return ConvertAs(Category(), units);
+			return UnitSystemService.Instance.Convert(Value(), Internal(), units);
 		}
 
+		#endregion
 
-		public static QuantityFlow operator +(QuantityFlow left, QuantityFlow right) => new(left.Value() + right.Value(), left.Internal());
-		public static QuantityFlow operator -(QuantityFlow left, QuantityFlow right) => new(left.Value() - right.Value(), left.Internal());
+		#region Operators
 
+		public static QuantityFlow operator +(QuantityFlow left, QuantityFlow right)
+		{
+			var leftValue = left.As(left.Internal());
+			var rightValue = right.As(left.Internal());
+			return new QuantityFlow(leftValue + rightValue, left.Internal());
+		}
+
+		public static QuantityFlow operator -(QuantityFlow left, QuantityFlow right)
+		{
+			var leftValue = left.As(left.Internal());
+			var rightValue = right.As(left.Internal());
+			return new QuantityFlow(leftValue - rightValue, left.Internal());
+		}
+
+		public static QuantityFlow operator *(QuantityFlow left, double scalar) => new(left.Value() * scalar, left.Internal());
+		public static QuantityFlow operator *(double scalar, QuantityFlow right) => new(scalar * right.Value(), right.Internal());
+		public static QuantityFlow operator /(QuantityFlow left, double scalar) => new(left.Value() / scalar, left.Internal());
+
+		// Special cross-unit operations
 		public static Quantity operator *(QuantityFlow left, Time right) => new(left.Value() * right.Value(), "ea");
 
+		public static bool operator >(QuantityFlow left, QuantityFlow right) => left.As(left.Internal()) > right.As(left.Internal());
+		public static bool operator <(QuantityFlow left, QuantityFlow right) => left.As(left.Internal()) < right.As(left.Internal());
+		public static bool operator >=(QuantityFlow left, QuantityFlow right) => left.As(left.Internal()) >= right.As(left.Internal());
+		public static bool operator <=(QuantityFlow left, QuantityFlow right) => left.As(left.Internal()) <= right.As(left.Internal());
+
+		#endregion
+
+		#region Legacy Compatibility
+
+		[Obsolete("Use factory methods like FromUnitsPerSecond() for new code. This method is maintained for backward compatibility.")]
+		public static Func<UnitCategory> Category = () => new UnitCategory("QuanityFlow");
+
+		#endregion
 	}
+
+	#region JSON Converter
+
+	public class QuantityFlowJsonConverter : JsonConverter<QuantityFlow>
+	{
+		public override QuantityFlow Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+		{
+			using (JsonDocument doc = JsonDocument.ParseValue(ref reader))
+			{
+				var root = doc.RootElement;
+				var value = root.GetProperty("value").GetDouble();
+				var units = root.GetProperty("units").GetString();
+				return new QuantityFlow(value, units);
+			}
+		}
+
+		public override void Write(Utf8JsonWriter writer, QuantityFlow value, JsonSerializerOptions options)
+		{
+			writer.WriteStartObject();
+			writer.WriteNumber("value", value.Value());
+			writer.WriteString("units", value.Internal());
+			writer.WriteEndObject();
+		}
+	}
+
+	#endregion
 }

@@ -8,7 +8,7 @@ This guide helps you migrate from legacy unit systems to the modernized FoundryR
 
 ### **Major Architectural Changes**
 - **Global UnitSystemService**: Centralized singleton replacing distributed UnitCategory classes
-- **Modernized Unit Classes**: 13/24 classes updated with clean factory methods and enhanced operators
+- **Modernized Unit Classes**: **ALL 24/24 classes updated** with clean factory methods and enhanced operators
 - **Enhanced Performance**: Direct conversion paths eliminating lookup overhead
 - **Type Safety**: Strongly-typed operations with compile-time validation
 - **JSON Serialization**: Built-in converter support for all unit types
@@ -124,40 +124,36 @@ service.SetUnitSystem(UnitSystemType.MKS);
 
 ## 📋 Unit Class Status Reference
 
-### ✅ **Fully Modernized Classes**
-These classes have been updated with the new architecture:
+### ✅ **ALL 24 UNIT CLASSES FULLY MODERNIZED**
+**Every unit class in the system has been updated with the new architecture:**
 
-| Class | Factory Methods | Enhanced Operators | JSON Support |
-|-------|----------------|-------------------|--------------|
-| `Length` | ✅ FromMeters, FromFeet, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Mass` | ✅ FromKilograms, FromPounds, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Temperature` | ✅ FromCelsius, FromFahrenheit, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Volume` | ✅ FromLiters, FromGallons, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Force` | ✅ FromNewtons, FromPoundForce, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Speed` | ✅ FromMPH, FromMetersPerSecond, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Power` | ✅ FromWatts, FromHorsepower, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Area` | ✅ FromSquareMeters, FromAcres, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Time` | ✅ FromSeconds, FromHours, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Duration` | ✅ FromSeconds, FromDays, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Distance` | ✅ FromMeters, FromMiles, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Frequency` | ✅ FromHertz, FromRPM, etc. | ✅ Full arithmetic | ✅ Built-in |
-| `Quantity` | ✅ FromEach, FromItems, etc. | ✅ Full arithmetic | ✅ Built-in |
+| Class | Factory Methods | Enhanced Operators | JSON Support | Status |
+|-------|----------------|-------------------|-------------|---------|
+| `Length` | ✅ FromMeters, FromFeet, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Mass` | ✅ FromKilograms, FromPounds, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Temperature` | ✅ FromCelsius, FromFahrenheit, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Volume` | ✅ FromLiters, FromGallons, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Force` | ✅ FromNewtons, FromPoundForce, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Speed` | ✅ FromMPH, FromMetersPerSecond, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Power` | ✅ FromWatts, FromHorsepower, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Area` | ✅ FromSquareMeters, FromAcres, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Time` | ✅ FromSeconds, FromHours, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Duration` | ✅ FromSeconds, FromDays, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Distance` | ✅ FromMeters, FromMiles, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Frequency` | ✅ FromHertz, FromRPM, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Quantity` | ✅ FromEach, FromItems, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Voltage` | ✅ FromVolts, FromKilovolts, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Resistance` | ✅ FromOhms, FromKiloOhms, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Current` | ✅ FromAmperes, FromMilliamperes, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Capacitance` | ✅ FromFarads, FromMicrofarads, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `DataStorage` | ✅ FromBytes, FromGigabytes, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `DataFlow` | ✅ FromBytesPerSecond, FromMbps, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Percent` | ✅ FromPercent, FromDecimal, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Heading` | ✅ FromDegrees, FromRadians, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `Dimensionless` | ✅ FromValue, FromRatio, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
+| `QuantityFlow` | ✅ FromUnitsPerSecond, FromUnitsPerMinute, etc. | ✅ Full arithmetic | ✅ Built-in | ✅ Complete |
 
-### ⚠️ **Legacy Pattern Classes (Still Functional)**
-These classes work perfectly but use the older UnitCategory pattern:
-
-| Class | Status | Migration Priority |
-|-------|--------|-------------------|
-| `Voltage` | ❌ Legacy | Medium |
-| `Resistance` | ❌ Legacy | Medium |
-| `Current` | ❌ Legacy | Medium |
-| `Capacitance` | ❌ Legacy | Low |
-| `DataStorage` | ❌ Legacy | Low |
-| `DataFlow` | ❌ Legacy | Low |
-| `Percent` | ❌ Legacy | Low |
-| `Heading` | ❌ Legacy | Low |
-| `Dimensionless` | ❌ Legacy | Low |
-| `QuantityFlow` | ❌ Legacy | Medium |
+**🎉 MODERNIZATION COMPLETE**: All 24 unit classes now use the modern UnitSystemService architecture with factory methods, enhanced operators, JSON serialization, and full backward compatibility.
 
 ## 🔧 Common Migration Patterns
 

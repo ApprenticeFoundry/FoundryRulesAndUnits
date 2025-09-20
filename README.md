@@ -93,18 +93,28 @@ if (length1 > length2) {
 
 ## 🏗️ Architecture Overview
 
-### **Modern Unit Classes (13/24 Modernized)**
-These follow the clean, modern pattern:
+### **Modern Unit Classes (24/24 FULLY MODERNIZED) 🎉**
+**ALL unit classes now follow the clean, modern pattern:**
 
-**✅ Fully Modernized:**
+**✅ Physical & Mechanical Units:**
 - `Length`, `Mass`, `Temperature`, `Volume`, `Force`
 - `Speed`, `Power`, `Area`, `Time`, `Duration`
-- `Distance`, `Frequency`, `Quantity`
+- `Distance`, `Frequency`
 
-**❌ Legacy Pattern (Still functional):**
+**✅ Electrical Units:**
 - `Voltage`, `Resistance`, `Current`, `Capacitance`
-- `DataStorage`, `DataFlow`, `Percent`, `Heading`
-- `Dimensionless`, `QuantityFlow`
+
+**✅ Digital & Computing Units:**
+- `DataStorage`, `DataFlow`
+
+**✅ Specialized Units:**
+- `Quantity`, `QuantityFlow`, `Percent`, `Heading`, `Dimensionless`
+
+**🚀 ALL CLASSES FEATURE:**
+- Factory methods (`FromMeters()`, `FromVolts()`, etc.)
+- Enhanced operators (+, -, *, /, >, <, etc.)
+- JSON serialization support
+- Full backward compatibility
 
 ### **Unit System Service**
 ```csharp

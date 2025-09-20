@@ -7,24 +7,35 @@ using System.Text.Json.Serialization;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[JsonConverter(typeof(HeadingJsonConverter))]
 	public class Heading : MeasuredValue
 	{
-		public static Func<UnitCategory> Category = () =>
-		{
-			return new UnitCategory("Heading");
-		};
+		#region Constructors and Factory Methods
 
-		public Heading() :
-			base(UnitFamilyName.Heading)
+		public Heading() : base(UnitFamilyName.Heading) { }
+
+		public Heading(double value, string? units = null) : base(UnitFamilyName.Heading)
 		{
+			Init(value, units);
 		}
 
+		// Factory methods for common heading units
+		public static Heading FromDegrees(double value) => new(value, "deg");
+		public static Heading FromRadians(double value) => new(value, "rad");
+		public static Heading FromGradians(double value) => new(value, "grad");
 
-		public Heading(double value, string? units=null) :
-			base(UnitFamilyName.Heading)
+		#endregion
+
+		#region Unit Conversion
+
+		public override double As(string units)
 		{
-			Init(Category(), value, units);
+			return UnitSystemService.Instance.Convert(Value(), Internal(), units);
 		}
+
+		#endregion
+
+		#region Legacy Methods (Maintained for Compatibility)
 
 		public Heading Assign(double value, string? units)
 		{
@@ -34,7 +45,7 @@ namespace FoundryRulesAndUnits.Units
 			}
 			else
 			{
-				Init(Category(), value, units);
+				Init(value, units);
 			}
 			return this;
 		}
@@ -47,7 +58,7 @@ namespace FoundryRulesAndUnits.Units
 			}
 			else
 			{
-				Init(Category(), source.Value(), source.U);
+				Init(source.Value(), source.U);
 			}
 			return this;
 		}
@@ -57,49 +68,72 @@ namespace FoundryRulesAndUnits.Units
 			return new Heading(Value(), Internal());
 		}
 
-		public static Heading FromDegrees(double v)
-		{
-			return new Heading(v, "deg");
-		}
-
-		public static Heading FromRadians(double v)
-		{
-			return new Heading(v, "rad");
-		}
-
-		public override double As(string units)
-		{
-			return ConvertAs(Category(), units);
-		}
-
 		public Heading Degrees(double value)
 		{
-			var cat = Category();
-			var result = cat.ConvertToBaseUnits("deg", value);
-			if (result.success)
-				V = result.value;
+			V = UnitSystemService.Instance.Convert(value, "deg", Internal());
 			return this;
 		}
 
-		public static bool operator <(Heading left, Heading right) => left.Value() < right.Value();
-		public static bool operator >(Heading left, Heading right) => left.Value() > right.Value();
+		#endregion
 
-		public static Heading operator +(Heading left, Heading right) => new(left.Value() + right.Value(), left.Internal());
-		public static Heading operator -(Heading left, Heading right) => new(left.Value() - right.Value(), left.Internal());
+		#region Operators
 
+		public static Heading operator +(Heading left, Heading right)
+		{
+			var leftValue = left.As(left.Internal());
+			var rightValue = right.As(left.Internal());
+			return new Heading(leftValue + rightValue, left.Internal());
+		}
+
+		public static Heading operator -(Heading left, Heading right)
+		{
+			var leftValue = left.As(left.Internal());
+			var rightValue = right.As(left.Internal());
+			return new Heading(leftValue - rightValue, left.Internal());
+		}
+
+		public static Heading operator *(Heading left, double scalar) => new(left.Value() * scalar, left.Internal());
+		public static Heading operator *(double scalar, Heading right) => new(scalar * right.Value(), right.Internal());
+		public static Heading operator /(Heading left, double scalar) => new(left.Value() / scalar, left.Internal());
+
+		public static bool operator >(Heading left, Heading right) => left.As(left.Internal()) > right.As(left.Internal());
+		public static bool operator <(Heading left, Heading right) => left.As(left.Internal()) < right.As(left.Internal());
+		public static bool operator >=(Heading left, Heading right) => left.As(left.Internal()) >= right.As(left.Internal());
+		public static bool operator <=(Heading left, Heading right) => left.As(left.Internal()) <= right.As(left.Internal());
+
+		#endregion
+
+		#region Legacy Compatibility
+
+		[Obsolete("Use factory methods like FromDegrees() for new code. This method is maintained for backward compatibility.")]
+		public static Func<UnitCategory> Category = () => new UnitCategory("Heading");
+
+		#endregion
 	}
+
+	#region JSON Converter
 
 	public class HeadingJsonConverter : JsonConverter<Heading>
 	{
 		public override Heading Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 		{
-			return MeasuredValue.ReadJSON<Heading>(ref reader, typeToConvert);
+			using (JsonDocument doc = JsonDocument.ParseValue(ref reader))
+			{
+				var root = doc.RootElement;
+				var value = root.GetProperty("value").GetDouble();
+				var units = root.GetProperty("units").GetString();
+				return new Heading(value, units);
+			}
 		}
 
-		public override void Write(Utf8JsonWriter writer, Heading dataValue, JsonSerializerOptions options)
+		public override void Write(Utf8JsonWriter writer, Heading value, JsonSerializerOptions options)
 		{
-			//dataValue.V = 200;
+			writer.WriteStartObject();
+			writer.WriteNumber("value", value.Value());
+			writer.WriteString("units", value.Internal());
+			writer.WriteEndObject();
 		}
 	}
 
+	#endregion
 }
