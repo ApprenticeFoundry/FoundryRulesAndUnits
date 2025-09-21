@@ -65,6 +65,7 @@ public class UnitSystem : IUnitSystem
 
     /// <summary>
     /// Build efficient unit lookup cache for O(1) validation and metadata access
+    /// Uses CreateTypedMeasuredValue for parser compatibility
     /// </summary>
     private Dictionary<string, UnitLookupInfo> BuildUnitLookupCache()
     {
@@ -73,9 +74,10 @@ public class UnitSystem : IUnitSystem
         
         foreach (var unitDef in _currentSystem.UnitDefinitions)
         {
-            // Create factory function for this specific unit and family
+            // Create factory function using reflection-based method for correct derived types
+            // This is CRITICAL for parser integration that expects specific types (Angle, Length, Mass, etc.)
             Func<double, MeasuredValue> createFunc = (value) => 
-                factory.CreateMeasuredValue(unitDef.Family, value, unitDef.Symbol);
+                factory.CreateTypedMeasuredValue(unitDef.Family, value, unitDef.Symbol);
             
             lookup[unitDef.Symbol] = new UnitLookupInfo(
                 unitDef.Family,

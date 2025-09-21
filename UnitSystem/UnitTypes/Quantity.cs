@@ -4,9 +4,10 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Quantity, Description = "Quantity measurement")]
 	public class Quantity : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Quantity;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)

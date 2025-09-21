@@ -3,45 +3,72 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace FoundryRulesAndUnits.Units
+namespace FoundryRulesAndUnits.Units;
+
+[System.Serializable]
+[UnitType(UnitFamilyName.Duration, Description = "Duration measurement")]
+public class Duration : MeasuredValue
 {
-	[System.Serializable]
+	// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
+	
+	#region Constructors and Factory Methods
 
-	public class Duration : MeasuredValue
+	/// <summary>
+	/// Constructor with UnitGroup injection - preferred for new code
+	/// </summary>
+	public Duration(UnitGroup unitGroup) : base(unitGroup)
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Duration;
-		#region Constructors and Factory Methods
-
-		// UnitGroup injection constructor (preferred for new code)
-		public Duration(UnitGroup unitGroup) : base(unitGroup)
-		{
-			if (unitGroup.Family != UnitFamilyName.Duration)
-				throw new ArgumentException($"Expected UnitGroup for Duration, got {unitGroup.Family}");
-		}
-
-
-		// Static properties
-		public static Duration Zero => new(0, "s");
-
-		// Factory methods
-		public static Duration FromSeconds(double value) => new(value, "s");
-		public static Duration FromMinutes(double value) => new(value, "min");
-		public static Duration FromHours(double value) => new(value, "hr");
-		public static Duration FromDays(double value) => new(value, "d");
-		public static Duration FromWeeks(double value) => new(value, "week");
-
-		// Arithmetic operators
-		public static Duration operator +(Duration left, Duration right) => new(left.Value() + right.Value(), left.Internal());
-		public static Duration operator -(Duration left, Duration right) => new(left.Value() - right.Value(), left.Internal());
-		public static Duration operator *(Duration duration, double scalar) => new(duration.Value() * scalar, duration.Internal());
-		public static Duration operator *(double scalar, Duration duration) => new(scalar * duration.Value(), duration.Internal());
-		public static Duration operator /(Duration duration, double scalar) => new(duration.Value() / scalar, duration.Internal());
-		public static double operator /(Duration left, Duration right) => left.Value() / right.Value();
-
-		// Comparison operators
-		public static bool operator <=(Duration left, Duration right) => left.Value() <= right.Value();
-		public static bool operator >=(Duration left, Duration right) => left.Value() >= right.Value();
+		if (unitGroup.Family != UnitFamilyName.Duration)
+			throw new ArgumentException($"Expected UnitGroup for Duration, got {unitGroup.Family}");
 	}
 
+	#endregion
 
+	#region Operators
+
+	public static Duration operator +(Duration left, Duration right)
+	{
+		var result = new Duration(left.UnitGroup);
+		result.Init(left.Value() + right.Value(), left.Internal());
+		return result;
+	}
+
+	public static Duration operator -(Duration left, Duration right)
+	{
+		var result = new Duration(left.UnitGroup);
+		result.Init(left.Value() - right.Value(), left.Internal());
+		return result;
+	}
+
+	public static Duration operator *(Duration left, double scalar)
+	{
+		var result = new Duration(left.UnitGroup);
+		result.Init(left.Value() * scalar, left.Internal());
+		return result;
+	}
+
+	public static Duration operator *(double scalar, Duration right)
+	{
+		var result = new Duration(right.UnitGroup);
+		result.Init(scalar * right.Value(), right.Internal());
+		return result;
+	}
+
+	public static Duration operator /(Duration left, double scalar)
+	{
+		var result = new Duration(left.UnitGroup);
+		result.Init(left.Value() / scalar, left.Internal());
+		return result;
+	}
+
+	public static double operator /(Duration left, Duration right) => left.Value() / right.Value();
+
+	// Optional comparison operators
+	public static bool operator <=(Duration left, Duration right) => left.Value() <= right.Value();
+	public static bool operator >=(Duration left, Duration right) => left.Value() >= right.Value();
+
+	#endregion
 }
+
+
+

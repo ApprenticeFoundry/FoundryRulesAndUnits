@@ -6,8 +6,10 @@ using System.Text.Json.Serialization;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.DataFlow, Description = "Data flow rate measurement")]
 	public class DataFlow : MeasuredValue
 	{
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)

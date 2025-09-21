@@ -5,10 +5,11 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Angle, Description = "Angular measurement")]
 	public class Angle : MeasuredValue
 	{
-		public override UnitFamilyName UnitFamily => UnitFamilyName.Angle;
-	// NO backward compatibility constructors - use UnitFactory.CreateAngle() instead
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
+		// NO backward compatibility constructors - use UnitFactory.CreateAngle() instead
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - use UnitFactory to create instances

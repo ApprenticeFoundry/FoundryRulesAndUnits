@@ -4,9 +4,10 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Percent, Description = "Percentage measurement")]
 	public class Percent : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Percent;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)

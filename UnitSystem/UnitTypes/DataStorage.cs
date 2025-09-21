@@ -6,9 +6,10 @@ using System.Text.Json.Serialization;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-
+	[UnitType(UnitFamilyName.DataStorage, Description = "Data storage measurement")]
 	public class DataStorage : MeasuredValue
 	{
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)

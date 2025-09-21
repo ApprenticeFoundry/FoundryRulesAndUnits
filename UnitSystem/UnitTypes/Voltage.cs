@@ -4,12 +4,16 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Voltage, Description = "Electrical voltage measurement")]
 	public class Voltage : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Voltage;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
-		// UnitGroup injection constructor (preferred for new code)
+		/// <summary>
+		/// Initializes a new instance of the Voltage class with the specified UnitGroup.
+		/// </summary>
+		/// <param name="unitGroup">The unit group to use for this Voltage measurement.</param>
 		public Voltage(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Voltage)

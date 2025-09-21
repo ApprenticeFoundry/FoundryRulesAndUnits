@@ -4,12 +4,16 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Speed, Description = "Speed/velocity measurement")]
 	public class Speed : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Speed;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
-		// UnitGroup injection constructor (preferred for new code)
+		/// <summary>
+		/// Initializes a new instance of the Speed class with the specified UnitGroup.
+		/// </summary>
+		/// <param name="unitGroup">The unit group to use for this Speed measurement.</param>
 		public Speed(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Speed)
@@ -54,7 +58,7 @@ namespace FoundryRulesAndUnits.Units
 		}
 		
 		public static double operator /(Speed left, Speed right) => left.Value() / right.Value();
+		
+		#endregion
 	}
-
-
 }

@@ -6,12 +6,16 @@ using System.Text.Json.Serialization;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(CurrentJsonConverter))]
+	[UnitType(UnitFamilyName.Current, Description = "Electrical current measurement")]
 	public class Current : MeasuredValue
 	{
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
+		
 		#region Constructors and Factory Methods
 
-		// UnitGroup injection constructor (preferred for new code)
+		/// <summary>
+		/// Constructor with UnitGroup injection - preferred for new code
+		/// </summary>
 		public Current(UnitGroup unitGroup) : base(unitGroup) 
 		{ 
 			if (unitGroup.Family != UnitFamilyName.Current)
@@ -31,21 +35,40 @@ namespace FoundryRulesAndUnits.Units
 
 		public static Current operator +(Current left, Current right)
 		{
-			var leftValue = left.As(left.Internal());
-			var rightValue = right.As(left.Internal());
-			return new Current(leftValue + rightValue, left.Internal());
+			var result = new Current(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
 		}
 
 		public static Current operator -(Current left, Current right)
 		{
-			var leftValue = left.As(left.Internal());
-			var rightValue = right.As(left.Internal());
-			return new Current(leftValue - rightValue, left.Internal());
+			var result = new Current(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
 		}
 
-		public static Current operator *(Current left, double scalar) => new(left.Value() * scalar, left.Internal());
-		public static Current operator *(double scalar, Current right) => new(scalar * right.Value(), right.Internal());
-		public static Current operator /(Current left, double scalar) => new(left.Value() / scalar, left.Internal());
+		public static Current operator *(Current left, double scalar)
+		{
+			var result = new Current(left.UnitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
+
+		public static Current operator *(double scalar, Current right)
+		{
+			var result = new Current(right.UnitGroup);
+			result.Init(scalar * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static Current operator /(Current left, double scalar)
+		{
+			var result = new Current(left.UnitGroup);
+			result.Init(left.Value() / scalar, left.Internal());
+			return result;
+		}
+
+		public static double operator /(Current left, Current right) => left.Value() / right.Value();
 
 		public static bool operator >(Current left, Current right) => left.As(left.Internal()) > right.As(left.Internal());
 		public static bool operator <(Current left, Current right) => left.As(left.Internal()) < right.As(left.Internal());
@@ -56,30 +79,4 @@ namespace FoundryRulesAndUnits.Units
 
 
 	}
-
-	#region JSON Converter
-
-	public class CurrentJsonConverter : JsonConverter<Current>
-	{
-		public override Current Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			using (JsonDocument doc = JsonDocument.ParseValue(ref reader))
-			{
-				var root = doc.RootElement;
-				var value = root.GetProperty("value").GetDouble();
-				var units = root.GetProperty("units").GetString();
-				return new Current(value, units);
-			}
-		}
-
-		public override void Write(Utf8JsonWriter writer, Current value, JsonSerializerOptions options)
-		{
-			writer.WriteStartObject();
-			writer.WriteNumber("value", value.Value());
-			writer.WriteString("units", value.Internal());
-			writer.WriteEndObject();
-		}
-	}
-
-	#endregion
 }

@@ -4,26 +4,63 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Power, Description = "Power measurement")]
 	public class Power : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Power;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
-		// UnitGroup injection constructor (preferred for new code)
+		/// <summary>
+		/// Constructor with UnitGroup injection - preferred for new code
+		/// </summary>
 		public Power(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Power)
 				throw new ArgumentException($"Expected UnitGroup for Power, got {unitGroup.Family}");
 		}
 
-	
-		// Arithmetic operators
-		public static Power operator +(Power left, Power right) => new(left.Value() + right.Value(), left.Internal());
-		public static Power operator -(Power left, Power right) => new(left.Value() - right.Value(), left.Internal());
-		public static Power operator *(Power power, double scalar) => new(power.Value() * scalar, power.Internal());
-		public static Power operator *(double scalar, Power power) => new(scalar * power.Value(), power.Internal());
-		public static Power operator /(Power power, double scalar) => new(power.Value() / scalar, power.Internal());
+		#endregion
+
+		#region Operators
+
+		public static Power operator +(Power left, Power right)
+		{
+			var result = new Power(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+
+		public static Power operator -(Power left, Power right)
+		{
+			var result = new Power(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+
+		public static Power operator *(Power left, double scalar)
+		{
+			var result = new Power(left.UnitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
+
+		public static Power operator *(double scalar, Power right)
+		{
+			var result = new Power(right.UnitGroup);
+			result.Init(scalar * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static Power operator /(Power left, double scalar)
+		{
+			var result = new Power(left.UnitGroup);
+			result.Init(left.Value() / scalar, left.Internal());
+			return result;
+		}
+
 		public static double operator /(Power left, Power right) => left.Value() / right.Value();
+
+		#endregion
 	}
 
 

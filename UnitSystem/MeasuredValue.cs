@@ -68,10 +68,17 @@ namespace FoundryRulesAndUnits.Units
 		protected UnitGroup _unitGroup;
 
 		/// <summary>
-		/// Gets the UnitFamily for this measurement type
-		/// Override in derived classes to specify the correct family
+		/// Gets the UnitFamily for this measurement type from UnitTypeAttribute
+		/// Uses reflection to read the attribute - single source of truth
 		/// </summary>
-		public virtual UnitFamilyName UnitFamily => UnitFamilyName.None;
+		public virtual UnitFamilyName UnitFamily 
+		{
+			get
+			{
+				var attribute = UnitTypeRegistry.GetAttributeForType(this.GetType());
+				return attribute?.Family ?? UnitFamilyName.None;
+			}
+		}
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - preferred for new code

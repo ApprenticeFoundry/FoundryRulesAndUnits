@@ -5,9 +5,10 @@ using FoundryRulesAndUnits.Extensions;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Temperature, Description = "Temperature measurement")]
 	public class Temperature : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Temperature;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - use UnitFactory to create instances

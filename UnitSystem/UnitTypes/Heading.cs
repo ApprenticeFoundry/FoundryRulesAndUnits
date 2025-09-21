@@ -5,9 +5,10 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Heading, Description = "Heading/bearing measurement")]
 	public class Heading : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Heading;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)

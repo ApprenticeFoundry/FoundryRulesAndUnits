@@ -4,12 +4,10 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Volume, Description = "Volume measurement")]
 	public class Volume : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Volume;
-		/// <summary>
-		/// Gets the UnitFamily for Volume measurements
-		/// </summary>
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - preferred

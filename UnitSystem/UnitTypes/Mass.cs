@@ -5,12 +5,10 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Mass, Description = "Mass measurement")]
 	public class Mass : MeasuredValue
 	{
-		/// <summary>
-		/// Gets the UnitFamily for Mass measurements
-		/// </summary>
-		public override UnitFamilyName UnitFamily => UnitFamilyName.Mass;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 
 
 		/// <summary>

@@ -2,67 +2,79 @@ using FoundryRulesAndUnits.Extensions;
 using System;
 using System.Collections.Generic;
 
-namespace FoundryRulesAndUnits.Units
+namespace FoundryRulesAndUnits.Units;
+
+[System.Serializable]
+[UnitType(UnitFamilyName.Force, Description = "Force measurement")]
+public class Force : MeasuredValue
 {
-	[System.Serializable]
-	public class Force : MeasuredValue
+	// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
+	// NO backward compatibility constructors - use UnitFactory.CreateForce() instead
+
+	/// <summary>
+	/// Constructor with UnitGroup injection - use UnitFactory to create instances
+	/// </summary>
+	public Force(UnitGroup unitGroup) : base(unitGroup)
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Force;
-		/// <summary>
-		/// Constructor with UnitGroup injection - preferred
-		/// </summary>
-		public Force(UnitGroup unitGroup) : base(unitGroup)
-		{
-			if (unitGroup.Family != UnitFamilyName.Force)
-				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Force}", nameof(unitGroup));
-		}
-
-		}
-
-		// Static factory methods removed - use UnitFactory instead
-
-		// Comparison operators
-		public static bool operator <(Force left, Force right) => left.Value() < right.Value();
-		public static bool operator >(Force left, Force right) => left.Value() > right.Value();
-
-		// Arithmetic operators
-		public static Force operator +(Force left, Force right) 
-		{
-			var result = new Force(left.UnitGroup);
-			result.Init(left.Value() + right.Value(), left.Internal());
-			return result;
-		}
-		
-		public static Force operator -(Force left, Force right) 
-		{
-			var result = new Force(left.UnitGroup);
-			result.Init(left.Value() - right.Value(), left.Internal());
-			return result;
-		}
-		
-		public static Force operator *(Force force, double scalar) 
-		{
-			var result = new Force(force.UnitGroup);
-			result.Init(force.Value() * scalar, force.Internal());
-			return result;
-		}
-		
-		public static Force operator *(double scalar, Force force) 
-		{
-			var result = new Force(force.UnitGroup);
-			result.Init(scalar * force.Value(), force.Internal());
-			return result;
-		}
-		
-		public static Force operator /(Force force, double scalar) 
-		{
-			var result = new Force(force.UnitGroup);
-			result.Init(force.Value() / scalar, force.Internal());
-			return result;
-		}
-		
-		public static double operator /(Force left, Force right) => left.Value() / right.Value();
+		if (unitGroup.Family != UnitFamilyName.Force)
+			throw new ArgumentException($"UnitGroup must be for Force family, got {unitGroup.Family}");
 	}
 
+	public Force Assign(double value, string? units)
+	{
+		Init(value, units); // Base class handles everything!
+		return this;
+	}
 
+	public Force Assign(Force source)
+	{
+		Init(source.Value(), source.U); // Base class handles everything!
+		return this;
+	}
+
+	public Force Copy()
+	{
+		var copy = new Force(_unitGroup);
+		copy.Init(Value(), Internal());
+		return copy;
+	}
+
+	// Static factory methods removed - use UnitFactory.CreateForce() instead
+
+	// Comparison operators
+	public static bool operator <(Force left, Force right) => left.Value() < right.Value();
+	public static bool operator >(Force left, Force right) => left.Value() > right.Value();
+
+	// Arithmetic operators
+	public static Force operator +(Force left, Force right)
+	{
+		var result = new Force(left._unitGroup);
+		result.Init(left.Value() + right.Value(), left.Internal());
+		return result;
+	}
+
+	public static Force operator -(Force left, Force right)
+	{
+		var result = new Force(left._unitGroup);
+		result.Init(left.Value() - right.Value(), left.Internal());
+		return result;
+	}
+
+	public static Force operator *(double scalar, Force right)
+	{
+		var result = new Force(right._unitGroup);
+		result.Init(scalar * right.Value(), right.Internal());
+		return result;
+	}
+
+	public static Force operator /(Force left, double scalar)
+	{
+		var result = new Force(left._unitGroup);
+		result.Init(left.Value() / scalar, left.Internal());
+		return result;
+	}
+
+	public static double operator /(Force left, Force right) => left.Value() / right.Value();
 }
+
+

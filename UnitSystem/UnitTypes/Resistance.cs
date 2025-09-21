@@ -4,12 +4,16 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Resistance, Description = "Electrical resistance measurement")]
 	public class Resistance : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Resistance;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
-		// UnitGroup injection constructor (preferred for new code)
+		/// <summary>
+		/// Initializes a new instance of the Resistance class with the specified UnitGroup.
+		/// </summary>
+		/// <param name="unitGroup">The unit group to use for this Resistance measurement.</param>
 		public Resistance(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Resistance)
@@ -28,21 +32,38 @@ namespace FoundryRulesAndUnits.Units
 
 		public static Resistance operator +(Resistance left, Resistance right)
 		{
-			var leftValue = left.As(left.Internal());
-			var rightValue = right.As(left.Internal());
-			return new Resistance(leftValue + rightValue, left.Internal());
+			var result = new Resistance(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
 		}
 
 		public static Resistance operator -(Resistance left, Resistance right)
 		{
-			var leftValue = left.As(left.Internal());
-			var rightValue = right.As(left.Internal());
-			return new Resistance(leftValue - rightValue, left.Internal());
+			var result = new Resistance(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
 		}
 
-		public static Resistance operator *(Resistance left, double scalar) => new(left.Value() * scalar, left.Internal());
-		public static Resistance operator *(double scalar, Resistance right) => new(scalar * right.Value(), right.Internal());
-		public static Resistance operator /(Resistance left, double scalar) => new(left.Value() / scalar, left.Internal());
+		public static Resistance operator *(Resistance left, double scalar)
+		{
+			var result = new Resistance(left.UnitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
+
+		public static Resistance operator *(double scalar, Resistance right)
+		{
+			var result = new Resistance(right.UnitGroup);
+			result.Init(scalar * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static Resistance operator /(Resistance left, double scalar)
+		{
+			var result = new Resistance(left.UnitGroup);
+			result.Init(left.Value() / scalar, left.Internal());
+			return result;
+		}
 
 		public static bool operator >(Resistance left, Resistance right) => left.As(left.Internal()) > right.As(left.Internal());
 		public static bool operator <(Resistance left, Resistance right) => left.As(left.Internal()) < right.As(left.Internal());

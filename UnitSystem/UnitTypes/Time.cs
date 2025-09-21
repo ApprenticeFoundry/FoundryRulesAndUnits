@@ -4,12 +4,16 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
+	[UnitType(UnitFamilyName.Time, Description = "Time/duration measurement")]
 	public class Time : MeasuredValue
 	{
-		override public UnitFamilyName UnitFamily => UnitFamilyName.Time;
+		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
-		// UnitGroup injection constructor (preferred for new code)
+		/// <summary>
+		/// Initializes a new instance of the Time class with the specified UnitGroup.
+		/// </summary>
+		/// <param name="unitGroup">The unit group to use for this Time measurement.</param>
 		public Time(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Time)
