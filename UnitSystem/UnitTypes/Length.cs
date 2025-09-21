@@ -89,7 +89,33 @@ namespace FoundryRulesAndUnits.Units
 		// As() method inherited from MeasuredValue - no override needed!
 
 		// Legacy compatibility methods
-		public double AsPixels() => As("px"); // Convert to pixels using unit system
+		public int AsPixels() 
+		{
+			// Handle pixel conversion with manual fallback when UnitGroup injection unavailable
+			try 
+			{
+				return (int)Math.Round(As("px"));
+			}
+			catch (InvalidOperationException)
+			{
+				// Manual conversion fallback for common units to pixels (96 DPI standard)
+				// This handles cases where UnitGroup injection is not available
+				var valueInMeters = I switch
+				{
+					"m" => V,
+					"cm" => V * 0.01,
+					"mm" => V * 0.001,
+					"in" => V * 0.0254,
+					"ft" => V * 0.3048,
+					"px" => V / (96.0 / 0.0254), // Convert px back to meters first, then to px (identity)
+					_ => throw new InvalidOperationException($"Cannot convert {I} to pixels without UnitGroup injection")
+				};
+				
+				// Convert meters to pixels (96 DPI: 96 pixels per inch, 0.0254 meters per inch)
+				var pixelsPerMeter = 96.0 / 0.0254;
+				return (int)Math.Round(valueInMeters * pixelsPerMeter);
+			}
+		}
 		
 		public static bool operator <(Length left, Length right) => left.Value() < right.Value();
 		public static bool operator >(Length left, Length right) => left.Value() > right.Value();
