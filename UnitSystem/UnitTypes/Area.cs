@@ -11,23 +11,7 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public override UnitFamilyName UnitFamily => UnitFamilyName.Area;
 
-		/// <summary>
-		/// Backward compatibility constructor for JSON deserialization
-		/// </summary>
-
-		public Area(double value, string units) : base()
-
-		{
-
-			V = value;
-
-			I = units;
-
-			U = units;
-
-		}
-
-		/// <summary>
+	/// <summary>
 		/// Constructor with UnitGroup injection - preferred
 		/// </summary>
 		public Area(UnitGroup unitGroup) : base(unitGroup)

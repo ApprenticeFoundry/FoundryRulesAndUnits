@@ -5,13 +5,13 @@ namespace FoundryRulesAndUnits.Models
 	[System.Serializable]
 	public class BoundingBox
 	{
-		public Length width = new(10, "m");
-		public Length height = new(20, "m");
-		public Length depth = new(30, "m");
+		public Length width = UnitFactory.SI().CreateLength(10, "m");
+		public Length height = UnitFactory.SI().CreateLength(20, "m");
+		public Length depth = UnitFactory.SI().CreateLength(30, "m");
 
-		public Length pinX = new(0, "m");
-		public Length pinY = new(0, "m");
-		public Length pinZ = new(0, "m");
+		public Length pinX = UnitFactory.SI().CreateLength(0, "m");
+		public Length pinY = UnitFactory.SI().CreateLength(0, "m");
+		public Length pinZ = UnitFactory.SI().CreateLength(0, "m");
 
 		public double scaleX = 1;
 		public double scaleY = 1;
@@ -69,16 +69,18 @@ namespace FoundryRulesAndUnits.Models
 
 		public BoundingBox Box(double w, double h, double d, string units = "m")
 		{
-			this.width = this.width == null ? new(w, units) : this.width.Assign(w, units);
-			this.height = this.height == null ? new(h, units) : this.height.Assign(h, units);
-			this.depth = this.depth == null ? new(d, units) : this.depth.Assign(d, units);
+			var factory = UnitFactory.SI();
+			this.width = this.width == null ? factory.CreateLength(w, units) : this.width.Assign(w, units);
+			this.height = this.height == null ? factory.CreateLength(h, units) : this.height.Assign(h, units);
+			this.depth = this.depth == null ? factory.CreateLength(d, units) : this.depth.Assign(d, units);
 			return this;
 		}
 		public BoundingBox Pin(double x, double y, double z, string units = "m")
 		{
-			this.pinX = this.pinX == null ? new(x, units) : this.pinX.Assign(x, units);
-			this.pinY = this.pinY == null ? new(y, units) : this.pinY.Assign(y, units);
-			this.pinZ = this.pinZ == null ? new(z, units) : this.pinZ.Assign(z, units);
+			var factory = UnitFactory.SI();
+			this.pinX = this.pinX == null ? factory.CreateLength(x, units) : this.pinX.Assign(x, units);
+			this.pinY = this.pinY == null ? factory.CreateLength(y, units) : this.pinY.Assign(y, units);
+			this.pinZ = this.pinZ == null ? factory.CreateLength(z, units) : this.pinZ.Assign(z, units);
 			return this;
 		}
 	}

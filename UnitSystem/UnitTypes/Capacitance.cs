@@ -15,47 +15,7 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"Expected UnitGroup for Capacitance, got {unitGroup.Family}");
 		}
 
-		public Capacitance(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
-		{
-			if (unitGroup.Family != UnitFamilyName.Capacitance)
-				throw new ArgumentException($"Expected UnitGroup for Capacitance, got {unitGroup.Family}");
-			Init(value, units);
-		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Capacitance(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		// Factory methods for common capacitance units
-		public static Capacitance FromFarads(double value) => new(value, "F");
-		public static Capacitance FromMicrofarads(double value) => new(value, "μF");
-		public static Capacitance FromNanofarads(double value) => new(value, "nF");
-		public static Capacitance FromPicofarads(double value) => new(value, "pF");
-		public static Capacitance FromMillifarads(double value) => new(value, "mF");
-
-		#endregion
 
 		#region Unit Conversion
 		// As() method inherited from MeasuredValue with UnitGroup conversion

@@ -20,13 +20,14 @@ namespace FoundryRulesAndUnits.Models
 
 		public HighResPosition()
 		{
-			xLoc = new(0, "m");
-			yLoc = new(0, "m");
-			zLoc = new(0, "m");
+			var factory = UnitFactory.SI();
+			xLoc = factory.CreateLength(0, "m");
+			yLoc = factory.CreateLength(0, "m");
+			zLoc = factory.CreateLength(0, "m");
 
-			xAng = new(0, "deg");
-			yAng = new(0, "deg");
-			zAng = new(0, "deg");
+			xAng = factory.CreateAngle(0, "deg");
+			yAng = factory.CreateAngle(0, "deg");
+			zAng = factory.CreateAngle(0, "deg");
 		}
 		public HighResPosition(HighResPosition source): this()
 		{
@@ -67,16 +68,18 @@ namespace FoundryRulesAndUnits.Models
 		}
 		public HighResPosition Loc(double xLoc, double yLoc, double zLoc, string units = "m")
 		{
-			this.xLoc = this.xLoc == null ? new(xLoc, units) : this.xLoc.Assign(xLoc, units);
-			this.yLoc = this.yLoc == null ? new(yLoc, units) : this.yLoc.Assign(yLoc, units);
-			this.zLoc = this.zLoc == null ? new(zLoc, units) : this.zLoc.Assign(zLoc, units);
+			var factory = UnitFactory.SI();
+			this.xLoc = this.xLoc == null ? factory.CreateLength(xLoc, units) : this.xLoc.Assign(xLoc, units);
+			this.yLoc = this.yLoc == null ? factory.CreateLength(yLoc, units) : this.yLoc.Assign(yLoc, units);
+			this.zLoc = this.zLoc == null ? factory.CreateLength(zLoc, units) : this.zLoc.Assign(zLoc, units);
 			return this;
 		}
 		public HighResPosition Ang(double xAng, double yAng, double zAng, string units = "rad")
 		{
-			this.xAng = this.xAng == null ? new(xAng, units) : this.xAng.Assign(xAng, units);
-			this.yAng = this.yAng == null ? new(yAng, units) : this.yAng.Assign(yAng, units);
-			this.zAng = this.zAng == null ? new(zAng, units) : this.zAng.Assign(zAng, units);
+			var factory = UnitFactory.SI();
+			this.xAng = this.xAng == null ? factory.CreateAngle(xAng, units) : this.xAng.Assign(xAng, units);
+			this.yAng = this.yAng == null ? factory.CreateAngle(yAng, units) : this.yAng.Assign(yAng, units);
+			this.zAng = this.zAng == null ? factory.CreateAngle(zAng, units) : this.zAng.Assign(zAng, units);
 			return this;
 		}
 

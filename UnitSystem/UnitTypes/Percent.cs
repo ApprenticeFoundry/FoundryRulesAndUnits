@@ -6,53 +6,18 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Percent : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Percent;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Percent(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.Percent)
-				throw new ArgumentException($"Expected UnitGroup for Percent, got {unitGroup.Family}");
-		}
-
-		public Percent(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public Percent(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Percent)
 				throw new ArgumentException($"Expected UnitGroup for Percent, got {unitGroup.Family}");
-			Init(value, units);
 		}
 
-		/// <summary>
 
 
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Percent(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		// Factory methods for common percentage representations
-		public static Percent FromPercent(double value) => new(value, "%");
-		public static Percent FromDecimal(double value) => new(value * 100, "%"); // Convert 0.75 -> 75%
-		public static Percent FromRatio(double value) => new(value * 100, "%");   // Alias for FromDecimal
-		public static Percent FromFraction(double numerator, double denominator) => new((numerator / denominator) * 100, "%");
 
 		#endregion
 

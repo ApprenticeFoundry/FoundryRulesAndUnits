@@ -7,52 +7,16 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Heading : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Heading;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Heading(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.Heading)
-				throw new ArgumentException($"Expected UnitGroup for Heading, got {unitGroup.Family}");
-		}
-
-		public Heading(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public Heading(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Heading)
 				throw new ArgumentException($"Expected UnitGroup for Heading, got {unitGroup.Family}");
-			Init(value, units);
 		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Heading(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		// Factory methods for common heading units
-		public static Heading FromDegrees(double value) => new(value, "deg");
-		public static Heading FromRadians(double value) => new(value, "rad");
-		public static Heading FromGradians(double value) => new(value, "grad");
 
 		#endregion
 

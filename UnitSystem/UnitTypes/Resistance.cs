@@ -6,55 +6,16 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Resistance : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Resistance;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Resistance(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.Resistance)
-				throw new ArgumentException($"Expected UnitGroup for Resistance, got {unitGroup.Family}");
-		}
-
-		public Resistance(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public Resistance(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Resistance)
 				throw new ArgumentException($"Expected UnitGroup for Resistance, got {unitGroup.Family}");
-			Init(value, units);
 		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Resistance(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		// Factory methods for common resistance units
-		public static Resistance FromOhms(double value) => new(value, "Ω");
-		public static Resistance FromKiloOhms(double value) => new(value, "kΩ");
-		public static Resistance FromMegaOhms(double value) => new(value, "MΩ");
-		public static Resistance FromGigaOhms(double value) => new(value, "GΩ");
-		public static Resistance FromMilliOhms(double value) => new(value, "mΩ");
-		public static Resistance FromMicroOhms(double value) => new(value, "μΩ");
 
 		#endregion
 

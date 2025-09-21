@@ -7,26 +7,7 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Temperature : MeasuredValue
 	{
-		/// <summary>
-		/// Backward compatibility constructor
-		/// </summary>
-		/// <summary>
-
-		/// Backward compatibility constructor for JSON deserialization
-
-		/// </summary>
-
-		public Temperature(double value, string units) : base()
-
-		{
-
-			V = value;
-
-			I = units;
-
-			U = units;
-
-		}
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Temperature;
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - use UnitFactory to create instances

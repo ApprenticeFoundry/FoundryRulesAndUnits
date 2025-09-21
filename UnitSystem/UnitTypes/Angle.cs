@@ -7,25 +7,8 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Angle : MeasuredValue
 	{
-		/// <summary>
-		/// Backward compatibility constructor for JSON deserialization
-		/// </summary>
-		public Angle(double value, string units) : base()
-		{
-			V = value;
-			I = units;
-			U = units;
-		}
-
-		/// <summary>
-		/// Backward compatibility constructor - single value assumes degrees
-		/// </summary>
-		public Angle(double value) : base()
-		{
-			V = value;
-			I = "deg"; // Default to degrees
-			U = "deg";
-		}
+		public override UnitFamilyName UnitFamily => UnitFamilyName.Angle;
+	// NO backward compatibility constructors - use UnitFactory.CreateAngle() instead
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - use UnitFactory to create instances
@@ -50,18 +33,13 @@ namespace FoundryRulesAndUnits.Units
 
 		public Angle Copy()
 		{
-			return new Angle(Value(), Internal());
+			var copy = new Angle(_unitGroup);
+			copy.Init(Value(), Internal());
+			return copy;
 		}
 
-		public static Angle FromDegrees(double v)
-		{
-			return new Angle(v, "deg");
-		}
-
-		public static Angle FromRadians(double v)
-		{
-			return new Angle(v, "rad");
-		}
+		// Static factory methods removed - use UnitFactory.CreateAngle() instead
+		// Example: factory.CreateAngle(90, "deg") or factory.CreateAngle(Math.PI/2, "rad")
 
 		// As() method inherited from MeasuredValue - no override needed!
 
@@ -74,8 +52,19 @@ namespace FoundryRulesAndUnits.Units
 		public static bool operator <(Angle left, Angle right) => left.Value() < right.Value();
 		public static bool operator >(Angle left, Angle right) => left.Value() > right.Value();
 
-		public static Angle operator +(Angle left, Angle right) => new(left.Value() + right.Value(), left.Internal());
-		public static Angle operator -(Angle left, Angle right) => new(left.Value() - right.Value(), left.Internal());
+		public static Angle operator +(Angle left, Angle right)
+		{
+			var result = new Angle(left._unitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Angle operator -(Angle left, Angle right)
+		{
+			var result = new Angle(left._unitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
 
 	}
 

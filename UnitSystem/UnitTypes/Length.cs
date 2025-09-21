@@ -12,30 +12,8 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public override UnitFamilyName UnitFamily => UnitFamilyName.Length;
 
-		/// <summary>
-		/// Static property for factory methods to determine unit family without instantiation
-		/// </summary>
-		public static UnitFamilyName StaticUnitFamily => UnitFamilyName.Length;
 
 		/// <summary>
-		/// Backward compatibility constructor for JSON deserialization
-		/// </summary>
-		public Length(double value, string units) : base()
-		{
-			V = value;
-			I = units;
-			U = units;
-		}
-
-		/// <summary>
-		/// Backward compatibility constructor - single value assumes base unit
-		/// </summary>
-		public Length(double value) : base()
-		{
-			V = value;
-			I = "m"; // Default to meters
-			U = "m";
-		}		/// <summary>
 		/// Constructor with UnitGroup injection - preferred for factory pattern
 		/// </summary>
 		public Length(UnitGroup unitGroup) : base(unitGroup)
@@ -58,33 +36,13 @@ namespace FoundryRulesAndUnits.Units
 
 		public Length Copy()
 		{
-			return new Length(Value(), Internal());
+			var copy = new Length(_unitGroup);
+			copy.Init(Value(), Internal());
+			return copy;
 		}
 
-		public static Length FromKilometers(double v)
-		{
-			return new Length(v, "km");
-		}
-
-		public static Length FromMeters(double v)
-		{
-			return new Length(v, "m");
-		}
-
-		public static Length FromMillimeters(double v)
-		{
-			return new Length(v, "mm");
-		}
-
-		public static Length FromInches(double v)
-		{
-			return new Length(v, "in");
-		}
-
-		public static Length FromFeet(double v)
-		{
-			return new Length(v, "ft");
-		}
+		// Static factory methods removed - use UnitFactory.CreateLength() instead
+		// Example: factory.CreateLength(1000, "m") for kilometers
 
 		// As() method inherited from MeasuredValue - no override needed!
 
@@ -120,17 +78,38 @@ namespace FoundryRulesAndUnits.Units
 		public static bool operator <(Length left, Length right) => left.Value() < right.Value();
 		public static bool operator >(Length left, Length right) => left.Value() > right.Value();
 
-		public static Length operator +(Length left, Length right) => new(left.Value() + right.Value(), left.Internal());
-		public static Length operator -(Length left, Length right) => new(left.Value() - right.Value(), left.Internal());
-		public static Length operator *(double left, Length right) => new(left * right.Value(), right.Internal());
-		public static Length operator /(Length left, double right) => new(left.Value() / right, left.Internal());
+		public static Length operator +(Length left, Length right)
+		{
+			var result = new Length(left._unitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Length operator -(Length left, Length right)
+		{
+			var result = new Length(left._unitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+		
+		public static Length operator *(double left, Length right)
+		{
+			var result = new Length(right._unitGroup);
+			result.Init(left * right.Value(), right.Internal());
+			return result;
+		}
+		
+		public static Length operator /(Length left, double right)
+		{
+			var result = new Length(left._unitGroup);
+			result.Init(left.Value() / right, left.Internal());
+			return result;
+		}
 
 		public static double operator /(Length left, Length right) => left.Value() / right.Value();
 
-		// Area and Volume operations (cross-unit calculations)
-		public static Area operator *(Length left, Length right) => new(left.Value() * right.Value(), "m2");
-		public static Volume operator *(Area left, Length right) => new(left.Value() * right.Value(), "m3");
-		public static Volume operator *(Length left, Area right) => new(left.Value() * right.Value(), "m3");
+		// Cross-unit operations removed - these require UnitFactory to create proper instances
+		// Use UnitFactory.CreateArea() and UnitFactory.CreateVolume() for cross-unit calculations
 	}
 
 

@@ -6,6 +6,7 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Speed : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Speed;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
@@ -15,40 +16,6 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"Expected UnitGroup for Speed, got {unitGroup.Family}");
 		}
 
-		public Speed(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
-		{
-			if (unitGroup.Family != UnitFamilyName.Speed)
-				throw new ArgumentException($"Expected UnitGroup for Speed, got {unitGroup.Family}");
-			Init(value, units);
-		}
-
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Speed(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		#endregion
 
 		// Arithmetic operators
 		public static Speed operator +(Speed left, Speed right) 

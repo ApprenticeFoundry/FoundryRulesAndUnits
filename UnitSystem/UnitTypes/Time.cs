@@ -6,6 +6,7 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Time : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Time;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
@@ -15,22 +16,6 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"Expected UnitGroup for Time, got {unitGroup.Family}");
 		}
 
-		public Time(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
-		{
-			if (unitGroup.Family != UnitFamilyName.Time)
-				throw new ArgumentException($"Expected UnitGroup for Time, got {unitGroup.Family}");
-			Init(value, units);
-		}
-
-		/// <summary>
-		/// Backward compatibility constructor for JSON deserialization
-		/// </summary>
-		public Time(double value, string units) : base()
-		{
-			V = value;
-			I = units;
-			U = units;
-		}
 
 		#endregion
 

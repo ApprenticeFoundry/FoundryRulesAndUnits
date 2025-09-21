@@ -6,55 +6,19 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Quantity : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Quantity;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Quantity(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.Quantity)
-				throw new ArgumentException($"Expected UnitGroup for Quantity, got {unitGroup.Family}");
-		}
-
-		public Quantity(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public Quantity(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Quantity)
 				throw new ArgumentException($"Expected UnitGroup for Quantity, got {unitGroup.Family}");
-			Init(value, units);
 		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Quantity(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
 
 		#endregion
 
-		// Factory methods
-		public static Quantity FromEach(double value) => new(value, "ea");
-		public static Quantity FromItems(double value) => new(value, "items");
-		public static Quantity FromPieces(double value) => new(value, "pcs");
-		public static Quantity FromUnits(double value) => new(value, "units");
 
 
 		// Arithmetic operators with integers

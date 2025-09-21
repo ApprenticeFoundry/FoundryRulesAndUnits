@@ -12,21 +12,6 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public override UnitFamilyName UnitFamily => UnitFamilyName.Mass;
 
-		/// <summary>
-		/// Backward compatibility constructor for JSON deserialization
-		/// </summary>
-
-		public Mass(double value, string units) : base()
-
-		{
-
-			V = value;
-
-			I = units;
-
-			U = units;
-
-		}
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - preferred
@@ -37,11 +22,7 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Mass}", nameof(unitGroup));
 		}
 
-		public Mass Assign(double value, string? units)
-		{
-			Init(value, units); // Base class handles everything!
-			return this;
-		}
+
 
 		public Mass Assign(Mass source)
 		{

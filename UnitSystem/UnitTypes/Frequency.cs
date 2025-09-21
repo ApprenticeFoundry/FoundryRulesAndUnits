@@ -6,56 +6,16 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Frequency : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Frequency;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Frequency(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.Frequency)
-				throw new ArgumentException($"Expected UnitGroup for Frequency, got {unitGroup.Family}");
-		}
-
-		public Frequency(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public Frequency(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Frequency)
 				throw new ArgumentException($"Expected UnitGroup for Frequency, got {unitGroup.Family}");
-			Init(value, units);
 		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Frequency(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		#endregion
-
-		// Factory methods
-		public static Frequency FromHertz(double value) => new(value, "Hz");
-		public static Frequency FromKilohertz(double value) => new(value, "kHz");
-		public static Frequency FromMegahertz(double value) => new(value, "MHz");
-		public static Frequency FromGigahertz(double value) => new(value, "GHz");
-		public static Frequency FromRPM(double value) => new(value, "rpm");
 
 		// Arithmetic operators
 		public static Frequency operator +(Frequency left, Frequency right) => new(left.Value() + right.Value(), left.Internal());

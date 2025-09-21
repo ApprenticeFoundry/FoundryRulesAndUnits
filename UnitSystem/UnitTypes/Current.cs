@@ -18,46 +18,7 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"Expected UnitGroup for Current, got {unitGroup.Family}");
 		}
 
-		public Current(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
-		{
-			if (unitGroup.Family != UnitFamilyName.Current)
-				throw new ArgumentException($"Expected UnitGroup for Current, got {unitGroup.Family}");
-			Init(value, units);
-		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Current(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		// Factory methods for common current units
-		public static Current FromAmperes(double value) => new(value, "A");
-		public static Current FromAmps(double value) => new(value, "A"); // Alias for Amperes
-		public static Current FromKiloamperes(double value) => new(value, "kA");
-		public static Current FromMilliamperes(double value) => new(value, "mA");
-		public static Current FromMicroamperes(double value) => new(value, "μA");
-		public static Current FromNanoamperes(double value) => new(value, "nA");
 
 		#endregion
 

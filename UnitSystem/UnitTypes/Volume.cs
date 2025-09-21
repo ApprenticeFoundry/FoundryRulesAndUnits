@@ -6,10 +6,10 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Volume : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Volume;
 		/// <summary>
 		/// Gets the UnitFamily for Volume measurements
 		/// </summary>
-		public override UnitFamilyName UnitFamily => UnitFamilyName.Volume;
 
 		/// <summary>
 		/// Constructor with UnitGroup injection - preferred
@@ -18,16 +18,6 @@ namespace FoundryRulesAndUnits.Units
 		{
 			if (unitGroup.Family != UnitFamilyName.Volume)
 				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Volume}", nameof(unitGroup));
-		}
-
-		/// <summary>
-		/// Backward compatibility constructor for JSON deserialization
-		/// </summary>
-		public Volume(double value, string units) : base()
-		{
-			V = value;
-			I = units;
-			U = units;
 		}
 
 		// Static factory methods removed - use UnitFactory instead

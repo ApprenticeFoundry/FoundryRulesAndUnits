@@ -7,6 +7,7 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Force : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Force;
 		/// <summary>
 		/// Constructor with UnitGroup injection - preferred
 		/// </summary>
@@ -16,14 +17,6 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Force}", nameof(unitGroup));
 		}
 
-		/// <summary>
-		/// Backward compatibility constructor for JSON deserialization
-		/// </summary>
-		public Force(double value, string units) : base()
-		{
-			V = value;
-			I = units;
-			U = units;
 		}
 
 		// Static factory methods removed - use UnitFactory instead

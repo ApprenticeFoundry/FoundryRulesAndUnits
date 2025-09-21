@@ -6,56 +6,16 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Distance : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Distance;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Distance(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.Length)
-				throw new ArgumentException($"Expected UnitGroup for Length, got {unitGroup.Family}");
-		}
-
-		public Distance(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public Distance(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Length)
 				throw new ArgumentException($"Expected UnitGroup for Length, got {unitGroup.Family}");
-			Init(value, units);
 		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Distance(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		#endregion
-
-		// Factory methods
-		public static Distance FromMeters(double value) => new(value, "m");
-		public static Distance FromKilometers(double value) => new(value, "km");
-		public static Distance FromMiles(double value) => new(value, "mi");
-		public static Distance FromFeet(double value) => new(value, "ft");
-		public static Distance FromInches(double value) => new(value, "in");
 
 		// Utility methods
 		public double Diff(Length other) => Value() - other.Value();

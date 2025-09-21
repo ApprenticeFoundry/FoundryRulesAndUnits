@@ -6,52 +6,19 @@ using System.Text.Json.Serialization;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[JsonConverter(typeof(DurationJsonConverter))]
+
 	public class Duration : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Duration;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Duration(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.Duration)
-				throw new ArgumentException($"Expected UnitGroup for Duration, got {unitGroup.Family}");
-		}
-
-		public Duration(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public Duration(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.Duration)
 				throw new ArgumentException($"Expected UnitGroup for Duration, got {unitGroup.Family}");
-			Init(value, units);
 		}
 
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public Duration(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		#endregion
 
 		// Static properties
 		public static Duration Zero => new(0, "s");
@@ -76,16 +43,5 @@ namespace FoundryRulesAndUnits.Units
 		public static bool operator >=(Duration left, Duration right) => left.Value() >= right.Value();
 	}
 
-	public class DurationJsonConverter : JsonConverter<Duration>
-	{
-		public override Duration Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-		{
-			return MeasuredValue.ReadJSON<Duration>(ref reader, typeToConvert);
-		}
 
-		public override void Write(Utf8JsonWriter writer, Duration dataValue, JsonSerializerOptions options)
-		{
-			// Writing handled by base serialization
-		}
-	}
 }

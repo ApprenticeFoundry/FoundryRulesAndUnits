@@ -6,6 +6,7 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class Voltage : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.Voltage;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
@@ -15,26 +16,8 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"Expected UnitGroup for Voltage, got {unitGroup.Family}");
 		}
 
-		public Voltage(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
-		{
-			if (unitGroup.Family != UnitFamilyName.Voltage)
-				throw new ArgumentException($"Expected UnitGroup for Voltage, got {unitGroup.Family}");
-			Init(value, units);
-		}
-
-		// Backward compatibility constructor for JSON deserialization
-		public Voltage(double value, string units) : base()
-		{
-			V = value;
-			I = units;
-			U = units;
-		}
-
 		#endregion
 
-		#region Unit Conversion - inherited from MeasuredValue
-
-		#endregion
 
 		#region Operators
 

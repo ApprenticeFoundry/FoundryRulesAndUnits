@@ -6,55 +6,15 @@ namespace FoundryRulesAndUnits.Units
 	[System.Serializable]
 	public class QuantityFlow : MeasuredValue
 	{
+		override public UnitFamilyName UnitFamily => UnitFamilyName.QuantityFlow;
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public QuantityFlow(UnitGroup unitGroup) : base(unitGroup) 
-		{ 
-			if (unitGroup.Family != UnitFamilyName.QuantityFlow)
-				throw new ArgumentException($"Expected UnitGroup for QuantityFlow, got {unitGroup.Family}");
-		}
-
-		public QuantityFlow(UnitGroup unitGroup, double value, string? units = null) : base(unitGroup)
+		public QuantityFlow(UnitGroup unitGroup) : base(unitGroup)
 		{
 			if (unitGroup.Family != UnitFamilyName.QuantityFlow)
 				throw new ArgumentException($"Expected UnitGroup for QuantityFlow, got {unitGroup.Family}");
-			Init(value, units);
 		}
-
-		/// <summary>
-
-
-		/// Backward compatibility constructor for JSON deserialization
-
-
-		/// </summary>
-
-
-		public QuantityFlow(double value, string units) : base()
-
-
-		{
-
-
-			V = value;
-
-
-			I = units;
-
-
-			U = units;
-
-
-		}
-
-		// Factory methods for common quantity flow units
-		public static QuantityFlow FromUnitsPerSecond(double value) => new(value, "ea/s");
-		public static QuantityFlow FromUnitsPerMinute(double value) => new(value, "ea/min");
-		public static QuantityFlow FromUnitsPerHour(double value) => new(value, "ea/hr");
-		public static QuantityFlow FromItemsPerSecond(double value) => new(value, "items/s");
-		public static QuantityFlow FromItemsPerMinute(double value) => new(value, "items/min");
-		public static QuantityFlow FromItemsPerHour(double value) => new(value, "items/hr");
 
 		#endregion
 

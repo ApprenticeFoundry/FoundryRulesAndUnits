@@ -108,6 +108,29 @@ class FinalArchitectureTest
             Console.WriteLine($"  SI System CreateLength: {quickSILength.Value()} {quickSILength.Internal()}");
             Console.WriteLine($"  FPS System CreateLength: {quickFPSLength.Value()} {quickFPSLength.Internal()}");
 
+            // Test the critical unit arithmetic issue fix: "100cm + 1m"
+            Console.WriteLine("\n✅ Testing Critical Unit Arithmetic Fix (100cm + 1m):");
+            var length100cm = factory.CreateLength(100, "cm");
+            var length1m = factory.CreateLength(1, "m");
+            
+            Console.WriteLine($"  100cm in base units: {length100cm.V} {length100cm.I}");
+            Console.WriteLine($"  1m in base units: {length1m.V} {length1m.I}");
+            
+            var arithmeticSum = length100cm + length1m;
+            Console.WriteLine($"  100cm + 1m = {arithmeticSum.V} {arithmeticSum.I}");
+            
+            // Verify the result: 100cm + 1m = 1m + 1m = 2m
+            if (Math.Abs(arithmeticSum.V - 2.0) < 0.001)
+            {
+                Console.WriteLine("  ✅ CRITICAL FIX VERIFIED: Unit arithmetic now works correctly!");
+                Console.WriteLine("  ✅ Proper base unit normalization prevents arithmetic exceptions");
+            }
+            else
+            {
+                Console.WriteLine($"  ❌ ARITHMETIC ERROR: Expected 2.0m, got {arithmeticSum.V}m");
+                throw new Exception("Unit arithmetic failed - base unit normalization issue");
+            }
+
             Console.WriteLine("\n🎉 ALL TESTS PASSED! UnitGroup Injection Architecture Complete!");
             Console.WriteLine("  ✅ All measurement classes updated with UnitGroup injection");
             Console.WriteLine("  ✅ Complete UnitFactory with methods for all measurement types");
