@@ -128,8 +128,20 @@ namespace FoundryRulesAndUnits.Units
 			}
 			else
 			{
-				// Minimal fallback for JSON deserialization - same unit only
-				return units == I ? V : throw new InvalidOperationException($"Unit conversion requires UnitGroup injection. Cannot convert from {I} to {units}");
+				// Enhanced fallback for common conversions when UnitGroup not available
+				if (units == I) return V;
+				
+				// Try to create a temporary unit system for conversion
+				try
+				{
+					var unitSystem = new UnitSystem();
+					return unitSystem.Convert(V, I, units);
+				}
+				catch
+				{
+					// If all else fails, throw the original error
+					throw new InvalidOperationException($"Unit conversion requires UnitGroup injection. Cannot convert from {I} to {units}");
+				}
 			}
 		}
 

@@ -13,6 +13,7 @@ namespace FoundryRulesAndUnits.Units;
 public class UnitSystem : IUnitSystem
 {
     private IUnitSystemSpecification _currentSystem;
+    private Dictionary<string, UnitLookupInfo>? _cachedUnitLookup = null;
 
     /// <summary>
     /// Current active unit system specification
@@ -57,6 +58,45 @@ public class UnitSystem : IUnitSystem
         };
 
         ActiveType = systemType;
+        
+        // Clear cached lookup when system changes
+        _cachedUnitLookup = null;
+    }
+
+    /// <summary>
+    /// Build efficient unit lookup cache for O(1) validation and metadata access
+    /// </summary>
+    private Dictionary<string, UnitLookupInfo> BuildUnitLookupCache()
+    {
+        var lookup = new Dictionary<string, UnitLookupInfo>();
+        var factory = GetFactory();
+        
+        foreach (var unitDef in _currentSystem.UnitDefinitions)
+        {
+            // Create factory function for this specific unit and family
+            Func<double, MeasuredValue> createFunc = (value) => 
+                factory.CreateMeasuredValue(unitDef.Family, value, unitDef.Symbol);
+            
+            lookup[unitDef.Symbol] = new UnitLookupInfo(
+                unitDef.Family,
+                unitDef,
+                createFunc
+            );
+        }
+        
+        return lookup;
+    }
+
+    /// <summary>
+    /// Get cached unit lookup dictionary for efficient operations
+    /// </summary>
+    private Dictionary<string, UnitLookupInfo> GetUnitLookup()
+    {
+        if (_cachedUnitLookup == null)
+        {
+            _cachedUnitLookup = BuildUnitLookupCache();
+        }
+        return _cachedUnitLookup;
     }
 
     /// <summary>
@@ -77,17 +117,51 @@ public class UnitSystem : IUnitSystem
     }
 
     /// <summary>
-    /// Check if a unit is valid in the current system
+    /// Check if a unit is valid in the current system (O(1) lookup)
     /// </summary>
-    public bool IsValidUnit(string unit) => _currentSystem.GetAllUnitSymbols().Contains(unit);
+    public bool IsValidUnit(string unit) => GetUnitLookup().ContainsKey(unit);
 
     /// <summary>
-    /// Check if a unit belongs to the specified family
+    /// Check if a unit belongs to the specified family (O(1) lookup)
     /// </summary>
     public bool IsValidUnit(string unit, UnitFamilyName family)
     {
-        var symbolToFamily = _currentSystem.GetSymbolToFamilyMap();
-        return symbolToFamily.ContainsKey(unit) && symbolToFamily[unit] == family;
+        var lookup = GetUnitLookup();
+        return lookup.ContainsKey(unit) && lookup[unit].Family == family;
+    }
+
+    /// <summary>
+    /// Get unit family for a given unit symbol (O(1) lookup)
+    /// Returns UnitFamilyName.None if unit is not found
+    /// </summary>
+    public UnitFamilyName GetUnitFamily(string unit)
+    {
+        var lookup = GetUnitLookup();
+        return lookup.ContainsKey(unit) ? lookup[unit].Family : UnitFamilyName.None;
+    }
+
+    /// <summary>
+    /// Try to get complete unit information for efficient operations
+    /// Returns true if unit exists, false otherwise
+    /// </summary>
+    public bool TryGetUnitInfo(string unit, out UnitLookupInfo? unitInfo)
+    {
+        var lookup = GetUnitLookup();
+        return lookup.TryGetValue(unit, out unitInfo);
+    }
+
+    /// <summary>
+    /// Create a MeasuredValue directly from unit symbol and value (O(1) lookup + creation)
+    /// Throws ArgumentException if unit is not valid
+    /// </summary>
+    public MeasuredValue CreateMeasuredValueFromUnit(string unit, double value)
+    {
+        var lookup = GetUnitLookup();
+        if (lookup.TryGetValue(unit, out var unitInfo))
+        {
+            return unitInfo.CreateMeasuredValue(value);
+        }
+        throw new ArgumentException($"Invalid unit symbol: {unit}");
     }
 
     /// <summary>

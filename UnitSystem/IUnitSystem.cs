@@ -6,6 +6,15 @@ using FoundryRulesAndUnits.Units.Specifications;
 namespace FoundryRulesAndUnits.Units;
 
 /// <summary>
+/// Unit lookup information for efficient validation and creation
+/// </summary>
+public record UnitLookupInfo(
+    UnitFamilyName Family,
+    UnitDefinition Definition,
+    Func<double, MeasuredValue> CreateMeasuredValue
+);
+
+/// <summary>
 /// Unified IUnitSystem interface providing complete unit system functionality
 /// Replaces the previous UnitSystemService singleton pattern with a cleaner approach
 /// </summary>
@@ -40,6 +49,24 @@ public interface IUnitSystem
     /// Check if a unit belongs to the specified family
     /// </summary>
     bool IsValidUnit(string unit, UnitFamilyName family);
+
+    /// <summary>
+    /// Get unit family for a given unit symbol (efficient O(1) lookup)
+    /// Returns UnitFamilyName.None if unit is not found
+    /// </summary>
+    UnitFamilyName GetUnitFamily(string unit);
+
+    /// <summary>
+    /// Try to get complete unit information for efficient operations
+    /// Returns true if unit exists, false otherwise
+    /// </summary>
+    bool TryGetUnitInfo(string unit, out UnitLookupInfo? unitInfo);
+
+    /// <summary>
+    /// Create a MeasuredValue directly from unit symbol and value (efficient)
+    /// Throws ArgumentException if unit is not valid
+    /// </summary>
+    MeasuredValue CreateMeasuredValueFromUnit(string unit, double value);
 
     /// <summary>
     /// Get all units for a specific family in the current system
