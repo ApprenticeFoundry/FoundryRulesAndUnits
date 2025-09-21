@@ -20,11 +20,10 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
         {
-            // Length units (meters as base) - using enhanced approach with UnitFamilyName enum!
+            // Length units (meters as base) - Small-scale measurements
             UnitDefinition.BaseUnit("m", "meters", UnitFamilyName.Length),
             UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.001),       // 1 mm = 0.001 m
             UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Length, 0.01),        // 1 cm = 0.01 m
-            UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 1000.0),       // 1 km = 1000 m
             UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Length, 0.000001),    // 1 μm = 0.000001 m
             UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Length, 0.000000001),  // 1 nm = 1e-9 m
             UnitDefinition.LinearUnit("pm", "picometers", UnitFamilyName.Length, 0.000000000001), // 1 pm = 1e-12 m
@@ -32,7 +31,6 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),           // 1 in = 0.0254 m
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),             // 1 ft = 0.3048 m
             UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),            // 1 yd = 0.9144 m
-            UnitDefinition.LinearUnit("mil", "miles", UnitFamilyName.Length, 1609.344),         // 1 mile = 1609.344 m
 
             // Mass units (kilograms as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("kg", "kilograms", UnitFamilyName.Mass),
@@ -117,14 +115,10 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 0.3048),  // 1 ft/s = 0.3048 m/s
             UnitDefinition.LinearUnit("mph", "miles per hour", UnitFamilyName.Speed, 0.44704),   // 1 mph = 0.44704 m/s
 
-            // Distance units (meters as base) - using enhanced approach with UnitFamilyName enum!
-            UnitDefinition.BaseUnit("m", "meters", UnitFamilyName.Distance),
-            UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Distance, 0.001),     // 1 mm = 0.001 m
-            UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Distance, 0.01),      // 1 cm = 0.01 m
-            UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Distance, 1000.0),     // 1 km = 1000 m
-            UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Distance, 0.3048),           // 1 ft = 0.3048 m
-            UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1609.344),        // 1 mi = 1609.344 m
-            UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1852.0), // 1 nmi = 1852 m
+            // Distance units (kilometers as base) - Large-scale measurements
+            UnitDefinition.BaseUnit("km", "kilometers", UnitFamilyName.Distance),
+            UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1.609344),        // 1 mi = 1.609344 km
+            UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.852), // 1 nmi = 1.852 km
 
             // Pressure units (pascals as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("Pa", "pascals", UnitFamilyName.Pressure),

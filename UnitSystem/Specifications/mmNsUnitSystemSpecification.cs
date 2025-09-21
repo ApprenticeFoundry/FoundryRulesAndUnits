@@ -20,13 +20,12 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
         {
-            // Length units (millimeters as base) - using enhanced approach with UnitFamilyName enum!
+            // Length units (millimeters as base) - Small-scale measurements
             UnitDefinition.BaseUnit("mm", "millimeters", UnitFamilyName.Length),
             UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Length, 0.001),       // 1 μm = 0.001 mm
             UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Length, 0.000001),     // 1 nm = 0.000001 mm
             UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Length, 10.0),        // 1 cm = 10 mm
             UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Length, 1000.0),            // 1 m = 1000 mm
-            UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 1000000.0),    // 1 km = 1,000,000 mm
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 25.4),             // 1 in = 25.4 mm
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 304.8),              // 1 ft = 304.8 mm
             UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Length, 0.0254),            // 1 mil = 0.0254 mm
@@ -96,11 +95,8 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("in/s", "inches per second", UnitFamilyName.Speed, 25.4),    // 1 in/s = 25.4 mm/s
             UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 304.8),     // 1 ft/s = 304.8 mm/s
 
-            // Distance units (kilometers as base) - using enhanced approach with UnitFamilyName enum!
+            // Distance units (kilometers as base) - Large-scale measurements
             UnitDefinition.BaseUnit("km", "kilometers", UnitFamilyName.Distance),
-            UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Distance, 0.001),           // 1 m = 0.001 km
-            UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Distance, 0.00001),   // 1 cm = 0.00001 km
-            UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Distance, 0.000001),  // 1 mm = 0.000001 km
             UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1.609344),        // 1 mi = 1.609344 km
             UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.852), // 1 nmi = 1.852 km
 

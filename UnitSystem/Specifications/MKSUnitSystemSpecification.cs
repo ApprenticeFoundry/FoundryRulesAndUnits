@@ -20,15 +20,13 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
 
     public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
     {
-        // Length units (meters as base) - using enhanced approach with UnitFamilyName enum!
+        // Length units (meters as base) - Small-scale measurements
         UnitDefinition.BaseUnit("m", "meters", UnitFamilyName.Length),
         UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Length, 0.01),         // 1 cm = 0.01 m
         UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.001),        // 1 mm = 0.001 m
-        UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 1000.0),        // 1 km = 1000 m
         UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),            // 1 in = 0.0254 m
         UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),              // 1 ft = 0.3048 m
         UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),             // 1 yd = 0.9144 m
-        UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Length, 1609.344),           // 1 mi = 1609.344 m
         UnitDefinition.LinearUnit("px", "pixels", UnitFamilyName.Length, 1.0 / 96.0 * 0.0254), // 96 DPI
 
         // Mass units (kilograms as base) - using enhanced approach with UnitFamilyName enum!
@@ -84,14 +82,10 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 0.3048),           // 1 ft/s = 0.3048 m/s
         UnitDefinition.LinearUnit("knot", "knots", UnitFamilyName.Speed, 0.514444),                    // 1 knot = 0.514444 m/s
 
-        // Distance units (kilometers as base) - using enhanced approach with UnitFamilyName enum!
+        // Distance units (kilometers as base) - Large-scale measurements
         UnitDefinition.BaseUnit("km", "kilometers", UnitFamilyName.Distance),
-        UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Distance, 0.001),              // 1 m = 0.001 km
-        UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Distance, 0.00001),      // 1 cm = 0.00001 km
-        UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Distance, 0.000001),     // 1 mm = 0.000001 km
-        UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Distance, 0.0003048),           // 1 ft = 0.0003048 km
-        UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1.609344),           // 1 mi = 1.609344 km
-        UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.852),    // 1 nmi = 1.852 km
+        UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1.609344),             // 1 mi = 1.609344 km
+        UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.852),      // 1 nmi = 1.852 km
 
         // Duration units (seconds as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Duration),
