@@ -63,7 +63,8 @@ MeasuredValue length = factory.CreateTypedMeasuredValue(UnitFamilyName.Length, 1
 - Mathematical operations work immediately
 
 ### 3. `CreateUnit<T>()` - Compile-Time Type Safety ⭐
-**Purpose:** End-user APIs with maximum type safety
+**Purpose:** End-user APIs with maximum type safety  
+**Performance:** Uses optimized `CreateTypedMeasuredValue()` internally with cached UnitTypeRegistry
 
 ```csharp
 public T CreateUnit<T>(double value = 0, string? units = null) where T : MeasuredValue
@@ -77,6 +78,9 @@ Mass mass = factory.CreateUnit<Mass>(5.5, "kg");
 
 // No casting needed - exact type returned
 Length result = length + factory.CreateUnit<Length>(1, "m");
+```
+
+**🚀 Performance Optimization:** This method now leverages the cached UnitTypeRegistry instead of doing expensive constructor reflection on every call. Both compile-time type safety AND runtime performance!
 ```
 
 **Advantages:**

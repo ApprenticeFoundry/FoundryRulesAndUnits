@@ -73,6 +73,11 @@ namespace FoundryRulesAndUnits.Units
         }
 
 
+        /// <summary>
+        /// Create a strongly typed unit object with compile-time type safety
+        /// Uses the optimized CreateTypedMeasuredValue() path with cached reflection
+        /// PERFORMANCE: Leverages UnitTypeRegistry cache instead of expensive constructor lookup
+        /// </summary>
         public T CreateUnit<T>(double value = 0, string? units = null) where T : MeasuredValue
         {
             var type = typeof(T);
@@ -80,17 +85,11 @@ namespace FoundryRulesAndUnits.Units
             if (attribute == null)
                 throw new ArgumentException($"Type {type.Name} is not registered with UnitTypeAttribute");
 
-            var unitGroup = _unitSystem.GetUnitGroup(attribute.Family);
-
-            // Use reflection to invoke the constructor with UnitGroup parameter
-            var constructor = type.GetConstructor(new[] { typeof(UnitGroup) });
-            if (constructor == null)
-                throw new InvalidOperationException($"Type {type.Name} does not have a constructor with UnitGroup parameter");
-
-            var instance = (T)constructor.Invoke(new object[] { unitGroup });
-            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
-            instance.Init(value, defaultUnit);
-            return instance;
+            // Use the optimized cached path instead of duplicating reflection logic!
+            var instance = CreateTypedMeasuredValue(attribute.Family, value, units);
+            
+            // Safe cast since UnitTypeRegistry guarantees correct type for family
+            return (T)instance;
         }
 
 
