@@ -16,6 +16,16 @@ namespace FoundryRulesAndUnits.Units
 		string AsString(string units);
 		string Format(string format);
 		string ToString();
+		
+		// Unit inspection methods
+		double BaseValue();
+		string BaseUnits();
+		string DisplayUnits();
+		string InternalRepresentation();
+		string BaseUnitInfo();
+		string DisplayInfo();
+		string ConversionInfo();
+		string DetailedDebug();
 	}
 
 
@@ -149,6 +159,72 @@ namespace FoundryRulesAndUnits.Units
 		public double Value() { return V; }
 		public string Units() { return U; }
 		public string Internal() { return I; }
+
+		/// <summary>
+		/// Get the base unit value (V field) - the numeric value stored in base units
+		/// </summary>
+		/// <returns>The numeric value in base units for mental math calculations</returns>
+		public double BaseValue() { return V; }
+
+		/// <summary>
+		/// Get the base unit symbol (I field) - the unit symbol for internal storage
+		/// </summary>
+		/// <returns>The base unit symbol (e.g., 'm', 'km', 'ft', 'in')</returns>
+		public string BaseUnits() { return I; }
+
+		/// <summary>
+		/// Get the display unit symbol (U field) - the unit symbol for user display
+		/// </summary>
+		/// <returns>The display unit symbol as originally entered</returns>
+		public string DisplayUnits() { return U; }
+
+		/// <summary>
+		/// Get a detailed internal representation showing all V/I/U values
+		/// </summary>
+		/// <returns>Formatted string showing Value, Internal units, and User units</returns>
+		public string InternalRepresentation()
+		{
+			return $"V={V:G}, I='{I}', U='{U}'";
+		}
+
+		/// <summary>
+		/// Get base unit information for mental math - shows value and base unit clearly
+		/// </summary>
+		/// <returns>Human-readable string for doing mental calculations</returns>
+		public string BaseUnitInfo()
+		{
+			return $"{V:G} {I}";
+		}
+
+		/// <summary>
+		/// Get display information - shows value and display unit clearly
+		/// </summary>
+		/// <returns>Human-readable string as entered by user</returns>
+		public string DisplayInfo()
+		{
+			return $"{As(U):G} {U}";
+		}
+
+		/// <summary>
+		/// Get conversion information showing the relationship between display and base units
+		/// </summary>
+		/// <returns>Conversion details for understanding unit transformations</returns>
+		public string ConversionInfo()
+		{
+			if (U == I)
+				return $"{As(U):G} {U} (no conversion needed)";
+			
+			return $"{As(U):G} {U} = {V:G} {I} (base units)";
+		}
+
+		/// <summary>
+		/// Get comprehensive debug information including unit family
+		/// </summary>
+		/// <returns>Complete internal state for debugging</returns>
+		public string DetailedDebug()
+		{
+			return $"Display: {As(U):G} {U} | Base: {V:G} {I} | Family: {GetUnitFamily()} | V/I/U: {V:G}/'{I}'/'{U}'";
+		}
 
 		public void SetInternal(string units)
 		{
