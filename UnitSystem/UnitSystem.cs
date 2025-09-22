@@ -12,7 +12,7 @@ namespace FoundryRulesAndUnits.Units;
 /// </summary>
 public class UnitSystem : IUnitSystem
 {
-    private IUnitSystemSpecification _currentSystem;
+    private IUnitSystemSpecification _currentSystem = null!;
     private Dictionary<string, UnitLookupInfo>? _cachedUnitLookup = null;
 
     /// <summary>
@@ -44,7 +44,7 @@ public class UnitSystem : IUnitSystem
     /// <summary>
     /// Set/change the unit system type
     /// </summary>
-    public void Apply(UnitSystemType systemType)
+    public IUnitSystemSpecification Apply(UnitSystemType systemType)
     {
         _currentSystem = systemType switch
         {
@@ -58,9 +58,10 @@ public class UnitSystem : IUnitSystem
         };
 
         ActiveType = systemType;
-        
+
         // Clear cached lookup when system changes
         _cachedUnitLookup = null;
+        return _currentSystem;
     }
 
     /// <summary>

@@ -33,7 +33,7 @@ public interface IUnitSystem
     /// <summary>
     /// Set/change the unit system type
     /// </summary>
-    void Apply(UnitSystemType systemType);
+    IUnitSystemSpecification Apply(UnitSystemType systemType);
 
     /// <summary>
     /// Convert value between any two units in the current system

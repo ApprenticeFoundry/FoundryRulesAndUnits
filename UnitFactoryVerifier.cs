@@ -190,7 +190,7 @@ namespace FoundryRulesAndUnits.Units
                     return;
                 }
 
-                var genericObj = method.Invoke(factory, new object[] { 10.0, null });
+                var genericObj = method.Invoke(factory, new object[] { 10.0, null! });
                 if (genericObj != null && genericObj.GetType() == unitType)
                     results.Successes.Add($"✅ CreateUnit<{unitType.Name}>() returns correct type");
                 else
