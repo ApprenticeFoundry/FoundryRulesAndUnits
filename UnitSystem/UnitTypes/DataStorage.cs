@@ -33,19 +33,40 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new DataStorage(leftValue + rightValue, left.Internal());
+			var result = new DataStorage(left.UnitGroup);
+			result.Init(leftValue + rightValue, left.Internal());
+			return result;
 		}
 
 		public static DataStorage operator -(DataStorage left, DataStorage right)
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new DataStorage(leftValue - rightValue, left.Internal());
+			var result = new DataStorage(left.UnitGroup);
+			result.Init(leftValue - rightValue, left.Internal());
+			return result;
 		}
 
-		public static DataStorage operator *(DataStorage left, double scalar) => new(left.Value() * scalar, left.Internal());
-		public static DataStorage operator *(double scalar, DataStorage right) => new(scalar * right.Value(), right.Internal());
-		public static DataStorage operator /(DataStorage left, double scalar) => new(left.Value() / scalar, left.Internal());
+		public static DataStorage operator *(DataStorage left, double scalar)
+		{
+			var result = new DataStorage(left.UnitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
+
+		public static DataStorage operator *(double scalar, DataStorage right)
+		{
+			var result = new DataStorage(right.UnitGroup);
+			result.Init(scalar * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static DataStorage operator /(DataStorage left, double scalar)
+		{
+			var result = new DataStorage(left.UnitGroup);
+			result.Init(left.Value() / scalar, left.Internal());
+			return result;
+		}
 
 		public static bool operator >(DataStorage left, DataStorage right) => left.As(left.Internal()) > right.As(left.Internal());
 		public static bool operator <(DataStorage left, DataStorage right) => left.As(left.Internal()) < right.As(left.Internal());

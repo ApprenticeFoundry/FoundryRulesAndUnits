@@ -241,6 +241,11 @@ public class UnitSystem : IUnitSystem
         return _cachedFactory;
     }
 
+    public T Create<T>(double value = 0, string? units = null) where T : MeasuredValue
+    {
+        return GetFactory().CreateUnit<T>(value, units);
+    }
+
     // Quick measurement creation methods using the current system
 
     /// <summary>
@@ -248,7 +253,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Length CreateLength(double value = 0, string? units = null)
     {
-        return GetFactory().CreateLength(value, units);
+        return GetFactory().CreateUnit<Length>(value, units);
     }
 
     /// <summary>
@@ -256,7 +261,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Angle CreateAngle(double value = 0, string? units = null)
     {
-        return GetFactory().CreateAngle(value, units);
+        return GetFactory().CreateUnit<Angle>(value, units);
     }
 
     /// <summary>
@@ -264,7 +269,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Temperature CreateTemperature(double value = 0, string? units = null)
     {
-        return GetFactory().CreateTemperature(value, units);
+        return GetFactory().CreateUnit<Temperature>(value, units);
     }
 
     /// <summary>
@@ -272,7 +277,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Mass CreateMass(double value = 0, string? units = null)
     {
-        return GetFactory().CreateMass(value, units);
+        return GetFactory().CreateUnit<Mass>(value, units);
     }
 
     /// <summary>
@@ -280,7 +285,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Time CreateTime(double value = 0, string? units = null)
     {
-        return GetFactory().CreateTime(value, units);
+        return GetFactory().CreateUnit<Time>(value, units);
     }
 
     /// <summary>
@@ -288,7 +293,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Speed CreateSpeed(double value = 0, string? units = null)
     {
-        return GetFactory().CreateSpeed(value, units);
+        return GetFactory().CreateUnit<Speed>(value, units);
     }
 
     /// <summary>
@@ -296,7 +301,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Area CreateArea(double value = 0, string? units = null)
     {
-        return GetFactory().CreateArea(value, units);
+        return GetFactory().CreateUnit<Area>(value, units);
     }
 
     /// <summary>
@@ -304,7 +309,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Volume CreateVolume(double value = 0, string? units = null)
     {
-        return GetFactory().CreateVolume(value, units);
+        return GetFactory().CreateUnit<Volume>(value, units);
     }
 
     /// <summary>
@@ -312,7 +317,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Force CreateForce(double value = 0, string? units = null)
     {
-        return GetFactory().CreateForce(value, units);
+        return GetFactory().CreateUnit<Force>(value, units);
     }
 
     /// <summary>
@@ -320,7 +325,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Power CreatePower(double value = 0, string? units = null)
     {
-        return GetFactory().CreatePower(value, units);
+        return GetFactory().CreateUnit<Power>(value, units);
     }
 
     /// <summary>
@@ -328,7 +333,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Voltage CreateVoltage(double value = 0, string? units = null)
     {
-        return GetFactory().CreateVoltage(value, units);
+        return GetFactory().CreateUnit<Voltage>(value, units);
     }
 
     /// <summary>
@@ -336,7 +341,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Current CreateCurrent(double value = 0, string? units = null)
     {
-        return GetFactory().CreateCurrent(value, units);
+        return GetFactory().CreateUnit<Current>(value, units);
     }
 
     /// <summary>
@@ -344,7 +349,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Resistance CreateResistance(double value = 0, string? units = null)
     {
-        return GetFactory().CreateResistance(value, units);
+        return GetFactory().CreateUnit<Resistance>(value, units);
     }
 
     /// <summary>
@@ -352,7 +357,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Capacitance CreateCapacitance(double value = 0, string? units = null)
     {
-        return GetFactory().CreateCapacitance(value, units);
+        return GetFactory().CreateUnit<Capacitance>(value, units);
     }
 
     /// <summary>
@@ -360,7 +365,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Frequency CreateFrequency(double value = 0, string? units = null)
     {
-        return GetFactory().CreateFrequency(value, units);
+        return GetFactory().CreateUnit<Frequency>(value, units);
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 using System;
 using FoundryRulesAndUnits.Units;
+using FoundryRulesAndUnits.Extensions;
 
 namespace FoundryRulesAndUnits
 {

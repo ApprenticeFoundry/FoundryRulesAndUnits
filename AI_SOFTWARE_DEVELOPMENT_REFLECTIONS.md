@@ -229,6 +229,81 @@ The `UnitFactoryVerifier` tests multiple layers:
 
 ---
 
+## **The Legacy Code Constraint Discovery Problem**
+
+### **The Invisible Constraint Challenge**
+
+**New Critical Insight:** When working with legacy systems, **constraint conflicts only reveal themselves during refactoring attempts**. This creates a fundamental communication challenge between human domain knowledge and AI technical implementation.
+
+**The Pattern:**
+```
+Initial Assessment: "This should be straightforward to refactor"
+↓
+Start Implementation: Discover architectural conflict #1
+↓  
+Fix Conflict #1: Reveals deeper dependency #2
+↓
+Address Dependency #2: Uncovers legacy assumption #3
+↓
+Handle Assumption #3: Breaks existing code expecting different pattern
+```
+
+**Real Example from This Project:**
+- **Visible requirement:** "Fix the UnitFactory architecture"
+- **Hidden constraint:** Legacy code expects `UnitFactory.SI.CreateLength()`
+- **Deeper constraint:** Static factory pattern vs. new dependency injection pattern
+- **Systemic constraint:** Scattered call sites throughout Models/ directory
+- **Discovery timing:** Only emerged after implementing new architecture
+
+### **The Communication Gap**
+
+**Human Knowledge:**
+- Understands business priorities and can make trade-off decisions
+- Knows which legacy code is critical vs. expendable
+- Can decide between "update all call sites" vs. "add compatibility layer"
+- Has context about future roadmap and architectural direction
+
+**AI Knowledge:**
+- Can see technical constraint conflicts as they emerge during refactoring
+- Can identify patterns of dependency throughout the codebase
+- Can surface the specific technical trade-offs and implementation options
+- Can assess the scope and complexity of different resolution approaches
+
+**The Problem:** These knowledge types are **complementary but not overlapping**. The human can't see all the technical cascading effects, and the AI can't make the priority decisions.
+
+### **Better Collaboration Pattern for Legacy Systems**
+
+**Old Approach (Ineffective):**
+1. AI attempts complete solution
+2. Hits constraint conflicts
+3. AI tries to resolve everything without human guidance
+4. Creates over-engineered or wrong-priority solutions
+
+**New Approach (Effective):**
+1. **AI surfaces constraint conflicts as they're discovered**
+2. **Human provides priority guidance** ("focus on minimal changes" vs "push new architecture")
+3. **AI implements within those constraints**
+4. **Immediate feedback loop** when new conflicts emerge
+
+**Example Better Communication:**
+> **AI:** "Constraint conflict discovered: Legacy code expects `UnitFactory.SI` static access, but new architecture uses instance-based `new UnitFactory(unitSystem)`. I can see 11 call sites that need updating. Options: (1) Add static compatibility methods, (2) Update all call sites, (3) Create adapter layer. What's your priority guidance?"
+>
+> **Human:** "Add static compatibility methods for now - minimize legacy disruption"
+>
+> **AI:** "Implementing static compatibility layer..."
+
+### **Key Learning: Constraint Discovery Is Collaborative**
+
+**Critical Insight:** In legacy systems, **architectural refactoring is inherently a process of constraint discovery**. The AI should expect and embrace this, turning it into a collaborative conversation rather than trying to solve everything independently.
+
+**Why This Matters:**
+- **Reduces over-engineering** - AI doesn't try to solve problems that aren't priorities
+- **Improves decision quality** - Human domain knowledge guides technical trade-offs  
+- **Accelerates delivery** - Less time spent on wrong approaches
+- **Preserves system stability** - Changes align with business priorities and legacy constraints
+
+---
+
 ## **Collaboration Anti-Patterns I've Learned to Avoid**
 
 ### **1. The "Helpful Addition" Trap**

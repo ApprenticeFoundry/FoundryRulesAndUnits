@@ -31,19 +31,40 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new DataFlow(leftValue + rightValue, left.Internal());
+			var result = new DataFlow(left.UnitGroup);
+			result.Init(leftValue + rightValue, left.Internal());
+			return result;
 		}
 
 		public static DataFlow operator -(DataFlow left, DataFlow right)
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new DataFlow(leftValue - rightValue, left.Internal());
+			var result = new DataFlow(left.UnitGroup);
+			result.Init(leftValue - rightValue, left.Internal());
+			return result;
 		}
 
-		public static DataFlow operator *(DataFlow left, double scalar) => new(left.Value() * scalar, left.Internal());
-		public static DataFlow operator *(double scalar, DataFlow right) => new(scalar * right.Value(), right.Internal());
-		public static DataFlow operator /(DataFlow left, double scalar) => new(left.Value() / scalar, left.Internal());
+		public static DataFlow operator *(DataFlow left, double scalar)
+		{
+			var result = new DataFlow(left.UnitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
+
+		public static DataFlow operator *(double scalar, DataFlow right)
+		{
+			var result = new DataFlow(right.UnitGroup);
+			result.Init(scalar * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static DataFlow operator /(DataFlow left, double scalar)
+		{
+			var result = new DataFlow(left.UnitGroup);
+			result.Init(left.Value() / scalar, left.Internal());
+			return result;
+		}
 
 		public static bool operator >(DataFlow left, DataFlow right) => left.As(left.Internal()) > right.As(left.Internal());
 		public static bool operator <(DataFlow left, DataFlow right) => left.As(left.Internal()) < right.As(left.Internal());

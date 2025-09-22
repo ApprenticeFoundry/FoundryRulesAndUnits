@@ -56,7 +56,9 @@ namespace FoundryRulesAndUnits.Units
 
 		public Heading Copy()
 		{
-			return new Heading(Value(), Internal());
+			var result = new Heading(UnitGroup);
+			result.Init(Value(), Internal());
+			return result;
 		}
 
 		public Heading Degrees(double value)
@@ -73,19 +75,40 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new Heading(leftValue + rightValue, left.Internal());
+			var result = new Heading(left.UnitGroup);
+			result.Init(leftValue + rightValue, left.Internal());
+			return result;
 		}
 
 		public static Heading operator -(Heading left, Heading right)
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new Heading(leftValue - rightValue, left.Internal());
+			var result = new Heading(left.UnitGroup);
+			result.Init(leftValue - rightValue, left.Internal());
+			return result;
 		}
 
-		public static Heading operator *(Heading left, double scalar) => new(left.Value() * scalar, left.Internal());
-		public static Heading operator *(double scalar, Heading right) => new(scalar * right.Value(), right.Internal());
-		public static Heading operator /(Heading left, double scalar) => new(left.Value() / scalar, left.Internal());
+		public static Heading operator *(Heading left, double scalar)
+		{
+			var result = new Heading(left.UnitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
+
+		public static Heading operator *(double scalar, Heading right)
+		{
+			var result = new Heading(right.UnitGroup);
+			result.Init(scalar * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static Heading operator /(Heading left, double scalar)
+		{
+			var result = new Heading(left.UnitGroup);
+			result.Init(left.Value() / scalar, left.Internal());
+			return result;
+		}
 
 		public static bool operator >(Heading left, Heading right) => left.As(left.Internal()) > right.As(left.Internal());
 		public static bool operator <(Heading left, Heading right) => left.As(left.Internal()) < right.As(left.Internal());

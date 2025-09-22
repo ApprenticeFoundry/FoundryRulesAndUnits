@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace FoundryRulesAndUnits.Units
 {
@@ -21,19 +22,25 @@ namespace FoundryRulesAndUnits.Units
         }
 
         /// <summary>
+        /// Create a factory with the specified unit system type (compatibility constructor)
+        /// This constructor provides backward compatibility with existing code
+        /// </summary>
+        public UnitFactory(UnitSystemType systemType)
+        {
+            _unitSystem = new UnitSystem(systemType);
+        }
+
+        /// <summary>
         /// Get the unit system this factory uses
         /// </summary>
         public IUnitSystem UnitSystem => _unitSystem;
 
         /// <summary>
-        /// Get a specific UnitGroup from the current unit system configuration
+        /// Get the system type for compatibility with existing caching logic
         /// </summary>
-        public UnitGroup GetUnitGroup(UnitFamilyName family)
-        {
-            return _unitSystem.GetUnitGroup(family);
-        }
+        public UnitSystemType SystemType => _unitSystem.ActiveType;
 
-        // Clean factory methods - just two methods handle everything through reflection
+        // Clean factory methods - leverage existing IUnitSystem functionality
 
         /// <summary>
         /// Create a generic MeasuredValue for any unit family (base class only)
@@ -42,11 +49,8 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public MeasuredValue CreateMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
         {
-            var unitGroup = _unitSystem.GetUnitGroup(family);
-            var measuredValue = new MeasuredValue(unitGroup);
-            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
-            measuredValue.Init(value, defaultUnit);
-            return measuredValue;
+            // Delegate to the unit system's existing functionality
+            return _unitSystem.CreateMeasuredValue(family, value, units);
         }
 
         /// <summary>
@@ -57,19 +61,55 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public MeasuredValue CreateTypedMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
         {
-            var unitGroup = _unitSystem.GetUnitGroup(family);
-
+            // Create UnitGroup from current unit system specification
+            var unitGroup = CreateUnitGroupForFamily(family);
+            
             // Use attribute-based registry to create the correct derived type
             var instance = UnitTypeRegistry.CreateInstance(family, unitGroup);
             if (instance == null)
             {
-                // Fallback to Dimensionless if no specific type is registered
-                instance = new Dimensionless(unitGroup);
+                // Fallback to creating via the unit system
+                return CreateMeasuredValue(family, value, units);
             }
             
-            var defaultUnit = units ?? unitGroup.BaseUnit.Symbol;
-            instance.Init(value, defaultUnit);
+            // Initialize the instance using the unit system's conversion capabilities
+            var baseUnit = _unitSystem.GetBaseUnitForFamily(family);
+            var finalUnit = units ?? baseUnit;
+            
+            if (units != null && units != baseUnit)
+            {
+                // Convert to base units for consistency
+                var convertedValue = _unitSystem.Convert(value, units, baseUnit);
+                instance.Init(convertedValue, baseUnit);
+            }
+            else
+            {
+                instance.Init(value, finalUnit);
+            }
+            
             return instance;
+        }
+
+        /// <summary>
+        /// Create a UnitGroup for the specified family using current unit system configuration
+        /// This is the bridge between the unit system and the unit type constructors
+        /// </summary>
+        private UnitGroup CreateUnitGroupForFamily(UnitFamilyName family)
+        {
+            var allUnitsByFamily = _unitSystem.GetAllUnitsByFamily();
+            if (!allUnitsByFamily.TryGetValue(family, out var units))
+            {
+                throw new ArgumentException($"No units found for family {family} in current unit system");
+            }
+
+            var baseUnitSymbol = _unitSystem.GetBaseUnitForFamily(family);
+            var baseUnit = units.FirstOrDefault(u => u.Symbol == baseUnitSymbol);
+            if (baseUnit == null)
+            {
+                throw new InvalidOperationException($"Base unit {baseUnitSymbol} not found for family {family}");
+            }
+
+            return new UnitGroup(family, _unitSystem.ActiveType, baseUnit, units);
         }
 
 

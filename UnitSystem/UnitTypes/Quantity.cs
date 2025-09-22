@@ -23,19 +23,67 @@ namespace FoundryRulesAndUnits.Units
 
 
 		// Arithmetic operators with integers
-		public static Quantity operator +(Quantity left, int right) => new(left.Value() + right, left.Internal());
-		public static Quantity operator -(Quantity left, int right) => new(left.Value() - right, left.Internal());
+		public static Quantity operator +(Quantity left, int right)
+		{
+			var result = new Quantity(left.UnitGroup);
+			result.Init(left.Value() + right, left.Internal());
+			return result;
+		}
+
+		public static Quantity operator -(Quantity left, int right)
+		{
+			var result = new Quantity(left.UnitGroup);
+			result.Init(left.Value() - right, left.Internal());
+			return result;
+		}
 
 		// Arithmetic operators with other quantities
-		public static Quantity operator +(Quantity left, Quantity right) => new(left.Value() + right.Value(), left.Internal());
-		public static Quantity operator -(Quantity left, Quantity right) => new(left.Value() - right.Value(), left.Internal());
-		public static Quantity operator *(Quantity quantity, double scalar) => new(quantity.Value() * scalar, quantity.Internal());
-		public static Quantity operator *(double scalar, Quantity quantity) => new(scalar * quantity.Value(), quantity.Internal());
-		public static Quantity operator /(Quantity quantity, double scalar) => new(quantity.Value() / scalar, quantity.Internal());
+		public static Quantity operator +(Quantity left, Quantity right)
+		{
+			var result = new Quantity(left.UnitGroup);
+			result.Init(left.Value() + right.Value(), left.Internal());
+			return result;
+		}
+
+		public static Quantity operator -(Quantity left, Quantity right)
+		{
+			var result = new Quantity(left.UnitGroup);
+			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+
+		public static Quantity operator *(Quantity quantity, double scalar)
+		{
+			var result = new Quantity(quantity.UnitGroup);
+			result.Init(quantity.Value() * scalar, quantity.Internal());
+			return result;
+		}
+
+		public static Quantity operator *(double scalar, Quantity quantity)
+		{
+			var result = new Quantity(quantity.UnitGroup);
+			result.Init(scalar * quantity.Value(), quantity.Internal());
+			return result;
+		}
+
+		public static Quantity operator /(Quantity quantity, double scalar)
+		{
+			var result = new Quantity(quantity.UnitGroup);
+			result.Init(quantity.Value() / scalar, quantity.Internal());
+			return result;
+		}
+
 		public static double operator /(Quantity left, Quantity right) => left.Value() / right.Value();
 
-		// Special operator for creating flow rates
-		public static QuantityFlow operator /(Quantity left, Time right) => new(left.Value() / right.Value(), "ea/s");
+		// Special operator for creating flow rates - will need proper QuantityFlow UnitGroup
+		public static QuantityFlow operator /(Quantity left, Time right)
+		{
+			// This needs a proper QuantityFlow UnitGroup - placeholder for now
+			var flowGroup = left.UnitGroup; // Will need to fix this properly
+			var result = new QuantityFlow(flowGroup);
+			result.Init(left.Value() / right.Value(), "ea/s");
+			return result;
+		}
 	}
 
 

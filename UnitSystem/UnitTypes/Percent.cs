@@ -33,19 +33,40 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new Percent(leftValue + rightValue, left.Internal());
+			var result = new Percent(left.UnitGroup);
+			result.Init(leftValue + rightValue, left.Internal());
+			return result;
 		}
 
 		public static Percent operator -(Percent left, Percent right)
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			return new Percent(leftValue - rightValue, left.Internal());
+			var result = new Percent(left.UnitGroup);
+			result.Init(leftValue - rightValue, left.Internal());
+			return result;
 		}
 
-		public static Percent operator *(Percent left, double scalar) => new(left.Value() * scalar, left.Internal());
-		public static Percent operator *(double scalar, Percent right) => new(scalar * right.Value(), right.Internal());
-		public static Percent operator /(Percent left, double scalar) => new(left.Value() / scalar, left.Internal());
+		public static Percent operator *(Percent left, double scalar)
+		{
+			var result = new Percent(left.UnitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
+
+		public static Percent operator *(double scalar, Percent right)
+		{
+			var result = new Percent(right.UnitGroup);
+			result.Init(scalar * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static Percent operator /(Percent left, double scalar)
+		{
+			var result = new Percent(left.UnitGroup);
+			result.Init(left.Value() / scalar, left.Internal());
+			return result;
+		}
 
 		public static bool operator >(Percent left, Percent right) => left.As(left.Internal()) > right.As(left.Internal());
 		public static bool operator <(Percent left, Percent right) => left.As(left.Internal()) < right.As(left.Internal());
