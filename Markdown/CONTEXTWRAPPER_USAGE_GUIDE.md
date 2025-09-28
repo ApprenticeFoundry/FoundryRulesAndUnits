@@ -13,6 +13,17 @@ The `ContextWrapper<T>` class from the FoundryRulesAndUnits library provides a s
 - **JSON Serialization**: Full support for serialization/deserialization
 - **Type Safety**: Generic implementation maintains compile-time type checking
 
+## Important Design Principle
+
+**ContextWrapper<T> ALWAYS contains a collection internally via the `payload` property.**
+
+This means:
+- ✅ Use `ContextWrapper<MyData>` - NOT `ContextWrapper<List<MyData>>`
+- ✅ Single items become single-item collections automatically  
+- ✅ Collections are stored directly as collections
+- ✅ Access data via `wrapper.payload` (ICollection<T>) or `wrapper.PayloadAsList()` (List<T>)
+- ✅ Check `wrapper.length` to see how many items are in the collection
+
 ## Installation
 
 Add reference to FoundryRulesAndUnits library:
@@ -31,11 +42,11 @@ using FoundryRulesAndUnits.Models;
 // Static success method
 var successResponse = ContextWrapper<MyData>.success("Operation completed successfully");
 
-// Success with data
+// Success with single data item
 var dataResponse = new ContextWrapper<MyData>(myDataObject);
 
-// Success with list
-var listResponse = new ContextWrapper<List<MyData>>(myDataList);
+// Success with multiple items (pass collection directly, NOT List<T>)
+var listResponse = new ContextWrapper<MyData>(myDataList);
 ```
 
 ### 2. Creating Error Responses
@@ -60,8 +71,9 @@ var failure = new ContextWrapper<Failure>(new Failure
 ```csharp
 var wrapper = new ContextWrapper<MyData>(myDataObject);
 
-// Access properties
-List<MyData> items = wrapper.PayloadAsList();
+// Access properties - payload is always a collection
+ICollection<MyData> items = wrapper.payload; // Direct access to collection
+List<MyData> itemsList = wrapper.PayloadAsList(); // Convenience method for List<T>
 bool hasError = wrapper.hasError;
 string message = wrapper.message;
 DateTime timestamp = wrapper.dateTime;
@@ -76,6 +88,17 @@ if (wrapper.hasError)
 else
 {
     Console.WriteLine($"Success: Found {wrapper.length} items");
+    // Process all items in the collection - use either approach
+    foreach (var item in wrapper.payload) // Direct access
+    {
+        // Process each item...
+    }
+    
+    // Or use the convenience method
+    foreach (var item in wrapper.PayloadAsList())
+    {
+        // Process each item...
+    }
 }
 ```
 
@@ -88,16 +111,16 @@ else
 [Route("api/[controller]")]
 public class PartsController : ControllerBase
 {
-    public ContextWrapper<List<PartData>> GetParts()
+    public ContextWrapper<PartData> GetParts()
     {
         try 
         {
-            var parts = LoadPartsFromDatabase();
-            return new ContextWrapper<List<PartData>>(parts);
+            var parts = LoadPartsFromDatabase(); // Returns List<PartData>
+            return new ContextWrapper<PartData>(parts); // Pass collection directly
         }
         catch (Exception ex)
         {
-            return new ContextWrapper<List<PartData>>(ex.Message);
+            return new ContextWrapper<PartData>(ex.Message);
         }
     }
 
@@ -109,7 +132,7 @@ public class PartsController : ControllerBase
             if (part == null)
                 return new ContextWrapper<PartData>("Part not found");
                 
-            return new ContextWrapper<PartData>(part);
+            return new ContextWrapper<PartData>(part); // Single item becomes collection
         }
         catch (Exception ex)
         {
@@ -144,17 +167,17 @@ public class DataService
         }
     }
 
-    public ContextWrapper<List<SearchResult>> Search(string query)
+    public ContextWrapper<SearchResult> Search(string query)
     {
         if (string.IsNullOrEmpty(query))
-            return new ContextWrapper<List<SearchResult>>("Search query cannot be empty");
+            return new ContextWrapper<SearchResult>("Search query cannot be empty");
 
-        var results = PerformSearch(query);
+        var results = PerformSearch(query); // Returns List<SearchResult>
         
         if (!results.Any())
-            return new ContextWrapper<List<SearchResult>>(new List<SearchResult>(), "No results found");
+            return new ContextWrapper<SearchResult>(new List<SearchResult>(), "No results found");
             
-        return new ContextWrapper<List<SearchResult>>(results);
+        return new ContextWrapper<SearchResult>(results); // Pass collection directly
     }
 }
 ```
@@ -192,13 +215,13 @@ public async Task<MyData> GetDataAsync(int id)
         throw new ApplicationException($"API Error: {wrapper.message}");
     }
     
-    return wrapper.PayloadAsList().FirstOrDefault();
+    return wrapper.payload.FirstOrDefault(); // Direct access to collection
 }
 
 public async Task<List<MyData>> GetDataListAsync()
 {
     var response = await httpClient.GetStringAsync("/api/data");
-    var wrapper = CodingExtensions.HydrateWrapper<List<MyData>>(response, true);
+    var wrapper = CodingExtensions.HydrateWrapper<MyData>(response, true);
     
     if (wrapper.hasError)
     {
@@ -206,7 +229,8 @@ public async Task<List<MyData>> GetDataListAsync()
         return new List<MyData>();
     }
     
-    return wrapper.PayloadAsList();
+    // payload is already a collection - convert to List if needed
+    return wrapper.payload.ToList(); // Or use wrapper.PayloadAsList() convenience method
 }
 ```
 
@@ -242,7 +266,7 @@ var response = new ContextWrapper<MyData>(data)
 public interface IRepository<T>
 {
     Task<ContextWrapper<T>> GetByIdAsync(int id);
-    Task<ContextWrapper<List<T>>> GetAllAsync();
+    Task<ContextWrapper<T>> GetAllAsync(); // Returns T, not List<T>
     Task<ContextWrapper<T>> CreateAsync(T entity);
     Task<ContextWrapper<T>> UpdateAsync(T entity);
     Task<ContextWrapper<Success>> DeleteAsync(int id);
@@ -290,17 +314,22 @@ public class Repository<T> : IRepository<T> where T : class
 ## Best Practices
 
 ### ✅ **DO:**
-- Use ContextWrapper for all API responses to maintain consistency
+- Use `ContextWrapper<T>` for all API responses to maintain consistency
+- Access data via `wrapper.payload` directly (it's already a collection)
+- Use `wrapper.PayloadAsList()` when you specifically need a `List<T>`
+- Use single generic type parameter (`MyData`), never `List<MyData>`
 - Include meaningful error messages when creating error responses
 - Use static success/exception methods for simple responses
 - Leverage the automatic timestamp feature for audit trails
-- Use generic type parameters to maintain type safety
+- Check `wrapper.length` to determine collection size
 
 ### ❌ **DON'T:**
+- Don't use `ContextWrapper<List<T>>` - use `ContextWrapper<T>` instead
 - Don't mix wrapped and unwrapped responses in the same API
 - Don't ignore the hasError property when consuming responses
 - Don't put sensitive information in error messages
 - Don't create empty wrappers unnecessarily
+- Don't forget that `payload` is already a collection - no conversion needed
 
 ## Error Handling Strategies
 
@@ -332,13 +361,13 @@ public ContextWrapper<FinalResult> ProcessChain(InputData input)
     var step1 = ValidateInput(input);
     if (step1.hasError) return new ContextWrapper<FinalResult>(step1.message);
     
-    var step2 = TransformData(step1.PayloadAsList().First());
+    var step2 = TransformData(step1.payload.First()); // Direct access to collection
     if (step2.hasError) return new ContextWrapper<FinalResult>(step2.message);
     
-    var step3 = SaveResult(step2.PayloadAsList().First());
+    var step3 = SaveResult(step2.payload.First());
     if (step3.hasError) return new ContextWrapper<FinalResult>(step3.message);
     
-    return new ContextWrapper<FinalResult>(step3.PayloadAsList().First());
+    return new ContextWrapper<FinalResult>(step3.payload.First());
 }
 ```
 
