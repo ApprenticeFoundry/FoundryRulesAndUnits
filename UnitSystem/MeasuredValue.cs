@@ -40,7 +40,7 @@ public interface IMeasuredValue
 [JsonDerivedType(typeof(Duration))]
 [JsonDerivedType(typeof(Force))]
 [JsonDerivedType(typeof(Frequency))]
-[JsonDerivedType(typeof(Heading))]
+[JsonDerivedType(typeof(Bearing))]
 [JsonDerivedType(typeof(Length))]
 [JsonDerivedType(typeof(Mass))]
 [JsonDerivedType(typeof(Percent))]
