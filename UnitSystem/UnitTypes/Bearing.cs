@@ -5,17 +5,17 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units
 {
 	[System.Serializable]
-	[UnitType(UnitFamilyName.Heading, Description = "Heading/bearing measurement")]
-	public class Heading : MeasuredValue
+	[UnitType(UnitFamilyName.Bearing, Description = "Bearing/bearing measurement")]
+	public class Bearing : MeasuredValue
 	{
 		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 		#region Constructors and Factory Methods
 
 		// UnitGroup injection constructor (preferred for new code)
-		public Heading(UnitGroup unitGroup) : base(unitGroup)
+		public Bearing(UnitGroup unitGroup) : base(unitGroup)
 		{
-			if (unitGroup.Family != UnitFamilyName.Heading)
-				throw new ArgumentException($"Expected UnitGroup for Heading, got {unitGroup.Family}");
+			if (unitGroup.Family != UnitFamilyName.Bearing)
+				throw new ArgumentException($"Expected UnitGroup for Bearing, got {unitGroup.Family}");
 		}
 
 
@@ -28,7 +28,7 @@ namespace FoundryRulesAndUnits.Units
 
 		#region Legacy Methods (Maintained for Compatibility)
 
-		public Heading Assign(double value, string? units)
+		public Bearing Assign(double value, string? units)
 		{
 			if (units == I)
 			{
@@ -41,7 +41,7 @@ namespace FoundryRulesAndUnits.Units
 			return this;
 		}
 
-		public Heading Assign(Heading source)
+		public Bearing Assign(Bearing source)
 		{
 			if (source.I == I)
 			{
@@ -54,14 +54,14 @@ namespace FoundryRulesAndUnits.Units
 			return this;
 		}
 
-		public Heading Copy()
+		public Bearing Copy()
 		{
-			var result = new Heading(UnitGroup);
+			var result = new Bearing(UnitGroup);
 			result.Init(Value(), Internal());
 			return result;
 		}
 
-		public Heading Degrees(double value)
+		public Bearing Degrees(double value)
 		{
 			V = _unitGroup.Convert(value, "deg", Internal());
 			return this;
@@ -71,49 +71,49 @@ namespace FoundryRulesAndUnits.Units
 
 		#region Operators
 
-		public static Heading operator +(Heading left, Heading right)
+		public static Bearing operator +(Bearing left, Bearing right)
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			var result = new Heading(left.UnitGroup);
+			var result = new Bearing(left.UnitGroup);
 			result.Init(leftValue + rightValue, left.Internal());
 			return result;
 		}
 
-		public static Heading operator -(Heading left, Heading right)
+		public static Bearing operator -(Bearing left, Bearing right)
 		{
 			var leftValue = left.As(left.Internal());
 			var rightValue = right.As(left.Internal());
-			var result = new Heading(left.UnitGroup);
+			var result = new Bearing(left.UnitGroup);
 			result.Init(leftValue - rightValue, left.Internal());
 			return result;
 		}
 
-		public static Heading operator *(Heading left, double scalar)
+		public static Bearing operator *(Bearing left, double scalar)
 		{
-			var result = new Heading(left.UnitGroup);
+			var result = new Bearing(left.UnitGroup);
 			result.Init(left.Value() * scalar, left.Internal());
 			return result;
 		}
 
-		public static Heading operator *(double scalar, Heading right)
+		public static Bearing operator *(double scalar, Bearing right)
 		{
-			var result = new Heading(right.UnitGroup);
+			var result = new Bearing(right.UnitGroup);
 			result.Init(scalar * right.Value(), right.Internal());
 			return result;
 		}
 
-		public static Heading operator /(Heading left, double scalar)
+		public static Bearing operator /(Bearing left, double scalar)
 		{
-			var result = new Heading(left.UnitGroup);
+			var result = new Bearing(left.UnitGroup);
 			result.Init(left.Value() / scalar, left.Internal());
 			return result;
 		}
 
-		public static bool operator >(Heading left, Heading right) => left.As(left.Internal()) > right.As(left.Internal());
-		public static bool operator <(Heading left, Heading right) => left.As(left.Internal()) < right.As(left.Internal());
-		public static bool operator >=(Heading left, Heading right) => left.As(left.Internal()) >= right.As(left.Internal());
-		public static bool operator <=(Heading left, Heading right) => left.As(left.Internal()) <= right.As(left.Internal());
+		public static bool operator >(Bearing left, Bearing right) => left.As(left.Internal()) > right.As(left.Internal());
+		public static bool operator <(Bearing left, Bearing right) => left.As(left.Internal()) < right.As(left.Internal());
+		public static bool operator >=(Bearing left, Bearing right) => left.As(left.Internal()) >= right.As(left.Internal());
+		public static bool operator <=(Bearing left, Bearing right) => left.As(left.Internal()) <= right.As(left.Internal());
 
 		#endregion
 

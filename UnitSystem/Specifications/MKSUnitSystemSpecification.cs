@@ -96,11 +96,11 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("month", "months", UnitFamilyName.Duration, 2629746.0),      // 1 month ≈ 30.44 days
         UnitDefinition.LinearUnit("year", "years", UnitFamilyName.Duration, 31556952.0),       // 1 year = 365.2425 days
 
-        // Heading units (degrees as base) - using enhanced approach with UnitFamilyName enum!
-        UnitDefinition.BaseUnit("deg", "degrees", UnitFamilyName.Heading),
-        UnitDefinition.LinearUnit("rad", "radians", UnitFamilyName.Heading, 180.0 / Math.PI),  // 1 rad = 180/π deg
-        UnitDefinition.LinearUnit("grad", "gradians", UnitFamilyName.Heading, 0.9),            // 1 grad = 0.9 deg
-        UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Heading, 0.05625),             // 1 mil = 0.05625 deg
+        // // Bearing units (degrees as base) - using enhanced approach with UnitFamilyName enum!
+        // UnitDefinition.BaseUnit("d", "degrees", UnitFamilyName.Bearing),
+        // UnitDefinition.LinearUnit("r", "radians", UnitFamilyName.Bearing, 180.0 / Math.PI),  // 1 rad = 180/π deg
+        // UnitDefinition.LinearUnit("grad", "gradians", UnitFamilyName.Bearing, 0.9),            // 1 grad = 0.9 deg
+        // UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Bearing, 0.05625),             // 1 mil = 0.05625 deg
 
         // Quantity units (each as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("ea", "each", UnitFamilyName.Quantity),

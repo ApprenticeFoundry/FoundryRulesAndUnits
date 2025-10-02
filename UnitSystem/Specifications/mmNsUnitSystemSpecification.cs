@@ -56,11 +56,10 @@ namespace FoundryRulesAndUnits.Units.Specifications
                 f => (f - 32.0) * 5.0/9.0,       // F to C: (F-32)*5/9
                 c => c * 9.0/5.0 + 32.0),        // C to F: C*9/5 + 32
 
-            // Angle units (degrees as base) - using enhanced approach with UnitFamilyName enum!
-            UnitDefinition.BaseUnit("deg", "degrees", UnitFamilyName.Angle),
-            UnitDefinition.LinearUnit("rad", "radians", UnitFamilyName.Angle, 180.0 / Math.PI), // 1 rad = 180/π deg
-            UnitDefinition.LinearUnit("mrad", "milliradians", UnitFamilyName.Angle, 180.0 / Math.PI * 0.001), // 1 mrad
-            UnitDefinition.LinearUnit("rev", "revolutions", UnitFamilyName.Angle, 360.0),       // 1 rev = 360 deg
+            // Angle units (radians as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("rad", "radians", UnitFamilyName.Angle),
+            UnitDefinition.LinearUnit("deg", "degrees", UnitFamilyName.Angle, Math.PI / 180.0),  // 1 deg = π/180 rad
+            UnitDefinition.LinearUnit("mrad", "milliradians", UnitFamilyName.Angle, 0.001),     // 1 mrad = 0.001 rad
 
             // Time units (seconds as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Time),

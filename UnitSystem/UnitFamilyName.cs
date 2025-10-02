@@ -18,7 +18,7 @@ public enum UnitFamilyName
     Duration,
     Mass,
     Angle,
-    Heading,
+    Bearing,
     Quantity,
     QuantityFlow,
     Area,
