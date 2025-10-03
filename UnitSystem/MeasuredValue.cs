@@ -267,13 +267,79 @@ public class MeasuredValue : IMeasuredValue
 
 	/// <summary>
 	/// Checks if this MeasuredValue is compatible with another for mathematical operations
+	/// Uses UnitFamilyCompatibility to allow mixing related families (Length + Distance, etc.)
 	/// </summary>
 	/// <param name="other">The other MeasuredValue to check compatibility with</param>
-	/// <returns>True if the units are compatible (same family)</returns>
+	/// <returns>True if the units are compatible (same family or compatible families)</returns>
 	public bool IsCompatibleWith(MeasuredValue other)
 	{
-		// Check if they're the same unit family (both Angle, both Length, etc.)
-		return other != null && this.GetType() == other.GetType();
+		if (other == null) return false;
+		
+		// Check if they're compatible via the family compatibility matrix
+		var thisFamily = this.UnitFamily;
+		var otherFamily = other.UnitFamily;
+		
+		return UnitFamilyCompatibility.AreCompatible(thisFamily, otherFamily);
+	}
+
+	/// <summary>
+	/// Add two compatible MeasuredValues together
+	/// Automatically handles unit conversion and family resolution
+	/// </summary>
+	/// <param name="other">The other MeasuredValue to add</param>
+	/// <param name="unitSystem">Unit system to use for result creation</param>
+	/// <returns>A new MeasuredValue with the result</returns>
+	/// <exception cref="InvalidOperationException">Thrown when units are incompatible</exception>
+	public MeasuredValue AddCompatible(MeasuredValue other, UnitSystem unitSystem)
+	{
+		if (!IsCompatibleWith(other))
+		{
+			throw new InvalidOperationException(
+				$"Cannot add incompatible unit families: {this.UnitFamily} and {other.UnitFamily}");
+		}
+
+		// Convert both to their base values for math
+		var thisBaseValue = this.V;
+		var otherBaseValue = other.V;
+		
+		// Determine result family using compatibility rules
+		var resultFamily = UnitFamilyCompatibility.GetResultFamily(this.UnitFamily, other.UnitFamily);
+		
+		// Create result using factory to ensure proper type and initialization
+		var factory = unitSystem.GetFactory();
+		var result = factory.CreateMeasuredValue(resultFamily, thisBaseValue + otherBaseValue, this.I);
+		
+		return result;
+	}
+
+	/// <summary>
+	/// Subtract two compatible MeasuredValues
+	/// Automatically handles unit conversion and family resolution
+	/// </summary>
+	/// <param name="other">The other MeasuredValue to subtract</param>
+	/// <param name="unitSystem">Unit system to use for result creation</param>
+	/// <returns>A new MeasuredValue with the result</returns>
+	/// <exception cref="InvalidOperationException">Thrown when units are incompatible</exception>
+	public MeasuredValue SubtractCompatible(MeasuredValue other, UnitSystem unitSystem)
+	{
+		if (!IsCompatibleWith(other))
+		{
+			throw new InvalidOperationException(
+				$"Cannot subtract incompatible unit families: {this.UnitFamily} and {other.UnitFamily}");
+		}
+
+		// Convert both to their base values for math
+		var thisBaseValue = this.V;
+		var otherBaseValue = other.V;
+		
+		// Determine result family using compatibility rules
+		var resultFamily = UnitFamilyCompatibility.GetResultFamily(this.UnitFamily, other.UnitFamily);
+		
+		// Create result using factory to ensure proper type and initialization
+		var factory = unitSystem.GetFactory();
+		var result = factory.CreateMeasuredValue(resultFamily, thisBaseValue - otherBaseValue, this.I);
+		
+		return result;
 	}
 
 	/// <summary>

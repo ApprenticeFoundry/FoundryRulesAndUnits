@@ -67,6 +67,59 @@ public class UnitSystem : IUnitSystem
     /// <summary>
     /// Build efficient unit lookup cache for O(1) validation and metadata access
     /// Uses CreateTypedMeasuredValue for parser compatibility
+    /// 
+    /// ARCHITECTURAL NOTES - Unit Family Ambiguity Problem:
+    /// 
+    /// CURRENT LIMITATION: 
+    /// The "last one wins" approach in this method creates ambiguity when multiple unit families 
+    /// share the same unit symbols (e.g., "s" for both Duration and Time, "deg" for both Angle and Bearing).
+    /// This forces the parser to make arbitrary choices without semantic context.
+    /// 
+    /// IDENTIFIED AMBIGUITY CASES:
+    /// - Time Domain: "s" could be Duration (elapsed time) vs Time (absolute moment) vs Period (frequency inverse)
+    /// - Angular Domain: "deg" could be Angle (geometric rotation) vs Bearing (navigation) vs Azimuth (direction)
+    /// - Length Domain: "m" could be Distance (between points) vs Position (absolute coordinates) vs Displacement (vector)
+    /// - Mass Domain: "kg" could be Mass (inertial) vs Weight (gravitational force in different contexts)
+    /// 
+    /// SCALE OPTIMIZATION CONSIDERATION:
+    /// Different engineering domains need different base units for optimal numerical precision:
+    /// - Semiconductor: nm, pg, ps (avoid tiny/huge floating point values)
+    /// - Astronomy: ly, solar_mass, year (avoid extreme scale conversions)
+    /// - Civil Engineering: m, kg, s (traditional scale works well)
+    /// - Microelectronics: μm, ng, ns (MEMS scale)
+    /// 
+    /// FUTURE ARCHITECTURE OPTIONS:
+    /// 
+    /// 1. HIERARCHICAL UNIT FAMILIES:
+    ///    - UnitFamilyName.Time_Duration, Time_Moment, Time_Period
+    ///    - UnitFamilyName.Angle_Geometric, Angle_Bearing, Angle_Elevation
+    ///    - Provides semantic clarity and type safety
+    /// 
+    /// 2. SMART DEFAULTS WITH EXPLICIT OVERRIDE:
+    ///    - Parser uses sensible defaults (90% use cases): "s" → Duration, "deg" → Angle
+    ///    - Explicit API available: CreateMeasuredValue(UnitFamilyName.Time, 60, "s") for edge cases
+    ///    - Balances convenience with precision when needed
+    /// 
+    /// 3. CONTEXT-AWARE DISAMBIGUATION:
+    ///    - Parser analyzes surrounding expression: "cos(90deg)" suggests Angle not Bearing
+    ///    - Domain hints: "wait for 30s" suggests Duration not Time
+    ///    - Requires more complex parser logic but provides intuitive behavior
+    /// 
+    /// 4. SCALE-AWARE UNIT SYSTEMS:
+    ///    - Different UnitSystemTypes optimize base units for domain scale
+    ///    - NanoScale, Astronomical, Civil, Nuclear systems with appropriate base units
+    ///    - Maintains numerical stability and domain-appropriate precision
+    /// 
+    /// RESEARCH NEEDED:
+    /// - Parser integration patterns for unit family disambiguation
+    /// - Performance impact of multi-family lookups vs smart defaults
+    /// - Domain-specific unit system specifications and base unit optimization
+    /// - User experience for explicit disambiguation when semantic context is insufficient
+    /// 
+    /// IMPLEMENTATION PRIORITY:
+    /// Current approach works for single-family-per-symbol cases. Future enhancement should
+    /// focus on parser convenience and domain-appropriate defaults while maintaining
+    /// explicit override capabilities for precision-critical engineering applications.
     /// </summary>
     private Dictionary<string, UnitLookupInfo> BuildUnitLookupCache()
     {
@@ -77,6 +130,9 @@ public class UnitSystem : IUnitSystem
         {
             // Create factory function using reflection-based method for correct derived types
             // This is CRITICAL for parser integration that expects specific types (Angle, Length, Mass, etc.)
+            // 
+            // NOTE: Current implementation has "last one wins" behavior for duplicate unit symbols
+            // Future enhancement: implement smart defaults or multi-family disambiguation
             Func<double, MeasuredValue> createFunc = (value) => 
                 factory.CreateTypedMeasuredValue(unitDef.Family, value, unitDef.Symbol);
             
@@ -162,7 +218,9 @@ public class UnitSystem : IUnitSystem
         var lookup = GetUnitLookup();
         if (lookup.TryGetValue(unit, out var unitInfo))
         {
-            return unitInfo.CreateMeasuredValue(value);
+            // Call factory directly with the requested unit to preserve display units
+            var factory = GetFactory();
+            return factory.CreateTypedMeasuredValue(unitInfo.Family, value, unit);
         }
         throw new ArgumentException($"Invalid unit symbol: {unit}");
     }
@@ -237,7 +295,7 @@ public class UnitSystem : IUnitSystem
         // Cache the factory to avoid recreating UnitGroups repeatedly
         if (_cachedFactory == null || _cachedFactory.SystemType != ActiveType)
         {
-            _cachedFactory = new UnitFactory(ActiveType);
+            _cachedFactory = new UnitFactory(this); // Pass 'this' instead of creating new UnitSystem
         }
         return _cachedFactory;
     }

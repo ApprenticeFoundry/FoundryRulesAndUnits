@@ -49,8 +49,16 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         public MeasuredValue CreateMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
         {
-            // Delegate to the unit system's existing functionality
-            return _unitSystem.CreateMeasuredValue(family, value, units);
+            // Create UnitGroup directly to avoid circular dependency
+            var unitGroup = CreateUnitGroupForFamily(family);
+            var measuredValue = new MeasuredValue(unitGroup);
+            
+            // Initialize with the provided value and units
+            var baseUnit = _unitSystem.GetBaseUnitForFamily(family);
+            var finalUnit = units ?? baseUnit;
+            measuredValue.Init(value, finalUnit);
+            
+            return measuredValue;
         }
 
         /// <summary>
@@ -76,16 +84,9 @@ namespace FoundryRulesAndUnits.Units
             var baseUnit = _unitSystem.GetBaseUnitForFamily(family);
             var finalUnit = units ?? baseUnit;
             
-            if (units != null && units != baseUnit)
-            {
-                // Convert to base units for consistency
-                var convertedValue = _unitSystem.Convert(value, units, baseUnit);
-                instance.Init(convertedValue, baseUnit);
-            }
-            else
-            {
-                instance.Init(value, finalUnit);
-            }
+            // CRITICAL FIX: Always pass the original units parameter to preserve display units
+            // The Init method will handle conversion to base units internally while preserving U field
+            instance.Init(value, units);
             
             return instance;
         }
