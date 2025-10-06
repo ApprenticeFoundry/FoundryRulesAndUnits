@@ -44,6 +44,12 @@ public class Force : MeasuredValue
 	// Comparison operators
 	public static bool operator <(Force left, Force right) => left.Value() < right.Value();
 	public static bool operator >(Force left, Force right) => left.Value() > right.Value();
+	public static bool operator ==(Force left, Force right) => Math.Abs(left.Value() - right.Value()) < 1e-10;
+	public static bool operator !=(Force left, Force right) => !(left == right);
+	
+	// Override Equals and GetHashCode to be consistent with == operator
+	public override bool Equals(object? obj) => obj is Force other && this == other;
+	public override int GetHashCode() => Value().GetHashCode();
 
 	// Arithmetic operators
 	public static Force operator +(Force left, Force right)
@@ -64,6 +70,13 @@ public class Force : MeasuredValue
 	{
 		var result = new Force(right._unitGroup);
 		result.Init(scalar * right.Value(), right.Internal());
+		return result;
+	}
+
+	public static Force operator *(Force left, double scalar)
+	{
+		var result = new Force(left._unitGroup);
+		result.Init(left.Value() * scalar, left.Internal());
 		return result;
 	}
 

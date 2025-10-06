@@ -65,6 +65,13 @@ namespace FoundryRulesAndUnits.Units
 			result.Init(scalar * right.Value(), right.Internal());
 			return result;
 		}
+
+		public static Area operator *(Area left, double scalar)
+		{
+			var result = new Area(left._unitGroup);
+			result.Init(left.Value() * scalar, left.Internal());
+			return result;
+		}
 		
 		public static Area operator /(Area left, double scalar) 
 		{

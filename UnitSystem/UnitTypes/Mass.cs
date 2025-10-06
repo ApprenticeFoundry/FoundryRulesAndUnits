@@ -41,6 +41,12 @@ namespace FoundryRulesAndUnits.Units
 
 		public static bool operator <(Mass left, Mass right) => left.Value() < right.Value();
 		public static bool operator >(Mass left, Mass right) => left.Value() > right.Value();
+		public static bool operator ==(Mass left, Mass right) => Math.Abs(left.Value() - right.Value()) < 1e-10;
+		public static bool operator !=(Mass left, Mass right) => !(left == right);
+		
+		// Override Equals and GetHashCode to be consistent with == operator
+		public override bool Equals(object? obj) => obj is Mass other && this == other;
+		public override int GetHashCode() => Value().GetHashCode();
 
 		public static Mass operator +(Mass left, Mass right) 
 		{
@@ -60,6 +66,13 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var result = new Mass(right.UnitGroup);
 			result.Init(left * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static Mass operator *(Mass left, double right)
+		{
+			var result = new Mass(left.UnitGroup);
+			result.Init(left.Value() * right, left.Internal());
 			return result;
 		}
 		

@@ -52,6 +52,12 @@ namespace FoundryRulesAndUnits.Units
 
 		public static bool operator <(Angle left, Angle right) => left.Value() < right.Value();
 		public static bool operator >(Angle left, Angle right) => left.Value() > right.Value();
+		public static bool operator ==(Angle left, Angle right) => Math.Abs(left.Value() - right.Value()) < 1e-10;
+		public static bool operator !=(Angle left, Angle right) => !(left == right);
+		
+		// Override Equals and GetHashCode to be consistent with == operator
+		public override bool Equals(object? obj) => obj is Angle other && this == other;
+		public override int GetHashCode() => Value().GetHashCode();
 
 		public static Angle operator +(Angle left, Angle right)
 		{
@@ -64,6 +70,21 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var result = new Angle(left._unitGroup);
 			result.Init(left.Value() - right.Value(), left.Internal());
+			return result;
+		}
+
+		// Scalar multiplication operators - both directions needed
+		public static Angle operator *(double left, Angle right)
+		{
+			var result = new Angle(right._unitGroup);
+			result.Init(left * right.Value(), right.Internal());
+			return result;
+		}
+
+		public static Angle operator *(Angle left, double right)
+		{
+			var result = new Angle(left._unitGroup);
+			result.Init(left.Value() * right, left.Internal());
 			return result;
 		}
 

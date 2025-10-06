@@ -75,6 +75,12 @@ public class Length : MeasuredValue
 
 	public static bool operator <(Length left, Length right) => left.Value() < right.Value();
 	public static bool operator >(Length left, Length right) => left.Value() > right.Value();
+	public static bool operator ==(Length left, Length right) => Math.Abs(left.Value() - right.Value()) < 1e-10;
+	public static bool operator !=(Length left, Length right) => !(left == right);
+	
+	// Override Equals and GetHashCode to be consistent with == operator
+	public override bool Equals(object? obj) => obj is Length other && this == other;
+	public override int GetHashCode() => Value().GetHashCode();
 
 	public static Length operator +(Length left, Length right)
 	{
@@ -94,6 +100,13 @@ public class Length : MeasuredValue
 	{
 		var result = new Length(right._unitGroup);
 		result.Init(left * right.Value(), right.Internal());
+		return result;
+	}
+
+	public static Length operator *(Length left, double right)
+	{
+		var result = new Length(left._unitGroup);
+		result.Init(left.Value() * right, left.Internal());
 		return result;
 	}
 
