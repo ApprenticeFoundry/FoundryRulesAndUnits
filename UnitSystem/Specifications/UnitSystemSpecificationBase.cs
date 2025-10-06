@@ -62,6 +62,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         /// <summary>
         /// Gets unit groups organized by family, with each group containing a base unit and all related units
+        /// Enhanced with parser accessibility configuration for two-tier family system
         /// </summary>
         public virtual Dictionary<UnitFamilyName, UnitGroup> GetUnitGroups()
         {
@@ -70,17 +71,58 @@ namespace FoundryRulesAndUnits.Units.Specifications
                 _cachedUnitGroups = new Dictionary<UnitFamilyName, UnitGroup>();
                 var unitsByFamily = GetAllUnitsByFamily();
                 var baseUnitsByFamily = GetBaseUnitsByFamily();
+                var parserAccessibleFamilies = GetParserAccessibleFamilies();
 
                 foreach (var family in unitsByFamily.Keys)
                 {
                     if (baseUnitsByFamily.TryGetValue(family, out var baseUnit))
                     {
                         var members = unitsByFamily[family];
-                        _cachedUnitGroups[family] = new UnitGroup(family, SystemType, baseUnit, members);
+                        var isParserAccessible = parserAccessibleFamilies.Contains(family);
+                        _cachedUnitGroups[family] = new UnitGroup(family, SystemType, baseUnit, members, isParserAccessible);
                     }
                 }
             }
             return _cachedUnitGroups;
+        }
+
+        /// <summary>
+        /// Define which unit families are parser-accessible (can be created from shorthand syntax)
+        /// Override in derived classes to customize the two-tier family system
+        /// </summary>
+        protected virtual HashSet<UnitFamilyName> GetParserAccessibleFamilies()
+        {
+            // Default implementation: Most common engineering families are parser-accessible
+            return new HashSet<UnitFamilyName>
+            {
+                // PARSER-ACCESSIBLE FAMILIES (shorthand syntax works: "5m", "45deg", "30s")
+                UnitFamilyName.Length,        // Object dimensions, mechanical parts
+                UnitFamilyName.Angle,         // Rotations, orientations, geometric angles
+                UnitFamilyName.Duration,      // Time intervals, processing times
+                UnitFamilyName.Mass,          // Material properties, object weight
+                UnitFamilyName.Temperature,   // Environmental, process temperatures
+                UnitFamilyName.Speed,         // Velocity, rate measurements
+                UnitFamilyName.Force,         // Applied forces, loads
+                UnitFamilyName.Power,         // Energy consumption, output
+                UnitFamilyName.Voltage,       // Electrical measurements
+                UnitFamilyName.Current,       // Electrical measurements
+                UnitFamilyName.Resistance,    // Electrical measurements
+                UnitFamilyName.Capacitance,   // Electrical measurements
+                UnitFamilyName.Frequency,     // Signal processing, mechanical vibration
+                UnitFamilyName.Quantity,      // Count, discrete items
+                UnitFamilyName.QuantityFlow,  // Flow rates
+                UnitFamilyName.Percent,       // Ratios, efficiency
+                UnitFamilyName.DataStorage,   // File sizes, memory
+                UnitFamilyName.DataFlow,      // Network speeds
+                UnitFamilyName.None           // Dimensionless values
+                
+                // FUNCTION-ONLY FAMILIES (require explicit AS functions):
+                // UnitFamilyName.Distance      → ASDISTANCE() required
+                // UnitFamilyName.Time          → ASTIME() required  
+                // UnitFamilyName.Bearing       → ASBEARING() required
+                // UnitFamilyName.Area          → ASAREA() required (when explicit semantics needed)
+                // UnitFamilyName.Volume        → ASVOLUME() required (when explicit semantics needed)
+            };
         }
 
         /// <summary>

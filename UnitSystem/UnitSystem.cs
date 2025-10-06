@@ -68,79 +68,62 @@ public class UnitSystem : IUnitSystem
     /// Build efficient unit lookup cache for O(1) validation and metadata access
     /// Uses CreateTypedMeasuredValue for parser compatibility
     /// 
-    /// ARCHITECTURAL NOTES - Unit Family Ambiguity Problem:
+    /// PHASE 1 ENHANCEMENT: Two-Tier Unit Family System
+    /// Only includes parser-accessible families in lookup cache to eliminate ambiguity.
+    /// Function-only families (Distance, Time, Bearing, etc.) must be created via AS functions.
     /// 
-    /// CURRENT LIMITATION: 
-    /// The "last one wins" approach in this method creates ambiguity when multiple unit families 
-    /// share the same unit symbols (e.g., "s" for both Duration and Time, "deg" for both Angle and Bearing).
-    /// This forces the parser to make arbitrary choices without semantic context.
+    /// ELIMINATED AMBIGUITY CASES:
+    /// - Time Domain: "s" now only maps to Duration (parser-accessible), Time requires ASTIME()
+    /// - Angular Domain: "deg" now only maps to Angle (parser-accessible), Bearing requires ASBEARING()
+    /// - Length Domain: "m" now only maps to Length (parser-accessible), Distance requires ASDISTANCE()
     /// 
-    /// IDENTIFIED AMBIGUITY CASES:
-    /// - Time Domain: "s" could be Duration (elapsed time) vs Time (absolute moment) vs Period (frequency inverse)
-    /// - Angular Domain: "deg" could be Angle (geometric rotation) vs Bearing (navigation) vs Azimuth (direction)
-    /// - Length Domain: "m" could be Distance (between points) vs Position (absolute coordinates) vs Displacement (vector)
-    /// - Mass Domain: "kg" could be Mass (inertial) vs Weight (gravitational force in different contexts)
-    /// 
-    /// SCALE OPTIMIZATION CONSIDERATION:
-    /// Different engineering domains need different base units for optimal numerical precision:
-    /// - Semiconductor: nm, pg, ps (avoid tiny/huge floating point values)
-    /// - Astronomy: ly, solar_mass, year (avoid extreme scale conversions)
-    /// - Civil Engineering: m, kg, s (traditional scale works well)
-    /// - Microelectronics: μm, ng, ns (MEMS scale)
-    /// 
-    /// FUTURE ARCHITECTURE OPTIONS:
-    /// 
-    /// 1. HIERARCHICAL UNIT FAMILIES:
-    ///    - UnitFamilyName.Time_Duration, Time_Moment, Time_Period
-    ///    - UnitFamilyName.Angle_Geometric, Angle_Bearing, Angle_Elevation
-    ///    - Provides semantic clarity and type safety
-    /// 
-    /// 2. SMART DEFAULTS WITH EXPLICIT OVERRIDE:
-    ///    - Parser uses sensible defaults (90% use cases): "s" → Duration, "deg" → Angle
-    ///    - Explicit API available: CreateMeasuredValue(UnitFamilyName.Time, 60, "s") for edge cases
-    ///    - Balances convenience with precision when needed
-    /// 
-    /// 3. CONTEXT-AWARE DISAMBIGUATION:
-    ///    - Parser analyzes surrounding expression: "cos(90deg)" suggests Angle not Bearing
-    ///    - Domain hints: "wait for 30s" suggests Duration not Time
-    ///    - Requires more complex parser logic but provides intuitive behavior
-    /// 
-    /// 4. SCALE-AWARE UNIT SYSTEMS:
-    ///    - Different UnitSystemTypes optimize base units for domain scale
-    ///    - NanoScale, Astronomical, Civil, Nuclear systems with appropriate base units
-    ///    - Maintains numerical stability and domain-appropriate precision
-    /// 
-    /// RESEARCH NEEDED:
-    /// - Parser integration patterns for unit family disambiguation
-    /// - Performance impact of multi-family lookups vs smart defaults
-    /// - Domain-specific unit system specifications and base unit optimization
-    /// - User experience for explicit disambiguation when semantic context is insufficient
-    /// 
-    /// IMPLEMENTATION PRIORITY:
-    /// Current approach works for single-family-per-symbol cases. Future enhancement should
-    /// focus on parser convenience and domain-appropriate defaults while maintaining
-    /// explicit override capabilities for precision-critical engineering applications.
+    /// PARSER BENEFITS:
+    /// - Zero ambiguity: Each unit symbol maps to exactly one family
+    /// - Predictable behavior: 5m→Length, 45deg→Angle, 30s→Duration
+    /// - Performance: No runtime disambiguation needed
     /// </summary>
     private Dictionary<string, UnitLookupInfo> BuildUnitLookupCache()
     {
         var lookup = new Dictionary<string, UnitLookupInfo>();
         var factory = GetFactory();
+        var unitGroups = _currentSystem.GetUnitGroups();
         
-        foreach (var unitDef in _currentSystem.UnitDefinitions)
+        foreach (var unitGroup in unitGroups.Values)
         {
-            // Create factory function using reflection-based method for correct derived types
-            // This is CRITICAL for parser integration that expects specific types (Angle, Length, Mass, etc.)
-            // 
-            // NOTE: Current implementation has "last one wins" behavior for duplicate unit symbols
-            // Future enhancement: implement smart defaults or multi-family disambiguation
-            Func<double, MeasuredValue> createFunc = (value) => 
-                factory.CreateTypedMeasuredValue(unitDef.Family, value, unitDef.Symbol);
-            
-            lookup[unitDef.Symbol] = new UnitLookupInfo(
-                unitDef.Family,
-                unitDef,
-                createFunc
-            );
+            // CRITICAL FILTER: Only include parser-accessible families in lookup cache
+            // This eliminates the "last one wins" ambiguity problem completely!
+            if (unitGroup.IsParserAccessible)
+            {
+                // Add all units from this parser-accessible family
+                foreach (var unitDef in unitGroup.Members)
+                {
+                    // Create factory function using reflection-based method for correct derived types
+                    // This is CRITICAL for parser integration that expects specific types (Angle, Length, Mass, etc.)
+                    Func<double, MeasuredValue> createFunc = (value) => 
+                        factory.CreateTypedMeasuredValue(unitDef.Family, value, unitDef.Symbol);
+                    
+                    lookup[unitDef.Symbol] = new UnitLookupInfo(
+                        unitDef.Family,
+                        unitDef,
+                        createFunc
+                    );
+                }
+                
+                // Also add the base unit if it's not already included
+                if (!lookup.ContainsKey(unitGroup.BaseUnit.Symbol))
+                {
+                    Func<double, MeasuredValue> createFunc = (value) => 
+                        factory.CreateTypedMeasuredValue(unitGroup.BaseUnit.Family, value, unitGroup.BaseUnit.Symbol);
+                    
+                    lookup[unitGroup.BaseUnit.Symbol] = new UnitLookupInfo(
+                        unitGroup.BaseUnit.Family,
+                        unitGroup.BaseUnit,
+                        createFunc
+                    );
+                }
+            }
+            // Function-only families are excluded from parser cache
+            // They can only be created via AS functions (ASDISTANCE, ASTIME, ASBEARING, etc.)
         }
         
         return lookup;

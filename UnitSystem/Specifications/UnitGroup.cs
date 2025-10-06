@@ -10,13 +10,15 @@ public class UnitGroup
     public UnitSystemType SystemType { get; private set; }
     public UnitDefinition BaseUnit { get; private set; }
     public List<UnitDefinition> Members { get; private set; }
+    public bool IsParserAccessible { get; private set; }  // NEW: Parser accessibility at family level
 
-    public UnitGroup(UnitFamilyName family, UnitSystemType systemType, UnitDefinition baseUnit, List<UnitDefinition> members)
+    public UnitGroup(UnitFamilyName family, UnitSystemType systemType, UnitDefinition baseUnit, List<UnitDefinition> members, bool isParserAccessible = true)
     {
         Family = family;
         SystemType = systemType;
         BaseUnit = baseUnit;
         Members = members;
+        IsParserAccessible = isParserAccessible;
     }
 
     /// <summary>

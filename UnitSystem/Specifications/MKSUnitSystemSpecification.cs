@@ -20,27 +20,37 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
 
     public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
     {
-        // Length units (meters as base) - Small-scale measurements
+        // Length units (meters as base) - All-scale measurements
         UnitDefinition.BaseUnit("m", "meters", UnitFamilyName.Length),
+        UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 1000.0),        // 1 km = 1000 m
+        UnitDefinition.LinearUnit("dm", "decimeters", UnitFamilyName.Length, 0.1),           // 1 dm = 0.1 m  
         UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Length, 0.01),         // 1 cm = 0.01 m
         UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.001),        // 1 mm = 0.001 m
+        UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Length, 0.000001),     // 1 μm = 1e-6 m
         UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),            // 1 in = 0.0254 m
         UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),              // 1 ft = 0.3048 m
         UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),             // 1 yd = 0.9144 m
         UnitDefinition.LinearUnit("px", "pixels", UnitFamilyName.Length, 1.0 / 96.0 * 0.0254), // 96 DPI
 
-        // Mass units (kilograms as base) - using enhanced approach with UnitFamilyName enum!
+        // Mass units (kilograms as base) - All-scale measurements
         UnitDefinition.BaseUnit("kg", "kilograms", UnitFamilyName.Mass),
+        UnitDefinition.LinearUnit("t", "metric tons", UnitFamilyName.Mass, 1000.0),          // 1 t = 1000 kg
         UnitDefinition.LinearUnit("g", "grams", UnitFamilyName.Mass, 0.001),                  // 1 g = 0.001 kg
         UnitDefinition.LinearUnit("mg", "milligrams", UnitFamilyName.Mass, 0.000001),        // 1 mg = 0.000001 kg
         UnitDefinition.LinearUnit("lb", "pounds", UnitFamilyName.Mass, 0.453592),            // 1 lb = 0.453592 kg
         UnitDefinition.LinearUnit("oz", "ounces", UnitFamilyName.Mass, 0.0283495),           // 1 oz = 0.0283495 kg
 
-        // Force units (newtons as base) - using enhanced approach with UnitFamilyName enum!
+        // Force units (newtons as base) - All-scale measurements
         UnitDefinition.BaseUnit("N", "newtons", UnitFamilyName.Force),
         UnitDefinition.LinearUnit("kN", "kilonewtons", UnitFamilyName.Force, 1000.0),        // 1 kN = 1000 N
-        UnitDefinition.LinearUnit("dyne", "dynes", UnitFamilyName.Force, 0.00001),         // 1 dyne = 0.00001 N
-        UnitDefinition.LinearUnit("lbf", "pounds-force", UnitFamilyName.Force, 4.44822),    // 1 lbf = 4.44822 N
+        UnitDefinition.LinearUnit("MN", "meganewtons", UnitFamilyName.Force, 1000000.0),     // 1 MN = 1,000,000 N
+        UnitDefinition.LinearUnit("mN", "millinewtons", UnitFamilyName.Force, 0.001),        // 1 mN = 0.001 N
+        UnitDefinition.LinearUnit("μN", "micronewtons", UnitFamilyName.Force, 0.000001),     // 1 μN = 0.000001 N
+        UnitDefinition.LinearUnit("dyne", "dynes", UnitFamilyName.Force, 0.00001),           // 1 dyne = 0.00001 N
+        UnitDefinition.LinearUnit("lbf", "pounds-force", UnitFamilyName.Force, 4.44822),     // 1 lbf = 4.44822 N
+        UnitDefinition.LinearUnit("lbs", "pounds-force", UnitFamilyName.Force, 4.44822),     // 1 lbs = 1 lbf
+        UnitDefinition.LinearUnit("ozf", "ounces-force", UnitFamilyName.Force, 0.278014),    // 1 ozf = 0.278014 N
+        UnitDefinition.LinearUnit("kgf", "kilograms-force", UnitFamilyName.Force, 9.80665),  // 1 kgf = 9.80665 N
 
         // Temperature units (Kelvin as base for absolute temperature scale) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("K", "Kelvin", UnitFamilyName.Temperature),
@@ -51,29 +61,49 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
             f => (f - 32.0) * 5.0 / 9.0 + 273.15,    // F to K: (F-32)*5/9 + 273.15
             k => (k - 273.15) * 9.0 / 5.0 + 32.0),   // K to F: (K-273.15)*9/5 + 32
 
-        // Angle units (radians as base) - using enhanced approach with UnitFamilyName enum!
+        // Angle units (radians as base) - All-scale measurements
         UnitDefinition.BaseUnit("rad", "radians", UnitFamilyName.Angle),
         UnitDefinition.LinearUnit("deg", "degrees", UnitFamilyName.Angle, Math.PI / 180.0),  // 1 deg = π/180 rad
         UnitDefinition.LinearUnit("mrad", "milliradians", UnitFamilyName.Angle, 0.001),     // 1 mrad = 0.001 rad
+        UnitDefinition.LinearUnit("grad", "gradians", UnitFamilyName.Angle, Math.PI / 200.0), // 1 grad = π/200 rad
+        UnitDefinition.LinearUnit("turn", "turns", UnitFamilyName.Angle, 2.0 * Math.PI),    // 1 turn = 2π rad
+        UnitDefinition.LinearUnit("°", "degrees", UnitFamilyName.Angle, Math.PI / 180.0),   // 1° = π/180 rad
 
-        // Time units (seconds as base) - using enhanced approach with UnitFamilyName enum!
+        // Time units (seconds as base) - All-scale measurements
         UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Time),
         UnitDefinition.LinearUnit("ms", "milliseconds", UnitFamilyName.Time, 0.001),          // 1 ms = 0.001 s
+        UnitDefinition.LinearUnit("μs", "microseconds", UnitFamilyName.Time, 0.000001),       // 1 μs = 1e-6 s
         UnitDefinition.LinearUnit("min", "minutes", UnitFamilyName.Time, 60.0),              // 1 min = 60 s
         UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Time, 3600.0),                // 1 hr = 3600 s
         UnitDefinition.LinearUnit("day", "days", UnitFamilyName.Time, 86400.0),              // 1 day = 86400 s
 
-        // Area units (square meters as base) - using enhanced approach with UnitFamilyName enum!
+        // Area units (square meters as base) - All-scale measurements
         UnitDefinition.BaseUnit("m2", "square meters", UnitFamilyName.Area),
         UnitDefinition.LinearUnit("cm2", "square centimeters", UnitFamilyName.Area, 0.0001), // 1 cm² = 0.0001 m²
         UnitDefinition.LinearUnit("mm2", "square millimeters", UnitFamilyName.Area, 0.000001), // 1 mm² = 0.000001 m²
         UnitDefinition.LinearUnit("km2", "square kilometers", UnitFamilyName.Area, 1000000.0), // 1 km² = 1,000,000 m²
+        UnitDefinition.LinearUnit("ft2", "square feet", UnitFamilyName.Area, 0.092903),       // 1 ft² = 0.092903 m²
+        UnitDefinition.LinearUnit("in2", "square inches", UnitFamilyName.Area, 0.00064516),   // 1 in² = 0.00064516 m²
+        UnitDefinition.LinearUnit("yd2", "square yards", UnitFamilyName.Area, 0.836127),      // 1 yd² = 0.836127 m²
+        UnitDefinition.LinearUnit("acre", "acres", UnitFamilyName.Area, 4046.86),             // 1 acre = 4046.86 m²
+        UnitDefinition.LinearUnit("ha", "hectares", UnitFamilyName.Area, 10000.0),            // 1 ha = 10,000 m²
+        UnitDefinition.LinearUnit("sqft", "square feet", UnitFamilyName.Area, 0.092903),      // 1 sqft = 1 ft²
 
-        // Volume units (cubic meters as base) - using enhanced approach with UnitFamilyName enum!
+        // Volume units (cubic meters as base) - All-scale measurements
         UnitDefinition.BaseUnit("m3", "cubic meters", UnitFamilyName.Volume),
         UnitDefinition.LinearUnit("cm3", "cubic centimeters", UnitFamilyName.Volume, 0.000001), // 1 cm³ = 0.000001 m³
         UnitDefinition.LinearUnit("mm3", "cubic millimeters", UnitFamilyName.Volume, 0.000000001), // 1 mm³ = 1e-9 m³
         UnitDefinition.LinearUnit("km3", "cubic kilometers", UnitFamilyName.Volume, 1000000000.0), // 1 km³ = 1e9 m³
+        UnitDefinition.LinearUnit("L", "liters", UnitFamilyName.Volume, 0.001),                 // 1 L = 0.001 m³
+        UnitDefinition.LinearUnit("mL", "milliliters", UnitFamilyName.Volume, 0.000001),        // 1 mL = 1e-6 m³
+        UnitDefinition.LinearUnit("cc", "cubic centimeters", UnitFamilyName.Volume, 0.000001),  // 1 cc = 1 cm³
+        UnitDefinition.LinearUnit("ft3", "cubic feet", UnitFamilyName.Volume, 0.0283168),       // 1 ft³ = 0.0283168 m³
+        UnitDefinition.LinearUnit("in3", "cubic inches", UnitFamilyName.Volume, 0.000016387),   // 1 in³ = 1.6387e-5 m³
+        UnitDefinition.LinearUnit("gal", "gallons", UnitFamilyName.Volume, 0.00378541),         // 1 gal (US) = 0.00378541 m³
+        UnitDefinition.LinearUnit("qt", "quarts", UnitFamilyName.Volume, 0.000946353),          // 1 qt = 0.000946353 m³
+        UnitDefinition.LinearUnit("pt", "pints", UnitFamilyName.Volume, 0.000473176),           // 1 pt = 0.000473176 m³
+        UnitDefinition.LinearUnit("cup", "cups", UnitFamilyName.Volume, 0.000236588),           // 1 cup = 0.000236588 m³
+        UnitDefinition.LinearUnit("fl oz", "fluid ounces", UnitFamilyName.Volume, 0.0000295735), // 1 fl oz = 2.95735e-5 m³
 
         // Speed units (meters per second as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("m/s", "meters per second", UnitFamilyName.Speed),
@@ -86,6 +116,9 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.BaseUnit("km", "kilometers", UnitFamilyName.Distance),
         UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1.609344),             // 1 mi = 1.609344 km
         UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.852),      // 1 nmi = 1.852 km
+        UnitDefinition.LinearUnit("ly", "light years", UnitFamilyName.Distance, 9.461e12),       // 1 ly = 9.461e12 km
+        UnitDefinition.LinearUnit("au", "astronomical units", UnitFamilyName.Distance, 149597870.7), // 1 au = 149,597,870.7 km
+        UnitDefinition.LinearUnit("pc", "parsecs", UnitFamilyName.Distance, 3.086e13),           // 1 pc = 3.086e13 km
 
         // Duration units (seconds as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Duration),
@@ -96,11 +129,11 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("month", "months", UnitFamilyName.Duration, 2629746.0),      // 1 month ≈ 30.44 days
         UnitDefinition.LinearUnit("year", "years", UnitFamilyName.Duration, 31556952.0),       // 1 year = 365.2425 days
 
-        // // Bearing units (degrees as base) - using enhanced approach with UnitFamilyName enum!
-        // UnitDefinition.BaseUnit("d", "degrees", UnitFamilyName.Bearing),
-        // UnitDefinition.LinearUnit("r", "radians", UnitFamilyName.Bearing, 180.0 / Math.PI),  // 1 rad = 180/π deg
-        // UnitDefinition.LinearUnit("grad", "gradians", UnitFamilyName.Bearing, 0.9),            // 1 grad = 0.9 deg
-        // UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Bearing, 0.05625),             // 1 mil = 0.05625 deg
+        // Bearing units (degrees as base) - using enhanced approach with UnitFamilyName enum!
+        UnitDefinition.BaseUnit("deg", "degrees", UnitFamilyName.Bearing),
+        UnitDefinition.LinearUnit("rad", "radians", UnitFamilyName.Bearing, 180.0 / Math.PI),  // 1 rad = 180/π deg
+        UnitDefinition.LinearUnit("grad", "gradians", UnitFamilyName.Bearing, 0.9),            // 1 grad = 0.9 deg
+        UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Bearing, 0.05625),             // 1 mil = 0.05625 deg
 
         // Quantity units (each as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("ea", "each", UnitFamilyName.Quantity),

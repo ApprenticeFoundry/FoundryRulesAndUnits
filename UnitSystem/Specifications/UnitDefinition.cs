@@ -35,7 +35,7 @@ public record UnitDefinition(
     public static UnitDefinition LinearUnit(string symbol, string name, UnitFamilyName family, double factor) =>
         new(symbol, name, family, false,
             x => x * factor,      // e.g., inches to feet: x * (1/12)
-            x => x / factor);   // e.g., feet to inches: x / (1/12) = x * 12
+            x => x / factor);     // e.g., feet to inches: x / (1/12) = x * 12
 
     /// <summary>
     /// Convert any value from this unit to any other unit in the same family
