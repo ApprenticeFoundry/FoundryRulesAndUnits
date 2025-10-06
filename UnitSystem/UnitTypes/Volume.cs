@@ -57,6 +57,32 @@ namespace FoundryRulesAndUnits.Units
 		}
 		
 		public static double operator /(Volume left, Volume right) => left.Value() / right.Value();
+		
+		// ============================================================================
+		// PHASE 4A: CROSS-FAMILY OPERATIONS - Volume-specific operators
+		// ============================================================================
+		
+		/// <summary>
+		/// Volume ÷ Area → Length (Height = Volume ÷ Area)
+		/// Example: 45 m³ ÷ 15 m² = 3m
+		/// </summary>
+		public static MeasuredValue operator /(Volume left, Area right)
+		{
+			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var lengthValue = left.BaseValue() / right.BaseValue(); // m³ ÷ m² = m
+			return factory.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+		}
+		
+		/// <summary>
+		/// Volume ÷ Length → Area (Cross-section = Volume ÷ Length)
+		/// Example: 45 m³ ÷ 3m = 15 m²
+		/// </summary>
+		public static MeasuredValue operator /(Volume left, Length right)
+		{
+			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var areaValue = left.BaseValue() / right.BaseValue(); // m³ ÷ m = m²
+			return factory.CreateMeasuredValue(UnitFamilyName.Area, areaValue, "m2");
+		}
 	}
 
 

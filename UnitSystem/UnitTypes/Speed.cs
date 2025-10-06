@@ -59,6 +59,32 @@ namespace FoundryRulesAndUnits.Units
 		
 		public static double operator /(Speed left, Speed right) => left.Value() / right.Value();
 		
+		// ============================================================================
+		// PHASE 4A: CROSS-FAMILY OPERATIONS - Speed-specific operators
+		// ============================================================================
+		
+		/// <summary>
+		/// Speed × Time → Length (Distance = Speed × Time)
+		/// Example: 10 m/s × 5s = 50m
+		/// </summary>
+		public static MeasuredValue operator *(Speed left, Time right)
+		{
+			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
+			return factory.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+		}
+		
+		/// <summary>
+		/// Speed × Duration → Length (Distance = Speed × Time)
+		/// Example: 10 m/s × 5s = 50m
+		/// </summary>
+		public static MeasuredValue operator *(Speed left, Duration right)
+		{
+			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
+			return factory.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+		}
+		
 		#endregion
 	}
 }

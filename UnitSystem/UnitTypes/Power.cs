@@ -59,6 +59,32 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 		public static double operator /(Power left, Power right) => left.Value() / right.Value();
+		
+		// ============================================================================
+		// PHASE 4A: CROSS-FAMILY OPERATIONS - Power-specific operators
+		// ============================================================================
+		
+		/// <summary>
+		/// Power × Time → Energy (Energy = Power × Time)
+		/// Example: 100W × 10s = 1000J
+		/// </summary>
+		public static MeasuredValue operator *(Power left, Time right)
+		{
+			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var energyValue = left.BaseValue() * right.BaseValue(); // W × s = J
+			return factory.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
+		}
+		
+		/// <summary>
+		/// Power × Duration → Energy (Energy = Power × Time)
+		/// Example: 100W × 10s = 1000J
+		/// </summary>
+		public static MeasuredValue operator *(Power left, Duration right)
+		{
+			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var energyValue = left.BaseValue() * right.BaseValue(); // W × s = J
+			return factory.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
+		}
 
 		#endregion
 	}

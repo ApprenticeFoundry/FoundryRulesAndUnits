@@ -63,6 +63,32 @@ public class Duration : MeasuredValue
 
 	public static double operator /(Duration left, Duration right) => left.Value() / right.Value();
 
+	// ============================================================================
+	// PHASE 4A: CROSS-FAMILY OPERATIONS - Duration-specific operators
+	// ============================================================================
+	
+	/// <summary>
+	/// Duration × Speed → Length (Distance = Time × Speed)
+	/// Example: 5s × 10 m/s = 50m
+	/// </summary>
+	public static MeasuredValue operator *(Duration left, Speed right)
+	{
+		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var lengthValue = left.BaseValue() * right.BaseValue(); // s × (m/s) = m
+		return factory.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+	}
+	
+	/// <summary>
+	/// Duration × Power → Energy (Energy = Time × Power)
+	/// Example: 10s × 100W = 1000J
+	/// </summary>
+	public static MeasuredValue operator *(Duration left, Power right)
+	{
+		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var energyValue = left.BaseValue() * right.BaseValue(); // s × W = J
+		return factory.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
+	}
+
 	// Optional comparison operators
 	public static bool operator <=(Duration left, Duration right) => left.Value() <= right.Value();
 	public static bool operator >=(Duration left, Duration right) => left.Value() >= right.Value();

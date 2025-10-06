@@ -75,6 +75,21 @@ public class Force : MeasuredValue
 	}
 
 	public static double operator /(Force left, Force right) => left.Value() / right.Value();
+	
+	// ============================================================================
+	// PHASE 4A: CROSS-FAMILY OPERATIONS - Force-specific operators
+	// ============================================================================
+	
+	/// <summary>
+	/// Force ÷ Area → Pressure (Pressure = Force ÷ Area)
+	/// Example: 100N ÷ 10 m² = 10 Pa
+	/// </summary>
+	public static MeasuredValue operator /(Force left, Area right)
+	{
+		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var pressureValue = left.BaseValue() / right.BaseValue(); // N ÷ m² = Pa
+		return factory.CreateMeasuredValue(UnitFamilyName.Pressure, pressureValue, "Pa");
+	}
 }
 
 

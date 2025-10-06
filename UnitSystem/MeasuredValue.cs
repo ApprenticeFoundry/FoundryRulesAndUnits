@@ -373,7 +373,11 @@ public class MeasuredValue : IMeasuredValue
 		return $"{Value()}({Internal()}) {Units()}";
 	}
 
-
+	// ============================================================================
+	// PHASE 4A: ADVANCED UNIT OPERATIONS
+	// ============================================================================
+	// Note: Operator overloads moved to individual unit classes (Length.cs, Force.cs, etc.)
+	// This provides better encapsulation and IntelliSense discoverability.
 
 }
 

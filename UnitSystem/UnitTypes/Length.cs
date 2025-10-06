@@ -106,8 +106,42 @@ public class Length : MeasuredValue
 
 	public static double operator /(Length left, Length right) => left.Value() / right.Value();
 
-	// Cross-unit operations removed - these require UnitFactory to create proper instances
-	// Use UnitFactory.CreateArea() and UnitFactory.CreateVolume() for cross-unit calculations
+	// ============================================================================
+	// PHASE 4A: CROSS-FAMILY OPERATIONS - Length-specific operators
+	// ============================================================================
+	
+	/// <summary>
+	/// Length × Length → Area
+	/// Example: 5m * 3m = 15 m²
+	/// </summary>
+	public static MeasuredValue operator *(Length left, Length right)
+	{
+		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var areaValue = left.BaseValue() * right.BaseValue(); // m × m = m²
+		return factory.CreateMeasuredValue(UnitFamilyName.Area, areaValue, "m2");
+	}
+	
+	/// <summary>
+	/// Length ÷ Time → Speed
+	/// Example: 100m / 10s = 10 m/s
+	/// </summary>
+	public static MeasuredValue operator /(Length left, Time right)
+	{
+		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var speedValue = left.BaseValue() / right.BaseValue(); // m ÷ s = m/s
+		return factory.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
+	}
+	
+	/// <summary>
+	/// Length ÷ Duration → Speed
+	/// Example: 50m / 5s = 10 m/s
+	/// </summary>
+	public static MeasuredValue operator /(Length left, Duration right)
+	{
+		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var speedValue = left.BaseValue() / right.BaseValue(); // m ÷ s = m/s
+		return factory.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
+	}
 }
 
 
