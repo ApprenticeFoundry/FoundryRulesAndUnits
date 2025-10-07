@@ -199,12 +199,12 @@ public class UnitSystem : IUnitSystem
     }
 
     /// <summary>
-    /// Determine the unit family from a unit symbol, then create the MeasuredValue
+    /// Determine the unit family from a parsable unit symbol, then create the MeasuredValue
     /// Step 1: Look up unit to determine family (centralized lookup logic)
     /// Step 2: Call CreateMeasuredValue(family, value, units) - single creation path
     /// Throws ArgumentException if unit is not valid in parser-accessible families
     /// </summary>
-    public MeasuredValue CreateMeasuredValueFromUnit(string unit, double value)
+    public MeasuredValue CreateMeasuredValueFromParsableUnit(string unit, double value)
     {
         // Step 1: Determine family from unit symbol (centralized lookup)
         var family = DetermineUnitFamilyFromUnit(unit);

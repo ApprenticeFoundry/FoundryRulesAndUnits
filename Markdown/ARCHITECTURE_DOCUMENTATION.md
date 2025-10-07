@@ -131,7 +131,7 @@ IUnitSystem.ValidateUnit("deg") → ✅ Valid
     ↓  
 IUnitSystem.GetUnitFamily("deg") → UnitFamilyName.Angle
     ↓
-IUnitSystem.CreateMeasuredValueFromUnit("deg", 90.0) 
+IUnitSystem.CreateMeasuredValueFromParsableUnit("deg", 90.0) 
     ↓
 UnitFactory.CreateTypedMeasuredValue(UnitFamilyName.Angle, 90.0, "deg")
     ↓

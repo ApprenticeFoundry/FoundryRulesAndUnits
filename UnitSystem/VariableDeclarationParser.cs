@@ -110,7 +110,7 @@ namespace FoundryRulesAndUnits.Units
             else
             {
                 // Create with smart defaults - let unit system determine family from input units
-                result = unitSystem.CreateMeasuredValueFromUnit(declaration.InputUnits, declaration.InputValue);
+                result = unitSystem.CreateMeasuredValueFromParsableUnit(declaration.InputUnits, declaration.InputValue);
                 
                 // Set display units if specified
                 if (!string.IsNullOrEmpty(declaration.DisplayUnits))

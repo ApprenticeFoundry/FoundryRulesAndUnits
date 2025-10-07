@@ -70,10 +70,10 @@ public interface IUnitSystem
     bool TryGetUnitInfo(string unit, out UnitLookupInfo? unitInfo);
 
     /// <summary>
-    /// Create a MeasuredValue directly from unit symbol and value (efficient)
-    /// Throws ArgumentException if unit is not valid
+    /// Create a MeasuredValue directly from parsable unit symbol and value (efficient)
+    /// Throws ArgumentException if unit is not valid in parser-accessible families
     /// </summary>
-    MeasuredValue CreateMeasuredValueFromUnit(string unit, double value);
+    MeasuredValue CreateMeasuredValueFromParsableUnit(string unit, double value);
 
     /// <summary>
     /// Get all units for a specific family in the current system

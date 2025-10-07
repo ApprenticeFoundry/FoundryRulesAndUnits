@@ -97,7 +97,7 @@ public enum UnitFamilyName
 **Approach**: Use sensible defaults for 90% of cases, explicit API for edge cases
 ```csharp
 // Parser uses defaults
-var duration = unitSystem.CreateMeasuredValueFromUnit("s", 60); // → Duration
+var duration = unitSystem.CreateMeasuredValueFromParsableUnit("s", 60); // → Duration
 
 // Explicit override when needed  
 var timestamp = unitSystem.CreateMeasuredValue(UnitFamilyName.Time, 60, "s"); // → Time

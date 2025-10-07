@@ -363,12 +363,12 @@ private Dictionary<string, UnitLookupInfo> BuildUnitLookupCache()
 }
 ```
 
-### 3. **Parser Integration via CreateMeasuredValueFromUnit**
+### 3. **Parser Integration via CreateMeasuredValueFromParsableUnit**
 
 During parsing, the system can instantly create the correct type:
 
 ```csharp
-public MeasuredValue CreateMeasuredValueFromUnit(string unit, double value)
+public MeasuredValue CreateMeasuredValueFromParsableUnit(string unit, double value)
 {
     var lookup = GetUnitLookup();
     if (lookup.TryGetValue(unit, out var unitInfo))
@@ -381,10 +381,10 @@ public MeasuredValue CreateMeasuredValueFromUnit(string unit, double value)
 
 ### 4. **KnParameter Dynamic Creation Pattern**
 
-The `KnParameter.CreateMeasuredValueFromUnits` method demonstrates how the pattern enables parser integration:
+The `KnParameter.CreateMeasuredValueFromParsableUnits` method demonstrates how the pattern enables parser integration:
 
 ```csharp
-public static MeasuredValue CreateMeasuredValueFromUnits(double value, string units)
+public static MeasuredValue CreateMeasuredValueFromParsableUnits(double value, string units)
 {
     var unitFamily = DetermineUnitFamily(units);  // O(1) lookup
     
@@ -410,7 +410,7 @@ public static MeasuredValue CreateMeasuredValueFromUnits(double value, string un
 ```
 Parser encounters: "45.5 kg"
    ↓
-UnitSystem.CreateMeasuredValueFromUnit("kg", 45.5)
+UnitSystem.CreateMeasuredValueFromParsableUnit("kg", 45.5)
    ↓ 
 UnitLookupInfo["kg"].CreateMeasuredValue(45.5)
    ↓
