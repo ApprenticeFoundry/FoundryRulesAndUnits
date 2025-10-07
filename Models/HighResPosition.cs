@@ -21,13 +21,13 @@ namespace FoundryRulesAndUnits.Models
 		public HighResPosition()
 		{
 			var unitSystem = new UnitSystem();
-			xLoc = unitSystem.Create<Length>(0, "m");
-			yLoc = unitSystem.Create<Length>(0, "m");
-			zLoc = unitSystem.Create<Length>(0, "m");
+			xLoc = unitSystem.CreateUnit<Length>(0, "m");
+			yLoc = unitSystem.CreateUnit<Length>(0, "m");
+			zLoc = unitSystem.CreateUnit<Length>(0, "m");
 
-			xAng = unitSystem.Create<Angle>(0, "deg");
-			yAng = unitSystem.Create<Angle>(0, "deg");
-			zAng = unitSystem.Create<Angle>(0, "deg");
+			xAng = unitSystem.CreateUnit<Angle>(0, "deg");
+			yAng = unitSystem.CreateUnit<Angle>(0, "deg");
+			zAng = unitSystem.CreateUnit<Angle>(0, "deg");
 		}
 		public HighResPosition(HighResPosition source): this()
 		{
@@ -69,17 +69,17 @@ namespace FoundryRulesAndUnits.Models
 		public HighResPosition Loc(double xLoc, double yLoc, double zLoc, string units = "m")
 		{
 			var factory = new UnitSystem();
-			this.xLoc = this.xLoc == null ? factory.Create<Length>(xLoc, units) : this.xLoc.Assign(xLoc, units);
-			this.yLoc = this.yLoc == null ? factory.Create<Length>(yLoc, units) : this.yLoc.Assign(yLoc, units);
-			this.zLoc = this.zLoc == null ? factory.Create<Length>(zLoc, units) : this.zLoc.Assign(zLoc, units);
+			this.xLoc = this.xLoc == null ? factory.CreateUnit<Length>(xLoc, units) : this.xLoc.Assign(xLoc, units);
+			this.yLoc = this.yLoc == null ? factory.CreateUnit<Length>(yLoc, units) : this.yLoc.Assign(yLoc, units);
+			this.zLoc = this.zLoc == null ? factory.CreateUnit<Length>(zLoc, units) : this.zLoc.Assign(zLoc, units);
 			return this;
 		}
 		public HighResPosition Ang(double xAng, double yAng, double zAng, string units = "rad")
 		{
 			var factory = new UnitSystem();
-			this.xAng = this.xAng == null ? factory.Create<Angle>(xAng, units) : this.xAng.Assign(xAng, units);
-			this.yAng = this.yAng == null ? factory.Create<Angle>(yAng, units) : this.yAng.Assign(yAng, units);
-			this.zAng = this.zAng == null ? factory.Create<Angle>(zAng, units) : this.zAng.Assign(zAng, units);
+			this.xAng = this.xAng == null ? factory.CreateUnit<Angle>(xAng, units) : this.xAng.Assign(xAng, units);
+			this.yAng = this.yAng == null ? factory.CreateUnit<Angle>(yAng, units) : this.yAng.Assign(yAng, units);
+			this.zAng = this.zAng == null ? factory.CreateUnit<Angle>(zAng, units) : this.zAng.Assign(zAng, units);
 			return this;
 		}
 

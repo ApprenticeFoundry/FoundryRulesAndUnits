@@ -71,7 +71,7 @@ This was a breakthrough insight - my strengths (memory, pattern recognition) are
 
 ### **4. Testing Is Architecture Validation**
 
-The `UnitFactoryVerifier` class became more than a test - it became **proof that the architecture works**:
+The unit test suites became more than tests - they became **proof that the architecture works**:
 
 ```csharp
 // This test proves the entire architecture works:
@@ -107,7 +107,7 @@ var sum = lengthCm + lengthM;                          // Should equal 3m
 
 **1. Concrete Demonstration Over Explanation:**
 Instead of: "Yes, the factory creates strongly typed objects"
-Better: "Here's the exact test that proves it works: `Create<Length>(200, "cm") + Create<Length>(1, "m") = 3m`"
+Better: "Here's the exact test that proves it works: `CreateUnit<Length>(200, "cm") + CreateUnit<Length>(1, "m") = 3m`"
 
 **2. Show the Complete Picture:**
 Instead of: "I'll fix this method"
@@ -217,7 +217,7 @@ UnitTypeRegistry.GetAttributeForType(typeof(Length))
 
 ### **Comprehensive Testing Strategy**
 
-The `UnitFactoryVerifier` tests multiple layers:
+The unit test suites test multiple layers:
 1. **Core functionality** - Does the factory create correct types?
 2. **Mathematical operations** - Do created objects work together?
 3. **Mixed unit scenarios** - Parser's critical requirement

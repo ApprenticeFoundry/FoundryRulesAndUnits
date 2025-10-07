@@ -335,12 +335,6 @@ public class UnitSystem : IUnitSystem
         return instance;
     }
 
-    [Obsolete("Use CreateUnit<T>() instead")]
-    public T Create<T>(double value = 0, string? units = null) where T : MeasuredValue
-    {
-        return CreateUnit<T>(value, units);
-    }
-
     // Quick measurement creation methods using the current system
 
     /// <summary>

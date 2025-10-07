@@ -33,10 +33,10 @@ T CreateUnit<T>(double value, string units) where T : MeasuredValue
 - **Performance validation** - Comprehensive timing tests
 
 ### **4. Comprehensive Testing Framework**
-- **UnitFactoryVerifier** - Tests strongly typed object creation
-- **Mixed unit operations** - Validates `Create<Length>(200, "cm") + Create<Length>(1, "m") = 3m`
-- **Cross-API compatibility** - Parser + user code integration
-- **Compound unit testing** - Speed, Volume, Area scenarios
+- **Unit test suites** - Tests strongly typed object creation via NUnit
+- **Mixed unit operations** - Validates `CreateUnit<Length>(200, "cm") + CreateUnit<Length>(1, "m") = 3m`
+- **Cross-API compatibility** - Parser + user code integration tests  
+- **Compound unit testing** - Speed, Volume, Area scenarios in proper test framework
 
 ### **5. Complete Documentation**
 - **Architecture guides** - Method selection, usage patterns, integration examples
@@ -92,7 +92,7 @@ Given the integration complexity encountered, here's the recommended **increment
 1. **Add CreateUnit<T> generic method** for compile-time type safety
 2. **Optimize internal calls** to use cached reflection path
 3. **Update parser integration** to use typed creation methods
-4. **Performance validation** with UnitFactoryVerifier
+4. **Performance validation** with proper unit test suites
 
 #### **Phase 3: Full Architecture Migration** ⭐ *LOWER PRIORITY*
 1. **Gradual interface evolution** rather than complete replacement
@@ -137,11 +137,11 @@ Given the integration complexity encountered, here's the recommended **increment
 ### **Code Artifacts**
 1. **`UnitTypeAttribute.cs`** - Metadata system for reflection discovery
 2. **`UnitTypeRegistry.cs`** - Performance-critical caching layer  
-3. **`UnitFactoryVerifier.cs`** - Comprehensive testing framework
+3. **Unit test suites** - Comprehensive testing framework in Tests/ directory
 4. **Updated unit type classes** - Applied gold standard pattern (24 classes)
 
 ### **Testing Framework**
-1. **`VerifierDemo.cs`** - Simple usage examples and health checks
+1. **Unit test suites** - Simple usage examples and comprehensive testing
 2. **Mixed unit test scenarios** - Parser integration validation
 3. **Performance benchmarks** - Caching effectiveness validation
 
@@ -172,7 +172,7 @@ Given the integration complexity encountered, here's the recommended **increment
 
 ### **Immediate Action Plan**
 1. **Implement Phase 1** - Core pattern with UnitTypeAttribute system
-2. **Validate with tests** - Use UnitFactoryVerifier to ensure correctness  
+2. **Validate with tests** - Use proper unit test suites to ensure correctness  
 3. **Integrate incrementally** - Add CreateTypedMeasuredValue method
 4. **Performance benchmark** - Verify caching provides expected speed gains
 
