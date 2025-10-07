@@ -25,18 +25,22 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.001),       // 1 mm = 0.001 m
             UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Length, 0.01),        // 1 cm = 0.01 m
             UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Length, 0.000001),    // 1 μm = 0.000001 m
+            UnitDefinition.LinearUnit("um", "micrometers", UnitFamilyName.Length, 0.000001),    // 1 um = 0.000001 m (ASCII)
             UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Length, 0.000000001),  // 1 nm = 1e-9 m
             UnitDefinition.LinearUnit("pm", "picometers", UnitFamilyName.Length, 0.000000000001), // 1 pm = 1e-12 m
             UnitDefinition.LinearUnit("Å", "angstroms", UnitFamilyName.Length, 0.0000000001),   // 1 Å = 1e-10 m
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),           // 1 in = 0.0254 m
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),             // 1 ft = 0.3048 m
             UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),            // 1 yd = 0.9144 m
+            UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 1000.0),       // 1 km = 1000 m
+            UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Length, 1609.344),          // 1 mi = 1609.344 m
 
             // Mass units (kilograms as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("kg", "kilograms", UnitFamilyName.Mass),
             UnitDefinition.LinearUnit("g", "grams", UnitFamilyName.Mass, 0.001),                // 1 g = 0.001 kg
             UnitDefinition.LinearUnit("mg", "milligrams", UnitFamilyName.Mass, 0.000001),       // 1 mg = 0.000001 kg
             UnitDefinition.LinearUnit("μg", "micrograms", UnitFamilyName.Mass, 0.000000001),    // 1 μg = 1e-9 kg
+            UnitDefinition.LinearUnit("ug", "micrograms", UnitFamilyName.Mass, 0.000000001),    // 1 ug = 1e-9 kg (ASCII)
             UnitDefinition.LinearUnit("ng", "nanograms", UnitFamilyName.Mass, 0.000000000001),  // 1 ng = 1e-12 kg
             UnitDefinition.LinearUnit("t", "metric tons", UnitFamilyName.Mass, 1000.0),         // 1 t = 1000 kg
             UnitDefinition.LinearUnit("lb", "pounds", UnitFamilyName.Mass, 0.453592),           // 1 lb = 0.453592 kg
@@ -47,6 +51,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.BaseUnit("N", "newtons", UnitFamilyName.Force),
             UnitDefinition.LinearUnit("mN", "millinewtons", UnitFamilyName.Force, 0.001),       // 1 mN = 0.001 N
             UnitDefinition.LinearUnit("μN", "micronewtons", UnitFamilyName.Force, 0.000001),    // 1 μN = 0.000001 N
+            UnitDefinition.LinearUnit("uN", "micronewtons", UnitFamilyName.Force, 0.000001),    // 1 uN = 0.000001 N (ASCII)
             UnitDefinition.LinearUnit("nN", "nanonewtons", UnitFamilyName.Force, 0.000000001),  // 1 nN = 1e-9 N
             UnitDefinition.LinearUnit("kN", "kilonewtons", UnitFamilyName.Force, 1000.0),       // 1 kN = 1000 N
             UnitDefinition.LinearUnit("MN", "meganewtons", UnitFamilyName.Force, 1000000.0),    // 1 MN = 1,000,000 N
@@ -102,6 +107,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("L", "liters", UnitFamilyName.Volume, 0.001),             // 1 L = 0.001 m³
             UnitDefinition.LinearUnit("mL", "milliliters", UnitFamilyName.Volume, 0.000001),    // 1 mL = 1e-6 m³
             UnitDefinition.LinearUnit("μL", "microliters", UnitFamilyName.Volume, 0.000000001), // 1 μL = 1e-9 m³
+            UnitDefinition.LinearUnit("uL", "microliters", UnitFamilyName.Volume, 0.000000001), // 1 uL = 1e-9 m³ (ASCII)
             UnitDefinition.LinearUnit("in3", "cubic inches", UnitFamilyName.Volume, 0.000016387), // 1 in³ = 1.6387e-5 m³
             UnitDefinition.LinearUnit("ft3", "cubic feet", UnitFamilyName.Volume, 0.0283168),   // 1 ft³ = 0.0283168 m³
             UnitDefinition.LinearUnit("gal", "US gallons", UnitFamilyName.Volume, 0.003785411784), // 1 gal = 0.003785 m³
@@ -111,6 +117,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("mm/s", "millimeters per second", UnitFamilyName.Speed, 0.001), // 1 mm/s = 0.001 m/s
             UnitDefinition.LinearUnit("cm/s", "centimeters per second", UnitFamilyName.Speed, 0.01), // 1 cm/s = 0.01 m/s
             UnitDefinition.LinearUnit("km/h", "kilometers per hour", UnitFamilyName.Speed, 0.277778), // 1 km/h = 0.278 m/s
+            UnitDefinition.LinearUnit("kph", "kilometers per hour", UnitFamilyName.Speed, 0.277778), // 1 kph = 0.278 m/s (ASCII alternative)
             UnitDefinition.LinearUnit("km/s", "kilometers per second", UnitFamilyName.Speed, 1000.0), // 1 km/s = 1000 m/s
             UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 0.3048),  // 1 ft/s = 0.3048 m/s
             UnitDefinition.LinearUnit("mph", "miles per hour", UnitFamilyName.Speed, 0.44704),   // 1 mph = 0.44704 m/s

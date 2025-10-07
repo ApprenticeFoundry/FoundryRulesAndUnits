@@ -27,6 +27,9 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Length, 0.01),         // 1 cm = 0.01 m
         UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.001),        // 1 mm = 0.001 m
         UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Length, 0.000001),     // 1 μm = 1e-6 m
+        UnitDefinition.LinearUnit("um", "micrometers", UnitFamilyName.Length, 0.000001),     // 1 um = 1e-6 m (ASCII alternative)
+        UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Length, 0.000000001),   // 1 nm = 1e-9 m
+        UnitDefinition.LinearUnit("Å", "angstroms", UnitFamilyName.Length, 0.0000000001),    // 1 Å = 1e-10 m
         UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),            // 1 in = 0.0254 m
         UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),              // 1 ft = 0.3048 m
         UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),             // 1 yd = 0.9144 m
@@ -46,6 +49,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("MN", "meganewtons", UnitFamilyName.Force, 1000000.0),     // 1 MN = 1,000,000 N
         UnitDefinition.LinearUnit("mN", "millinewtons", UnitFamilyName.Force, 0.001),        // 1 mN = 0.001 N
         UnitDefinition.LinearUnit("μN", "micronewtons", UnitFamilyName.Force, 0.000001),     // 1 μN = 0.000001 N
+        UnitDefinition.LinearUnit("uN", "micronewtons", UnitFamilyName.Force, 0.000001),     // 1 uN = 0.000001 N (ASCII alternative)
         UnitDefinition.LinearUnit("dyne", "dynes", UnitFamilyName.Force, 0.00001),           // 1 dyne = 0.00001 N
         UnitDefinition.LinearUnit("lbf", "pounds-force", UnitFamilyName.Force, 4.44822),     // 1 lbf = 4.44822 N
         UnitDefinition.LinearUnit("lbs", "pounds-force", UnitFamilyName.Force, 4.44822),     // 1 lbs = 1 lbf
@@ -73,6 +77,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Time),
         UnitDefinition.LinearUnit("ms", "milliseconds", UnitFamilyName.Time, 0.001),          // 1 ms = 0.001 s
         UnitDefinition.LinearUnit("μs", "microseconds", UnitFamilyName.Time, 0.000001),       // 1 μs = 1e-6 s
+        UnitDefinition.LinearUnit("us", "microseconds", UnitFamilyName.Time, 0.000001),       // 1 us = 1e-6 s (ASCII alternative)
         UnitDefinition.LinearUnit("min", "minutes", UnitFamilyName.Time, 60.0),              // 1 min = 60 s
         UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Time, 3600.0),                // 1 hr = 3600 s
         UnitDefinition.LinearUnit("day", "days", UnitFamilyName.Time, 86400.0),              // 1 day = 86400 s
@@ -108,6 +113,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         // Speed units (meters per second as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("m/s", "meters per second", UnitFamilyName.Speed),
         UnitDefinition.LinearUnit("km/h", "kilometers per hour", UnitFamilyName.Speed, 1000.0 / 3600.0), // 1 km/h = 1000/3600 m/s
+        UnitDefinition.LinearUnit("kph", "kilometers per hour", UnitFamilyName.Speed, 1000.0 / 3600.0), // 1 kph = 1000/3600 m/s (ASCII alternative)
         UnitDefinition.LinearUnit("mph", "miles per hour", UnitFamilyName.Speed, 0.44704),              // 1 mph = 0.44704 m/s
         UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 0.3048),           // 1 ft/s = 0.3048 m/s
         UnitDefinition.LinearUnit("knot", "knots", UnitFamilyName.Speed, 0.514444),                    // 1 knot = 0.514444 m/s
@@ -120,6 +126,9 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Distance, 0.00001),       // 1 cm = 0.00001 km
         UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Distance, 0.000001),      // 1 mm = 0.000001 km
         UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Distance, 0.000000001),   // 1 μm = 1e-9 km
+        UnitDefinition.LinearUnit("um", "micrometers", UnitFamilyName.Distance, 0.000000001),   // 1 um = 1e-9 km (ASCII alternative)
+        UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Distance, 0.000000000001), // 1 nm = 1e-12 km
+        UnitDefinition.LinearUnit("Å", "angstroms", UnitFamilyName.Distance, 0.0000000000001),  // 1 Å = 1e-13 km
         UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Distance, 0.0000254),          // 1 in = 0.0000254 km
         UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Distance, 0.0003048),            // 1 ft = 0.0003048 km
         UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Distance, 0.0009144),           // 1 yd = 0.0009144 km
@@ -136,6 +145,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         // Dual family support: Accept all Time units plus extended duration units
         UnitDefinition.LinearUnit("ms", "milliseconds", UnitFamilyName.Duration, 0.001),        // 1 ms = 0.001 s
         UnitDefinition.LinearUnit("μs", "microseconds", UnitFamilyName.Duration, 0.000001),     // 1 μs = 1e-6 s
+        UnitDefinition.LinearUnit("us", "microseconds", UnitFamilyName.Duration, 0.000001),     // 1 us = 1e-6 s (ASCII alternative)
         UnitDefinition.LinearUnit("min", "minutes", UnitFamilyName.Duration, 60.0),            // 1 min = 60 s
         UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Duration, 3600.0),             // 1 hr = 3600 s
         UnitDefinition.LinearUnit("day", "days", UnitFamilyName.Duration, 86400.0),            // 1 day = 86400 s
@@ -211,6 +221,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.BaseUnit("A", "amperes", UnitFamilyName.Current),
         UnitDefinition.LinearUnit("mA", "milliamperes", UnitFamilyName.Current, 0.001),       // 1 mA = 0.001 A
         UnitDefinition.LinearUnit("μA", "microamperes", UnitFamilyName.Current, 0.000001),    // 1 μA = 0.000001 A
+        UnitDefinition.LinearUnit("uA", "microamperes", UnitFamilyName.Current, 0.000001),    // 1 uA = 0.000001 A (ASCII alternative)
         UnitDefinition.LinearUnit("kA", "kiloamperes", UnitFamilyName.Current, 1000.0),       // 1 kA = 1000 A
 
         // Power units (watts as base) - using enhanced approach with UnitFamilyName enum!
@@ -238,6 +249,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         // Capacitance units (farads as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("F", "farads", UnitFamilyName.Capacitance),
         UnitDefinition.LinearUnit("μF", "microfarads", UnitFamilyName.Capacitance, 0.000001), // 1 μF = 0.000001 F
+        UnitDefinition.LinearUnit("uF", "microfarads", UnitFamilyName.Capacitance, 0.000001), // 1 uF = 0.000001 F (ASCII alternative)
         UnitDefinition.LinearUnit("nF", "nanofarads", UnitFamilyName.Capacitance, 0.000000001), // 1 nF = 0.000000001 F
         UnitDefinition.LinearUnit("pF", "picofarads", UnitFamilyName.Capacitance, 0.000000000001), // 1 pF = 0.000000000001 F
         UnitDefinition.LinearUnit("mF", "millifarads", UnitFamilyName.Capacitance, 0.001),    // 1 mF = 0.001 F
