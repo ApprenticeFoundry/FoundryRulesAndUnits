@@ -81,7 +81,7 @@ public class MeasuredValue : IMeasuredValue
 
 	/// <summary>
 	/// Constructor with UnitGroup injection - preferred for new code
-	/// Use UnitFactory to create instances with proper UnitGroup injection
+	/// Use UnitSystem to create instances with proper UnitGroup injection
 	/// </summary>
 	public MeasuredValue(UnitGroup unitGroup)
 	{
@@ -260,7 +260,7 @@ public class MeasuredValue : IMeasuredValue
 	{
 		get
 		{
-			return _unitGroup ?? throw new InvalidOperationException("MeasuredValue must have an injected UnitGroup. Use UnitFactory to create instances.");
+			return _unitGroup ?? throw new InvalidOperationException("MeasuredValue must have an injected UnitGroup. Use UnitSystem to create instances.");
 		}
 	}
 

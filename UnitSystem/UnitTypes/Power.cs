@@ -70,9 +70,9 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator *(Power left, Time right)
 		{
-			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var energyValue = left.BaseValue() * right.BaseValue(); // W × s = J
-			return factory.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
+			return unitSystem.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
 		}
 		
 		/// <summary>
@@ -81,9 +81,9 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator *(Power left, Duration right)
 		{
-			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var energyValue = left.BaseValue() * right.BaseValue(); // W × s = J
-			return factory.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
+			return unitSystem.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
 		}
 
 		#endregion

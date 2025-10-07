@@ -11,7 +11,7 @@ namespace FoundryRulesAndUnits.Units
 		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
 
 		/// <summary>
-		/// Constructor with UnitGroup injection - use UnitFactory to create instances
+		/// Constructor with UnitGroup injection - use UnitSystem to create instances
 		/// </summary>
 		public Temperature(UnitGroup unitGroup) : base(unitGroup)
 		{
@@ -19,7 +19,7 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"UnitGroup must be for Temperature family, got {unitGroup.Family}");
 		}
 
-		// Static factory methods removed - use UnitFactory instead
+		// Static factory methods removed - use UnitSystem instead
 
 		// Arithmetic operators
 		public static Temperature operator +(Temperature left, Temperature right) 

@@ -39,7 +39,7 @@ public class Length : MeasuredValue
 		return copy;
 	}
 
-	// Static factory methods removed - use UnitFactory.CreateLength() instead
+	// Static factory methods removed - use UnitSystem.CreateUnit<T>() instead
 	// Example: factory.CreateLength(1000, "m") for kilometers
 
 	// As() method inherited from MeasuredValue - no override needed!
@@ -129,9 +129,9 @@ public class Length : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator *(Length left, Length right)
 	{
-		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 		var areaValue = left.BaseValue() * right.BaseValue(); // m × m = m²
-		return factory.CreateMeasuredValue(UnitFamilyName.Area, areaValue, "m2");
+		return unitSystem.CreateMeasuredValue(UnitFamilyName.Area, areaValue, "m2");
 	}
 	
 	/// <summary>
@@ -140,9 +140,9 @@ public class Length : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Length left, Time right)
 	{
-		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 		var speedValue = left.BaseValue() / right.BaseValue(); // m ÷ s = m/s
-		return factory.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
+		return unitSystem.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 	
 	/// <summary>
@@ -151,9 +151,9 @@ public class Length : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Length left, Duration right)
 	{
-		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 		var speedValue = left.BaseValue() / right.BaseValue(); // m ÷ s = m/s
-		return factory.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
+		return unitSystem.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 }
 

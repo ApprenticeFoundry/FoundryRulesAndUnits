@@ -310,7 +310,7 @@ public class UnitSystem : IUnitSystem
     /// Create the correct derived MeasuredValue type using attribute-based reflection
     /// This is CRITICAL for parser integration that expects specific types (Angle, Length, Mass, etc.)
     /// </summary>
-    private MeasuredValue CreateTypedMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
+    public MeasuredValue CreateTypedMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
     {
         // Get the authoritative UnitGroup from the unit system specification
         var unitGroups = Current.GetUnitGroups();

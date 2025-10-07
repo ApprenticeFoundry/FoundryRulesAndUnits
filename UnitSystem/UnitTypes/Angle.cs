@@ -9,10 +9,10 @@ namespace FoundryRulesAndUnits.Units
 	public class Angle : MeasuredValue
 	{
 		// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
-		// NO backward compatibility constructors - use UnitFactory.CreateAngle() instead
+		// NO backward compatibility constructors - use UnitSystem.CreateUnit<Angle() instead
 
 		/// <summary>
-		/// Constructor with UnitGroup injection - use UnitFactory to create instances
+		/// Constructor with UnitGroup injection - use UnitSystem to create instances
 		/// </summary>
 		public Angle(UnitGroup unitGroup) : base(unitGroup)
 		{
@@ -39,7 +39,7 @@ namespace FoundryRulesAndUnits.Units
 			return copy;
 		}
 
-		// Static factory methods removed - use UnitFactory.CreateAngle() instead
+		// Static factory methods removed - use UnitSystem.CreateUnit<Angle() instead
 		// Example: factory.CreateAngle(90, "deg") or factory.CreateAngle(Math.PI/2, "rad")
 
 		// As() method inherited from MeasuredValue - no override needed!

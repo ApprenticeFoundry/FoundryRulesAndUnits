@@ -35,7 +35,7 @@ namespace FoundryRulesAndUnits.Units
 			return copy;
 		}
 
-		// Static factory methods removed - use UnitFactory instead
+		// Static factory methods removed - use UnitSystem instead
 
 		// As() method inherited from MeasuredValue - no override needed!
 

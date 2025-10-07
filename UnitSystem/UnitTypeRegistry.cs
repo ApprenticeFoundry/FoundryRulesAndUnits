@@ -17,7 +17,7 @@ namespace FoundryRulesAndUnits.Units
         
         /// <summary>
         /// CRITICAL: Get the UnitType attribute for a specific type (cached for performance)
-        /// Used by MeasuredValue.UnitFamily and UnitFactory.CreateUnit<T>()
+        /// Used by MeasuredValue.UnitFamily and UnitSystem.CreateUnit<T>()
         /// </summary>
         public static UnitTypeAttribute? GetAttributeForType(Type type)
         {
@@ -27,7 +27,7 @@ namespace FoundryRulesAndUnits.Units
         
         /// <summary>
         /// CRITICAL: Create an instance of the correct unit type for the given family (cached for performance)
-        /// Used by UnitFactory.CreateTypedMeasuredValue() - this is why the registry exists!
+        /// Used by UnitSystem.CreateTypedMeasuredValue() - this is why the registry exists!
         /// Without caching, we'd scan all types on every factory call (very expensive)
         /// </summary>
         public static MeasuredValue? CreateInstance(UnitFamilyName family, UnitGroup unitGroup)

@@ -69,9 +69,9 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator *(Speed left, Time right)
 		{
-			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			return factory.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+			return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
 		/// <summary>
@@ -80,9 +80,9 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator *(Speed left, Duration right)
 		{
-			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			return factory.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+			return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
 		#endregion

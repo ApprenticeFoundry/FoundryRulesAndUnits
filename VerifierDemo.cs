@@ -5,7 +5,7 @@ using FoundryRulesAndUnits.Extensions;
 namespace FoundryRulesAndUnits
 {
     /// <summary>
-    /// Demonstration of how to use the UnitFactoryVerifier
+    /// Demonstration of how to use the UnitSystemVerifier
     /// Shows simple usage patterns for verifying the unit architecture
     /// </summary>
     public static class VerifierDemo
@@ -15,10 +15,10 @@ namespace FoundryRulesAndUnits
         /// </summary>
         public static void RunBasicVerification()
         {
-            "🔧 Starting UnitFactory Architecture Verification...".WriteInfo();
+            "🔧 Starting UnitSystem Architecture Verification...".WriteInfo();
             "".WriteInfo();
 
-            var verifier = new UnitFactoryVerifier();
+            var verifier = new UnitSystemVerifier();
             var results = verifier.RunVerification();
 
             // Display results
@@ -39,10 +39,10 @@ namespace FoundryRulesAndUnits
         /// </summary>
         public static void RunVerificationWithCustomSystem(IUnitSystem unitSystem)
         {
-            $"🔧 Verifying UnitFactory with {unitSystem.GetType().Name}...".WriteInfo();
+            $"🔧 Verifying UnitSystem with {unitSystem.GetType().Name}...".WriteInfo();
             "".WriteInfo();
 
-            var verifier = new UnitFactoryVerifier();
+            var verifier = new UnitSystemVerifier();
             var results = verifier.RunVerification(unitSystem);
 
             results.GetDetailedReport().WriteInfo();
@@ -54,7 +54,7 @@ namespace FoundryRulesAndUnits
         /// </summary>
         public static bool QuickHealthCheck()
         {
-            var verifier = new UnitFactoryVerifier();
+            var verifier = new UnitSystemVerifier();
             var results = verifier.RunVerification();
             return results.AllTestsPassed;
         }
@@ -64,7 +64,7 @@ namespace FoundryRulesAndUnits
         /// </summary>
         public static void ExampleProgrammaticUsage()
         {
-            var verifier = new UnitFactoryVerifier();
+            var verifier = new UnitSystemVerifier();
             var results = verifier.RunVerification();
 
             // Check specific metrics

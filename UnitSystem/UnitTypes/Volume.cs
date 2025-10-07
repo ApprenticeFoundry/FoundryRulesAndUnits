@@ -18,7 +18,7 @@ namespace FoundryRulesAndUnits.Units
 				throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Volume}", nameof(unitGroup));
 		}
 
-		// Static factory methods removed - use UnitFactory instead
+		// Static factory methods removed - use UnitSystem instead
 
 		// Arithmetic operators
 		public static Volume operator +(Volume left, Volume right) 
@@ -68,9 +68,9 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator /(Volume left, Area right)
 		{
-			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var lengthValue = left.BaseValue() / right.BaseValue(); // m³ ÷ m² = m
-			return factory.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+			return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
 		/// <summary>
@@ -79,9 +79,9 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator /(Volume left, Length right)
 		{
-			var factory = new UnitFactory(left._unitGroup.SystemType);
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var areaValue = left.BaseValue() / right.BaseValue(); // m³ ÷ m = m²
-			return factory.CreateMeasuredValue(UnitFamilyName.Area, areaValue, "m2");
+			return unitSystem.CreateMeasuredValue(UnitFamilyName.Area, areaValue, "m2");
 		}
 	}
 

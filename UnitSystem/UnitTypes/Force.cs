@@ -9,10 +9,10 @@ namespace FoundryRulesAndUnits.Units;
 public class Force : MeasuredValue
 {
 	// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
-	// NO backward compatibility constructors - use UnitFactory.CreateForce() instead
+	// NO backward compatibility constructors - use UnitSystem.CreateUnit<Force() instead
 
 	/// <summary>
-	/// Constructor with UnitGroup injection - use UnitFactory to create instances
+	/// Constructor with UnitGroup injection - use UnitSystem to create instances
 	/// </summary>
 	public Force(UnitGroup unitGroup) : base(unitGroup)
 	{
@@ -39,7 +39,7 @@ public class Force : MeasuredValue
 		return copy;
 	}
 
-	// Static factory methods removed - use UnitFactory.CreateForce() instead
+	// Static factory methods removed - use UnitSystem.CreateUnit<Force() instead
 
 	// Comparison operators
 	public static bool operator <(Force left, Force right) => left.Value() < right.Value();
@@ -99,9 +99,9 @@ public class Force : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Force left, Area right)
 	{
-		var factory = new UnitFactory(left._unitGroup.SystemType);
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 		var pressureValue = left.BaseValue() / right.BaseValue(); // N ÷ m² = Pa
-		return factory.CreateMeasuredValue(UnitFamilyName.Pressure, pressureValue, "Pa");
+		return unitSystem.CreateMeasuredValue(UnitFamilyName.Pressure, pressureValue, "Pa");
 	}
 }
 

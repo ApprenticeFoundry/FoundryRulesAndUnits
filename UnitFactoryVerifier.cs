@@ -7,14 +7,14 @@ using System.Reflection;
 namespace FoundryRulesAndUnits.Units
 {
     /// <summary>
-    /// Comprehensive verification class for UnitFactory architecture
+    /// Comprehensive verification class for UnitSystem architecture
     /// Tests that factory creates strongly typed objects that work correctly for all operations
     /// Can be instantiated and run in any application to verify the unit engine is functioning properly
     /// </summary>
-    public class UnitFactoryVerifier
+    public class UnitSystemVerifier
     {
         /// <summary>
-        /// Run comprehensive verification of the UnitFactory architecture
+        /// Run comprehensive verification of the UnitSystem architecture
         /// Tests strongly typed object creation, mathematical operations, and parser compatibility
         /// </summary>
         /// <param name="unitSystem">The unit system to test with (if null, creates a default SI system)</param>
@@ -63,25 +63,36 @@ namespace FoundryRulesAndUnits.Units
             return results;
         }
 
-        private UnitFactory? CreateTestFactory(IUnitSystem? unitSystem, VerificationResults results)
+        private UnitSystem? CreateTestFactory(IUnitSystem? unitSystem, VerificationResults results)
         {
             try
             {
+                UnitSystem factory;
                 if (unitSystem == null)
                 {
                     // Create a basic SI unit system for testing
-                    unitSystem = new UnitSystem(UnitSystemType.SI);
+                    factory = new UnitSystem(UnitSystemType.SI);
                     results.TestInfo.Add("Created default SI unit system for testing");
                 }
+                else if (unitSystem is UnitSystem us)
+                {
+                    // Use the provided UnitSystem directly
+                    factory = us;
+                    results.TestInfo.Add($"Using provided unit system: {unitSystem.GetType().Name}");
+                }
+                else
+                {
+                    // Create a new UnitSystem with the same type as the provided one
+                    factory = new UnitSystem(unitSystem.ActiveType);
+                    results.TestInfo.Add($"Created unit system with type: {unitSystem.ActiveType}");
+                }
 
-                var factory = new UnitFactory(unitSystem);
-                results.Successes.Add("✅ UnitFactory created successfully");
-                results.TestInfo.Add($"Testing with unit system: {unitSystem.GetType().Name}");
+                results.Successes.Add("✅ UnitSystem created successfully");
                 return factory;
             }
             catch (Exception ex)
             {
-                results.Failures.Add($"❌ Failed to create UnitFactory: {ex.Message}");
+                results.Failures.Add($"❌ Failed to create UnitSystem: {ex.Message}");
                 return null;
             }
         }
@@ -119,7 +130,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestAllFactoryMethods(UnitFactory factory, VerificationResults results)
+        private void TestAllFactoryMethods(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -143,7 +154,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestFactoryMethodsForFamily(UnitFactory factory, UnitFamilyName family, VerificationResults results)
+        private void TestFactoryMethodsForFamily(UnitSystem factory, UnitFamilyName family, VerificationResults results)
         {
             try
             {
@@ -178,12 +189,12 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestGenericFactoryMethod(UnitFactory factory, Type unitType, UnitFamilyName family, VerificationResults results)
+        private void TestGenericFactoryMethod(UnitSystem factory, Type unitType, UnitFamilyName family, VerificationResults results)
         {
             try
             {
                 // Use reflection to call CreateUnit<T>() dynamically
-                var method = typeof(UnitFactory).GetMethod("CreateUnit")?.MakeGenericMethod(unitType);
+                var method = typeof(UnitSystem).GetMethod("CreateUnit")?.MakeGenericMethod(unitType);
                 if (method == null)
                 {
                     results.Failures.Add($"❌ Could not find CreateUnit<T> method for {unitType.Name}");
@@ -202,7 +213,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestStronglyTypedOperations(UnitFactory factory, VerificationResults results)
+        private void TestStronglyTypedOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -221,7 +232,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestLengthOperations(UnitFactory factory, VerificationResults results)
+        private void TestLengthOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -264,7 +275,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestMixedUnitOperations(UnitFactory factory, VerificationResults results)
+        private void TestMixedUnitOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -328,7 +339,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestAdditionalMixedUnits(UnitFactory factory, VerificationResults results)
+        private void TestAdditionalMixedUnits(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -364,7 +375,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestAngleOperations(UnitFactory factory, VerificationResults results)
+        private void TestAngleOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -397,7 +408,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestMassOperations(UnitFactory factory, VerificationResults results)
+        private void TestMassOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -429,7 +440,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestCrossApiCompatibility(UnitFactory factory, VerificationResults results)
+        private void TestCrossApiCompatibility(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -462,7 +473,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestCrossApiMixedUnits(UnitFactory factory, VerificationResults results)
+        private void TestCrossApiMixedUnits(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -508,7 +519,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestParserSimulation(UnitFactory factory, VerificationResults results)
+        private void TestParserSimulation(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -536,7 +547,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestCompoundUnitOperations(UnitFactory factory, VerificationResults results)
+        private void TestCompoundUnitOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -557,7 +568,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestSpeedOperations(UnitFactory factory, VerificationResults results)
+        private void TestSpeedOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -661,7 +672,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestVolumeOperations(UnitFactory factory, VerificationResults results)
+        private void TestVolumeOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -746,7 +757,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestAreaOperations(UnitFactory factory, VerificationResults results)
+        private void TestAreaOperations(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -831,7 +842,7 @@ namespace FoundryRulesAndUnits.Units
             }
         }
 
-        private void TestPerformanceCaching(UnitFactory factory, VerificationResults results)
+        private void TestPerformanceCaching(UnitSystem factory, VerificationResults results)
         {
             try
             {
@@ -873,7 +884,7 @@ namespace FoundryRulesAndUnits.Units
     }
 
     /// <summary>
-    /// Results from running UnitFactory verification
+    /// Results from running UnitSystem verification
     /// </summary>
     public class VerificationResults
     {
