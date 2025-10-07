@@ -85,7 +85,6 @@ public class UnitSystem : IUnitSystem
     private Dictionary<string, UnitLookupInfo> BuildUnitLookupCache()
     {
         var lookup = new Dictionary<string, UnitLookupInfo>();
-        var factory = GetFactory();
         var unitGroups = _currentSystem.GetUnitGroups();
         
         foreach (var unitGroup in unitGroups.Values)
@@ -100,7 +99,7 @@ public class UnitSystem : IUnitSystem
                     // Create factory function using reflection-based method for correct derived types
                     // This is CRITICAL for parser integration that expects specific types (Angle, Length, Mass, etc.)
                     Func<double, MeasuredValue> createFunc = (value) => 
-                        factory.CreateTypedMeasuredValue(unitDef.Family, value, unitDef.Symbol);
+                        CreateTypedMeasuredValue(unitDef.Family, value, unitDef.Symbol);
                     
                     lookup[unitDef.Symbol] = new UnitLookupInfo(
                         unitDef.Family,
@@ -113,7 +112,7 @@ public class UnitSystem : IUnitSystem
                 if (!lookup.ContainsKey(unitGroup.BaseUnit.Symbol))
                 {
                     Func<double, MeasuredValue> createFunc = (value) => 
-                        factory.CreateTypedMeasuredValue(unitGroup.BaseUnit.Family, value, unitGroup.BaseUnit.Symbol);
+                        CreateTypedMeasuredValue(unitGroup.BaseUnit.Family, value, unitGroup.BaseUnit.Symbol);
                     
                     lookup[unitGroup.BaseUnit.Symbol] = new UnitLookupInfo(
                         unitGroup.BaseUnit.Family,
@@ -168,8 +167,15 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public bool IsValidUnit(string unit, UnitFamilyName family)
     {
-        var lookup = GetUnitLookup();
-        return lookup.ContainsKey(unit) && lookup[unit].Family == family;
+        // Use the complete specification data, not just parser-accessible cache
+        // This ensures all families (including non-parser-accessible ones like Distance) work correctly
+        var allUnitsByFamily = GetAllUnitsByFamily();
+        if (!allUnitsByFamily.TryGetValue(family, out var unitsInFamily))
+        {
+            return false;
+        }
+        
+        return unitsInFamily.Any(u => u.Symbol == unit);
     }
 
     /// <summary>
@@ -282,24 +288,57 @@ public class UnitSystem : IUnitSystem
 
     // NEW: Factory methods for simplified measurement creation
 
-    private UnitFactory? _cachedFactory;
-
     /// <summary>
-    /// Create a UnitFactory for this unit system for advanced usage
+    /// Create a strongly typed unit object with compile-time type safety
+    /// Uses attribute-based reflection to create the correct derived type
     /// </summary>
-    public UnitFactory GetFactory()
+    public T CreateUnit<T>(double value = 0, string? units = null) where T : MeasuredValue
     {
-        // Cache the factory to avoid recreating UnitGroups repeatedly
-        if (_cachedFactory == null || _cachedFactory.SystemType != ActiveType)
-        {
-            _cachedFactory = new UnitFactory(this); // Pass 'this' instead of creating new UnitSystem
-        }
-        return _cachedFactory;
+        var type = typeof(T);
+        var attribute = UnitTypeRegistry.GetAttributeForType(type);
+        if (attribute == null)
+            throw new ArgumentException($"Type {type.Name} is not registered with UnitTypeAttribute");
+
+        // Create typed measured value directly instead of using factory
+        var instance = CreateTypedMeasuredValue(attribute.Family, value, units);
+        
+        // Safe cast since UnitTypeRegistry guarantees correct type for family
+        return (T)instance;
     }
 
+    /// <summary>
+    /// Create the correct derived MeasuredValue type using attribute-based reflection
+    /// This is CRITICAL for parser integration that expects specific types (Angle, Length, Mass, etc.)
+    /// </summary>
+    private MeasuredValue CreateTypedMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
+    {
+        // Get the authoritative UnitGroup from the unit system specification
+        var unitGroups = Current.GetUnitGroups();
+        if (!unitGroups.TryGetValue(family, out var unitGroup))
+        {
+            throw new ArgumentException($"No unit group found for family {family} in current unit system");
+        }
+        
+        // Use attribute-based registry to create the correct derived type
+        var instance = UnitTypeRegistry.CreateInstance(family, unitGroup);
+        if (instance == null)
+        {
+            // Fallback to creating via base MeasuredValue
+            var baseMeasuredValue = new MeasuredValue(unitGroup);
+            baseMeasuredValue.Init(value, units);
+            return baseMeasuredValue;
+        }
+        
+        // Initialize the derived instance with the original units parameter to preserve display units
+        instance.Init(value, units);
+        
+        return instance;
+    }
+
+    [Obsolete("Use CreateUnit<T>() instead")]
     public T Create<T>(double value = 0, string? units = null) where T : MeasuredValue
     {
-        return GetFactory().CreateUnit<T>(value, units);
+        return CreateUnit<T>(value, units);
     }
 
     // Quick measurement creation methods using the current system
@@ -309,7 +348,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Length CreateLength(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Length>(value, units);
+        return CreateUnit<Length>(value, units);
     }
 
     /// <summary>
@@ -317,7 +356,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Angle CreateAngle(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Angle>(value, units);
+        return CreateUnit<Angle>(value, units);
     }
 
     /// <summary>
@@ -325,7 +364,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Temperature CreateTemperature(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Temperature>(value, units);
+        return CreateUnit<Temperature>(value, units);
     }
 
     /// <summary>
@@ -333,7 +372,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Mass CreateMass(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Mass>(value, units);
+        return CreateUnit<Mass>(value, units);
     }
 
     /// <summary>
@@ -341,7 +380,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Time CreateTime(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Time>(value, units);
+        return CreateUnit<Time>(value, units);
     }
 
     /// <summary>
@@ -349,7 +388,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Speed CreateSpeed(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Speed>(value, units);
+        return CreateUnit<Speed>(value, units);
     }
 
     /// <summary>
@@ -357,7 +396,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Area CreateArea(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Area>(value, units);
+        return CreateUnit<Area>(value, units);
     }
 
     /// <summary>
@@ -365,7 +404,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Volume CreateVolume(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Volume>(value, units);
+        return CreateUnit<Volume>(value, units);
     }
 
     /// <summary>
@@ -373,7 +412,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Force CreateForce(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Force>(value, units);
+        return CreateUnit<Force>(value, units);
     }
 
     /// <summary>
@@ -381,7 +420,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Power CreatePower(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Power>(value, units);
+        return CreateUnit<Power>(value, units);
     }
 
     /// <summary>
@@ -389,7 +428,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Voltage CreateVoltage(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Voltage>(value, units);
+        return CreateUnit<Voltage>(value, units);
     }
 
     /// <summary>
@@ -397,7 +436,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Current CreateCurrent(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Current>(value, units);
+        return CreateUnit<Current>(value, units);
     }
 
     /// <summary>
@@ -405,7 +444,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Resistance CreateResistance(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Resistance>(value, units);
+        return CreateUnit<Resistance>(value, units);
     }
 
     /// <summary>
@@ -413,7 +452,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Capacitance CreateCapacitance(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Capacitance>(value, units);
+        return CreateUnit<Capacitance>(value, units);
     }
 
     /// <summary>
@@ -421,7 +460,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public Frequency CreateFrequency(double value = 0, string? units = null)
     {
-        return GetFactory().CreateUnit<Frequency>(value, units);
+        return CreateUnit<Frequency>(value, units);
     }
 
     /// <summary>
@@ -429,7 +468,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public MeasuredValue CreateMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
     {
-        return GetFactory().CreateTypedMeasuredValue(family, value, units);
+        return CreateTypedMeasuredValue(family, value, units);
     }
 
 

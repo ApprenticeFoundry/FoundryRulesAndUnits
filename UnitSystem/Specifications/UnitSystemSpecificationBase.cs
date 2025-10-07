@@ -24,21 +24,83 @@ namespace FoundryRulesAndUnits.Units.Specifications
         private Dictionary<UnitFamilyName, UnitDefinition>? _cachedBaseUnitsByFamily = null;
         private Dictionary<UnitFamilyName, List<UnitDefinition>>? _cachedUnitsByFamily = null;
         private Dictionary<string, UnitFamilyName>? _cachedSymbolToFamily = null;
+        private bool _allCachesBuilt = false;
+
+        /// <summary>
+        /// Ensures all caches are built in a single pass over UnitDefinitions for optimal performance.
+        /// This replaces 6 separate loops with one O(n) operation.
+        /// </summary>
+        private void EnsureAllCachesBuilt()
+        {
+            if (_allCachesBuilt) return;
+
+            // Initialize all caches
+            _cachedUnitSymbols = new List<string>();
+            _cachedBaseUnits = new List<UnitDefinition>();
+            _cachedBaseUnitsByFamily = new Dictionary<UnitFamilyName, UnitDefinition>();
+            _cachedUnitsByFamily = new Dictionary<UnitFamilyName, List<UnitDefinition>>();
+            _cachedSymbolToFamily = new Dictionary<string, UnitFamilyName>();
+
+            // Single loop to build all caches simultaneously
+            foreach (var unit in UnitDefinitions)
+            {
+                // Build symbol cache
+                _cachedUnitSymbols.Add(unit.Symbol);
+
+                // Build base units cache
+                if (unit.IsBaseUnit)
+                {
+                    _cachedBaseUnits.Add(unit);
+                    _cachedBaseUnitsByFamily[unit.Family] = unit;
+                }
+
+                // Build units by family cache
+                if (!_cachedUnitsByFamily.ContainsKey(unit.Family))
+                {
+                    _cachedUnitsByFamily[unit.Family] = new List<UnitDefinition>();
+                }
+                _cachedUnitsByFamily[unit.Family].Add(unit);
+
+                // Build symbol to family mapping cache
+                _cachedSymbolToFamily[unit.Symbol] = unit.Family;
+            }
+
+            // Build unit groups cache using the already-built caches
+            _cachedUnitGroups = new Dictionary<UnitFamilyName, UnitGroup>();
+            foreach (var family in _cachedUnitsByFamily.Keys)
+            {
+                if (_cachedBaseUnitsByFamily.TryGetValue(family, out var baseUnit))
+                {
+                    var members = _cachedUnitsByFamily[family];
+                    
+                    // Parser accessibility and alternative family rules:
+                    // Parser-accessible families can be used directly (e.g., "5m")
+                    // Non-parser-accessible families require functions (e.g., ASDISTANCE())
+                    // Alternative families are bidirectional relationships for compatible operations
+                    var (isParserAccessible, alternativeFamily) = family switch
+                    {
+                        UnitFamilyName.Length => (true, UnitFamilyName.Distance),   // Length ↔ Distance
+                        UnitFamilyName.Distance => (false, UnitFamilyName.Length), // Distance ↔ Length
+                        UnitFamilyName.Angle => (true, UnitFamilyName.Bearing),    // Angle ↔ Bearing  
+                        UnitFamilyName.Bearing => (false, UnitFamilyName.Angle),   // Bearing ↔ Angle
+                        UnitFamilyName.Time => (false, (UnitFamilyName?)null),     // Function-only, no alternative
+                        _ => (true, (UnitFamilyName?)null)                          // Most families are parser-accessible
+                    };
+                    
+                    _cachedUnitGroups[family] = new UnitGroup(family, SystemType, baseUnit, members, isParserAccessible, alternativeFamily);
+                }
+            }
+
+            _allCachesBuilt = true;
+        }
 
         /// <summary>
         /// Gets all unit symbols in the system (cached for performance)
         /// </summary>
         public virtual List<string> GetAllUnitSymbols()
         {
-            if (_cachedUnitSymbols == null)
-            {
-                _cachedUnitSymbols = new List<string>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    _cachedUnitSymbols.Add(unit.Symbol);
-                }
-            }
-            return _cachedUnitSymbols;
+            EnsureAllCachesBuilt();
+            return _cachedUnitSymbols!;
         }
 
         /// <summary>
@@ -46,18 +108,8 @@ namespace FoundryRulesAndUnits.Units.Specifications
         /// </summary>
         public virtual List<UnitDefinition> GetAllBaseUnits()
         {
-            if (_cachedBaseUnits == null)
-            {
-                _cachedBaseUnits = new List<UnitDefinition>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    if (unit.IsBaseUnit)
-                    {
-                        _cachedBaseUnits.Add(unit);
-                    }
-                }
-            }
-            return _cachedBaseUnits;
+            EnsureAllCachesBuilt();
+            return _cachedBaseUnits!;
         }
 
         /// <summary>
@@ -66,63 +118,8 @@ namespace FoundryRulesAndUnits.Units.Specifications
         /// </summary>
         public virtual Dictionary<UnitFamilyName, UnitGroup> GetUnitGroups()
         {
-            if (_cachedUnitGroups == null)
-            {
-                _cachedUnitGroups = new Dictionary<UnitFamilyName, UnitGroup>();
-                var unitsByFamily = GetAllUnitsByFamily();
-                var baseUnitsByFamily = GetBaseUnitsByFamily();
-                var parserAccessibleFamilies = GetParserAccessibleFamilies();
-
-                foreach (var family in unitsByFamily.Keys)
-                {
-                    if (baseUnitsByFamily.TryGetValue(family, out var baseUnit))
-                    {
-                        var members = unitsByFamily[family];
-                        var isParserAccessible = parserAccessibleFamilies.Contains(family);
-                        _cachedUnitGroups[family] = new UnitGroup(family, SystemType, baseUnit, members, isParserAccessible);
-                    }
-                }
-            }
-            return _cachedUnitGroups;
-        }
-
-        /// <summary>
-        /// Define which unit families are parser-accessible (can be created from shorthand syntax)
-        /// Override in derived classes to customize the two-tier family system
-        /// </summary>
-        protected virtual HashSet<UnitFamilyName> GetParserAccessibleFamilies()
-        {
-            // Default implementation: Most common engineering families are parser-accessible
-            return new HashSet<UnitFamilyName>
-            {
-                // PARSER-ACCESSIBLE FAMILIES (shorthand syntax works: "5m", "45deg", "30s")
-                UnitFamilyName.Length,        // Object dimensions, mechanical parts
-                UnitFamilyName.Distance,      // Large-scale measurements (dual family with Length)
-                UnitFamilyName.Angle,         // Rotations, orientations, geometric angles
-                UnitFamilyName.Duration,      // Time intervals, processing times
-                UnitFamilyName.Mass,          // Material properties, object weight
-                UnitFamilyName.Temperature,   // Environmental, process temperatures
-                UnitFamilyName.Speed,         // Velocity, rate measurements
-                UnitFamilyName.Force,         // Applied forces, loads
-                UnitFamilyName.Power,         // Energy consumption, output
-                UnitFamilyName.Voltage,       // Electrical measurements
-                UnitFamilyName.Current,       // Electrical measurements
-                UnitFamilyName.Resistance,    // Electrical measurements
-                UnitFamilyName.Capacitance,   // Electrical measurements
-                UnitFamilyName.Frequency,     // Signal processing, mechanical vibration
-                UnitFamilyName.Quantity,      // Count, discrete items
-                UnitFamilyName.QuantityFlow,  // Flow rates
-                UnitFamilyName.Percent,       // Ratios, efficiency
-                UnitFamilyName.DataStorage,   // File sizes, memory
-                UnitFamilyName.DataFlow,      // Network speeds
-                UnitFamilyName.None           // Dimensionless values
-                
-                // FUNCTION-ONLY FAMILIES (require explicit AS functions):
-                // UnitFamilyName.Time          → ASTIME() required  
-                // UnitFamilyName.Bearing       → ASBEARING() required
-                // UnitFamilyName.Area          → ASAREA() required (when explicit semantics needed)
-                // UnitFamilyName.Volume        → ASVOLUME() required (when explicit semantics needed)
-            };
+            EnsureAllCachesBuilt();
+            return _cachedUnitGroups!;
         }
 
         /// <summary>
@@ -130,18 +127,8 @@ namespace FoundryRulesAndUnits.Units.Specifications
         /// </summary>
         public virtual Dictionary<UnitFamilyName, UnitDefinition> GetBaseUnitsByFamily()
         {
-            if (_cachedBaseUnitsByFamily == null)
-            {
-                _cachedBaseUnitsByFamily = new Dictionary<UnitFamilyName, UnitDefinition>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    if (unit.IsBaseUnit)
-                    {
-                        _cachedBaseUnitsByFamily[unit.Family] = unit;
-                    }
-                }
-            }
-            return _cachedBaseUnitsByFamily;
+            EnsureAllCachesBuilt();
+            return _cachedBaseUnitsByFamily!;
         }
 
         /// <summary>
@@ -149,19 +136,8 @@ namespace FoundryRulesAndUnits.Units.Specifications
         /// </summary>
         public virtual Dictionary<UnitFamilyName, List<UnitDefinition>> GetAllUnitsByFamily()
         {
-            if (_cachedUnitsByFamily == null)
-            {
-                _cachedUnitsByFamily = new Dictionary<UnitFamilyName, List<UnitDefinition>>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    if (!_cachedUnitsByFamily.ContainsKey(unit.Family))
-                    {
-                        _cachedUnitsByFamily[unit.Family] = new List<UnitDefinition>();
-                    }
-                    _cachedUnitsByFamily[unit.Family].Add(unit);
-                }
-            }
-            return _cachedUnitsByFamily;
+            EnsureAllCachesBuilt();
+            return _cachedUnitsByFamily!;
         }
 
         /// <summary>
@@ -169,15 +145,8 @@ namespace FoundryRulesAndUnits.Units.Specifications
         /// </summary>
         public virtual Dictionary<string, UnitFamilyName> GetSymbolToFamilyMap()
         {
-            if (_cachedSymbolToFamily == null)
-            {
-                _cachedSymbolToFamily = new Dictionary<string, UnitFamilyName>();
-                foreach (var unit in UnitDefinitions)
-                {
-                    _cachedSymbolToFamily[unit.Symbol] = unit.Family;
-                }
-            }
-            return _cachedSymbolToFamily;
+            EnsureAllCachesBuilt();
+            return _cachedSymbolToFamily!;
         }
 
         /// <summary>
@@ -192,6 +161,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             _cachedBaseUnitsByFamily = null;
             _cachedUnitsByFamily = null;
             _cachedSymbolToFamily = null;
+            _allCachesBuilt = false;
         }
     }
 }

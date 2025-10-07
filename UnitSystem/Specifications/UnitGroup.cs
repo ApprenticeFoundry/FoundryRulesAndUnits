@@ -10,15 +10,17 @@ public class UnitGroup
     public UnitSystemType SystemType { get; private set; }
     public UnitDefinition BaseUnit { get; private set; }
     public List<UnitDefinition> Members { get; private set; }
-    public bool IsParserAccessible { get; private set; }  // NEW: Parser accessibility at family level
+    public bool IsParserAccessible { get; private set; }  // Parser accessibility at family level
+    public UnitFamilyName? AlternativeFamily { get; private set; }  // Non-parsable alternative family
 
-    public UnitGroup(UnitFamilyName family, UnitSystemType systemType, UnitDefinition baseUnit, List<UnitDefinition> members, bool isParserAccessible = true)
+    public UnitGroup(UnitFamilyName family, UnitSystemType systemType, UnitDefinition baseUnit, List<UnitDefinition> members, bool isParserAccessible = true, UnitFamilyName? alternativeFamily = null)
     {
         Family = family;
         SystemType = systemType;
         BaseUnit = baseUnit;
         Members = members;
         IsParserAccessible = isParserAccessible;
+        AlternativeFamily = alternativeFamily;
     }
 
     /// <summary>
@@ -27,6 +29,15 @@ public class UnitGroup
     public bool IsValidUnit(string unitSymbol)
     {
         return Members.Any(u => u.Symbol == unitSymbol) || BaseUnit.Symbol == unitSymbol;
+    }
+
+    /// <summary>
+    /// Check if this unit group is compatible with another family for arithmetic operations
+    /// Compatible means same family or alternative family relationship
+    /// </summary>
+    public bool IsCompatibleWith(UnitFamilyName otherFamily)
+    {
+        return Family == otherFamily || AlternativeFamily == otherFamily;
     }
 
     /// <summary>

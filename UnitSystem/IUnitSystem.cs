@@ -114,9 +114,10 @@ public interface IUnitSystem
     // NEW: Static factory methods for simplified measurement creation
     
     /// <summary>
-    /// Create a UnitFactory for this unit system for advanced usage
+    /// Create a strongly typed unit object with compile-time type safety
+    /// Uses attribute-based reflection to create the correct derived type
     /// </summary>
-    UnitFactory GetFactory();
+    T CreateUnit<T>(double value = 0, string? units = null) where T : MeasuredValue;
 
     // Quick measurement creation methods using the current system
 

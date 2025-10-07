@@ -10,7 +10,6 @@ namespace FoundryRulesAndUnits.Units;
 
 public interface IMeasuredValue
 {
-	void SetValue(double value);
 	void SetDisplayUnits(string units);
 	string Debug();
 	string AsString(string units);
@@ -275,11 +274,8 @@ public class MeasuredValue : IMeasuredValue
 	{
 		if (other == null) return false;
 		
-		// Check if they're compatible via the family compatibility matrix
-		var thisFamily = this.UnitFamily;
-		var otherFamily = other.UnitFamily;
-		
-		return UnitFamilyCompatibility.AreCompatible(thisFamily, otherFamily);
+		// Use the UnitGroup's built-in compatibility check
+		return this.UnitGroup.IsCompatibleWith(other.UnitFamily);
 	}
 
 	/// <summary>
@@ -302,12 +298,12 @@ public class MeasuredValue : IMeasuredValue
 		var thisBaseValue = this.V;
 		var otherBaseValue = other.V;
 		
-		// Determine result family using compatibility rules
-		var resultFamily = UnitFamilyCompatibility.GetResultFamily(this.UnitFamily, other.UnitFamily);
+		// For compatible families, prefer the parser-accessible family as the result
+		// This ensures Length + Distance = Length (parser-accessible)
+		var resultFamily = this.UnitGroup.IsParserAccessible ? this.UnitFamily : other.UnitFamily;
 		
-		// Create result using factory to ensure proper type and initialization
-		var factory = unitSystem.GetFactory();
-		var result = factory.CreateMeasuredValue(resultFamily, thisBaseValue + otherBaseValue, this.I);
+		// Create result using unit system to ensure proper type and initialization
+		var result = unitSystem.CreateMeasuredValue(resultFamily, thisBaseValue + otherBaseValue, this.I);
 		
 		return result;
 	}
@@ -332,12 +328,12 @@ public class MeasuredValue : IMeasuredValue
 		var thisBaseValue = this.V;
 		var otherBaseValue = other.V;
 		
-		// Determine result family using compatibility rules
-		var resultFamily = UnitFamilyCompatibility.GetResultFamily(this.UnitFamily, other.UnitFamily);
+		// For compatible families, prefer the parser-accessible family as the result
+		// This ensures Length - Distance = Length (parser-accessible)
+		var resultFamily = this.UnitGroup.IsParserAccessible ? this.UnitFamily : other.UnitFamily;
 		
-		// Create result using factory to ensure proper type and initialization
-		var factory = unitSystem.GetFactory();
-		var result = factory.CreateMeasuredValue(resultFamily, thisBaseValue - otherBaseValue, this.I);
+		// Create result using unit system to ensure proper type and initialization
+		var result = unitSystem.CreateMeasuredValue(resultFamily, thisBaseValue - otherBaseValue, this.I);
 		
 		return result;
 	}
