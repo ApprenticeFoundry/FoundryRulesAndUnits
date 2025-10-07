@@ -57,6 +57,13 @@ public interface IUnitSystem
     UnitFamilyName GetUnitFamily(string unit);
 
     /// <summary>
+    /// Determine the unit family from a unit symbol
+    /// Centralizes all unit lookup logic - helps eliminate magic strings over time
+    /// Throws ArgumentException if unit is not valid
+    /// </summary>
+    UnitFamilyName DetermineUnitFamilyFromUnit(string unit);
+
+    /// <summary>
     /// Try to get complete unit information for efficient operations
     /// Returns true if unit exists, false otherwise
     /// </summary>

@@ -97,6 +97,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             {
                 // PARSER-ACCESSIBLE FAMILIES (shorthand syntax works: "5m", "45deg", "30s")
                 UnitFamilyName.Length,        // Object dimensions, mechanical parts
+                UnitFamilyName.Distance,      // Large-scale measurements (dual family with Length)
                 UnitFamilyName.Angle,         // Rotations, orientations, geometric angles
                 UnitFamilyName.Duration,      // Time intervals, processing times
                 UnitFamilyName.Mass,          // Material properties, object weight
@@ -117,7 +118,6 @@ namespace FoundryRulesAndUnits.Units.Specifications
                 UnitFamilyName.None           // Dimensionless values
                 
                 // FUNCTION-ONLY FAMILIES (require explicit AS functions):
-                // UnitFamilyName.Distance      → ASDISTANCE() required
                 // UnitFamilyName.Time          → ASTIME() required  
                 // UnitFamilyName.Bearing       → ASBEARING() required
                 // UnitFamilyName.Area          → ASAREA() required (when explicit semantics needed)

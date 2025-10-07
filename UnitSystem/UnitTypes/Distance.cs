@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units;
 
 [System.Serializable]
-[UnitType(UnitFamilyName.Length, Description = "Distance measurement")]
+[UnitType(UnitFamilyName.Distance, Description = "Distance measurement")]
 public class Distance : MeasuredValue
 {
 	// UnitFamily comes from UnitTypeAttribute - no need for redundant property override
@@ -15,8 +15,8 @@ public class Distance : MeasuredValue
 	/// </summary>
 	public Distance(UnitGroup unitGroup) : base(unitGroup)
 	{
-		if (unitGroup.Family != UnitFamilyName.Length)
-			throw new ArgumentException($"Expected UnitGroup for Length, got {unitGroup.Family}");
+		if (unitGroup.Family != UnitFamilyName.Distance)
+			throw new ArgumentException($"Expected UnitGroup for Distance, got {unitGroup.Family}");
 	}
 
 	#endregion

@@ -94,8 +94,18 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("in/s", "inches per second", UnitFamilyName.Speed, 25.4),    // 1 in/s = 25.4 mm/s
             UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 304.8),     // 1 ft/s = 304.8 mm/s
 
-            // Distance units (kilometers as base) - Large-scale measurements
+            // Distance units (kilometers as base) - Large-scale measurements with dual family support
             UnitDefinition.BaseUnit("km", "kilometers", UnitFamilyName.Distance),
+            // Dual family support: Accept all Length units but convert to km base
+            UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Distance, 0.000001),  // 1 mm = 0.000001 km
+            UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Distance, 0.000000001), // 1 μm = 1e-9 km
+            UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Distance, 0.000000000001), // 1 nm = 1e-12 km
+            UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Distance, 0.00001),   // 1 cm = 0.00001 km
+            UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Distance, 0.001),           // 1 m = 0.001 km
+            UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Distance, 0.0000254),      // 1 in = 0.0000254 km
+            UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Distance, 0.0003048),        // 1 ft = 0.0003048 km
+            UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Distance, 0.0000000254),    // 1 mil = 2.54e-8 km
+            // Traditional distance units
             UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1.609344),        // 1 mi = 1.609344 km
             UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.852), // 1 nmi = 1.852 km
 

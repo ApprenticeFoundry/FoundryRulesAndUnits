@@ -193,19 +193,33 @@ public class UnitSystem : IUnitSystem
     }
 
     /// <summary>
-    /// Create a MeasuredValue directly from unit symbol and value (O(1) lookup + creation)
-    /// Throws ArgumentException if unit is not valid
+    /// Determine the unit family from a unit symbol, then create the MeasuredValue
+    /// Step 1: Look up unit to determine family (centralized lookup logic)
+    /// Step 2: Call CreateMeasuredValue(family, value, units) - single creation path
+    /// Throws ArgumentException if unit is not valid in parser-accessible families
     /// </summary>
     public MeasuredValue CreateMeasuredValueFromUnit(string unit, double value)
     {
-        var lookup = GetUnitLookup();
-        if (lookup.TryGetValue(unit, out var unitInfo))
+        // Step 1: Determine family from unit symbol (centralized lookup)
+        var family = DetermineUnitFamilyFromUnit(unit);
+        
+        // Step 2: Delegate to family-based creation - single code path
+        return CreateMeasuredValue(family, value, unit);
+    }
+
+    /// <summary>
+    /// Determine the unit family from a unit symbol
+    /// Centralizes all unit lookup logic in UnitSystem class
+    /// This will help eliminate magic strings over time by keeping lookups in one place
+    /// </summary>
+    public UnitFamilyName DetermineUnitFamilyFromUnit(string unit)
+    {
+        var family = GetUnitFamily(unit);
+        if (family == UnitFamilyName.None)
         {
-            // Call factory directly with the requested unit to preserve display units
-            var factory = GetFactory();
-            return factory.CreateTypedMeasuredValue(unitInfo.Family, value, unit);
+            throw new ArgumentException($"Invalid unit symbol: {unit}");
         }
-        throw new ArgumentException($"Invalid unit symbol: {unit}");
+        return family;
     }
 
     /// <summary>
@@ -415,7 +429,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public MeasuredValue CreateMeasuredValue(UnitFamilyName family, double value = 0, string? units = null)
     {
-        return GetFactory().CreateMeasuredValue(family, value, units);
+        return GetFactory().CreateTypedMeasuredValue(family, value, units);
     }
 
 

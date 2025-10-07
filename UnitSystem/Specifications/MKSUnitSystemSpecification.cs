@@ -112,16 +112,30 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 0.3048),           // 1 ft/s = 0.3048 m/s
         UnitDefinition.LinearUnit("knot", "knots", UnitFamilyName.Speed, 0.514444),                    // 1 knot = 0.514444 m/s
 
-        // Distance units (kilometers as base) - Large-scale measurements
+        // Distance units (kilometers as base) - Large-scale measurements with dual family support
         UnitDefinition.BaseUnit("km", "kilometers", UnitFamilyName.Distance),
+        // Dual family support: Accept all Length units but convert to km base
+        UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Distance, 0.001),               // 1 m = 0.001 km
+        UnitDefinition.LinearUnit("dm", "decimeters", UnitFamilyName.Distance, 0.0001),         // 1 dm = 0.0001 km
+        UnitDefinition.LinearUnit("cm", "centimeters", UnitFamilyName.Distance, 0.00001),       // 1 cm = 0.00001 km
+        UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Distance, 0.000001),      // 1 mm = 0.000001 km
+        UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Distance, 0.000000001),   // 1 μm = 1e-9 km
+        UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Distance, 0.0000254),          // 1 in = 0.0000254 km
+        UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Distance, 0.0003048),            // 1 ft = 0.0003048 km
+        UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Distance, 0.0009144),           // 1 yd = 0.0009144 km
+        UnitDefinition.LinearUnit("px", "pixels", UnitFamilyName.Distance, 1.0 / 96.0 * 0.0254 / 1000.0), // pixels to km
+        // Traditional distance units
         UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Distance, 1.609344),             // 1 mi = 1.609344 km
         UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.852),      // 1 nmi = 1.852 km
         UnitDefinition.LinearUnit("ly", "light years", UnitFamilyName.Distance, 9.461e12),       // 1 ly = 9.461e12 km
         UnitDefinition.LinearUnit("au", "astronomical units", UnitFamilyName.Distance, 149597870.7), // 1 au = 149,597,870.7 km
         UnitDefinition.LinearUnit("pc", "parsecs", UnitFamilyName.Distance, 3.086e13),           // 1 pc = 3.086e13 km
 
-        // Duration units (seconds as base) - using enhanced approach with UnitFamilyName enum!
+        // Duration units (seconds as base) - Dual family support with Time
         UnitDefinition.BaseUnit("s", "seconds", UnitFamilyName.Duration),
+        // Dual family support: Accept all Time units plus extended duration units
+        UnitDefinition.LinearUnit("ms", "milliseconds", UnitFamilyName.Duration, 0.001),        // 1 ms = 0.001 s
+        UnitDefinition.LinearUnit("μs", "microseconds", UnitFamilyName.Duration, 0.000001),     // 1 μs = 1e-6 s
         UnitDefinition.LinearUnit("min", "minutes", UnitFamilyName.Duration, 60.0),            // 1 min = 60 s
         UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Duration, 3600.0),             // 1 hr = 3600 s
         UnitDefinition.LinearUnit("day", "days", UnitFamilyName.Duration, 86400.0),            // 1 day = 86400 s
@@ -129,10 +143,14 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("month", "months", UnitFamilyName.Duration, 2629746.0),      // 1 month ≈ 30.44 days
         UnitDefinition.LinearUnit("year", "years", UnitFamilyName.Duration, 31556952.0),       // 1 year = 365.2425 days
 
-        // Bearing units (degrees as base) - using enhanced approach with UnitFamilyName enum!
+        // Bearing units (degrees as base) - Dual family support with Angle
         UnitDefinition.BaseUnit("deg", "degrees", UnitFamilyName.Bearing),
+        // Dual family support: Accept all Angle units but convert to deg base
         UnitDefinition.LinearUnit("rad", "radians", UnitFamilyName.Bearing, 180.0 / Math.PI),  // 1 rad = 180/π deg
+        UnitDefinition.LinearUnit("mrad", "milliradians", UnitFamilyName.Bearing, 180.0 / Math.PI * 0.001), // 1 mrad to deg
         UnitDefinition.LinearUnit("grad", "gradians", UnitFamilyName.Bearing, 0.9),            // 1 grad = 0.9 deg
+        UnitDefinition.LinearUnit("turn", "turns", UnitFamilyName.Bearing, 360.0),             // 1 turn = 360 deg
+        UnitDefinition.LinearUnit("°", "degrees", UnitFamilyName.Bearing, 1.0),                // 1° = 1 deg
         UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Bearing, 0.05625),             // 1 mil = 0.05625 deg
 
         // Quantity units (each as base) - using enhanced approach with UnitFamilyName enum!

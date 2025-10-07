@@ -28,6 +28,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **Digital**: DataStorage, DataFlow
 - **Scientific**: Frequency, Time, Duration, Angle
 - **Specialized**: Quantity, QuantityFlow, Percent, Dimensionless
+- **Dual Families**: Distance (geographic Length), Bearing (navigation Angle)
 
 ## 📦 Installation & Setup
 
@@ -93,6 +94,38 @@ if (length1 > length2) {
     Console.WriteLine("Length1 is longer");
 }
 ```
+
+### **Dual Family Pattern (Scale-Optimized Units)**
+```csharp
+// Same physical quantity, different optimal scales and base units
+
+// Length family (engineering scale - meter base)
+var roomWidth = Length.FromMeters(3.2);     // 3.2 m base
+var partSize = Length.FromMillimeters(15);  // 0.015 m base
+
+// Distance family (geographic scale - kilometer base)  
+var cityDistance = Distance.FromKilometers(45);   // 45 km base
+var walkingRoute = Distance.FromMeters(500);      // 0.5 km base
+
+// Both families accept the same input units:
+var engineeringLength = new Length(5.0, "ft");    // Length family
+var geographicDistance = new Distance(5.0, "ft"); // Distance family
+
+// Key difference: optimized base units for different scales
+Console.WriteLine(engineeringLength.BaseValue()); // 1.524 (meters)
+Console.WriteLine(geographicDistance.BaseValue()); // 0.001524 (kilometers)
+```
+
+**Dual Family Benefits:**
+- **Scale-Appropriate Math**: Clean calculations at different scales
+- **Context Clarity**: Length for engineering, Distance for geography
+- **Shared Input Units**: Both accept m, ft, km, mi, etc.
+- **Optimized Storage**: Meters for small-scale, kilometers for large-scale
+
+**Available Dual Families:**
+- **Length/Distance**: Engineering vs Geographic measurements
+- **Time/Duration**: Precise timing vs Human-scale scheduling  
+- **Angle/Bearing**: Mathematical vs Navigation contexts
 
 ## 🏗️ Architecture Overview
 
@@ -279,4 +312,4 @@ MIT License - See LICENSE file for details.
 - **FoundryMentorModeler**: Advanced modeling toolkit using this unit system
 - **TRISoC Dashboard**: Digital twin dashboard with unit system integration
 
-**Version**: 8.0.0 | **Target**: .NET 9.0 | **Updated**: September 2025
+**Version**: 8.0.0 | **Target**: .NET 9.0 | **Updated**: October 2025
