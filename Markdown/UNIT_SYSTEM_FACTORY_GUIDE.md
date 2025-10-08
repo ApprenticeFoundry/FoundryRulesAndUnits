@@ -1,22 +1,26 @@
-# IUnitSystem Factory Methods
+# IUnitSystem Creation Methods Guide
 
 ## Overview
 
-We've added convenient static factory methods to `IUnitSystem` to dramatically simplify the creation of measurement instances. These methods eliminate the need to manually work with `UnitFactory` or `UnitGroup` injection for common scenarios.
+The modern unit system in FoundryRulesAndUnits v9.1.0 provides convenient creation methods through the `IUnitSystem` interface. These methods eliminate the need to manually work with separate factory classes or `UnitGroup` injection for common scenarios.
+
+**Current Version**: 9.1.0 targeting .NET 9.0  
+**Architecture Pattern**: Unified IUnitSystem interface with type-safe creation methods  
+**Key Innovation**: Direct creation methods with automatic UnitGroup injection
 
 ## Quick Start
 
-### Before (Complex)
+### Before (Complex - Deprecated)
 ```csharp
 // Old way - required understanding of UnitFactory and UnitGroup injection  
-var factory = new UnitFactory(UnitSystemType.SI);
+var factory = new UnitFactory(unitSystem);
 var length = factory.CreateLength(10.5, "m");
-var unitGroup = factory.GetUnitGroup(UnitFamilyName.Mass);
+var unitGroup = unitGroups[UnitFamilyName.Mass];
 var mass = new Mass(unitGroup);
 mass.Init(2.3, "kg");
 ```
 
-### After (Simple)
+### After (Simple - Current)
 ```csharp
 // New way - clean and intuitive
 var system = IUnitSystem.SI();
@@ -35,38 +39,52 @@ var ipsSystem = IUnitSystem.IPS();      // Inch-Pound-Second
 var cgsSystem = IUnitSystem.CGS();      // Centimeter-Gram-Second
 ```
 
-### Measurement Creation Methods
+## Available Creation Methods
+
+### Static System Creation
+```csharp
+var siSystem = IUnitSystem.SI();        // International System of Units (scientific)
+var mksSystem = IUnitSystem.MKS();      // Meter-Kilogram-Second (engineering)
+var fpsSystem = IUnitSystem.FPS();      // Foot-Pound-Second (US construction)
+var ipsSystem = IUnitSystem.IPS();      // Inch-Pound-Second (manufacturing)
+var cgsSystem = IUnitSystem.CGS();      // Centimeter-Gram-Second (laboratory)
+```
+
+### Specific Type Creation Methods (Recommended)
 ```csharp
 var system = IUnitSystem.SI();
 
 // Basic measurements
-var length = system.CreateLength(10.5, "m");
-var mass = system.CreateMass(2.3, "kg");  
-var time = system.CreateTime(5.0, "s");
-var temperature = system.CreateTemperature(25.0, "°C");
-var angle = system.CreateAngle(45.0, "deg");
+Length length = system.CreateLength(10.5, "m");
+Mass mass = system.CreateMass(2.3, "kg");  
+Time time = system.CreateTime(5.0, "s");
+Temperature temperature = system.CreateTemperature(25.0, "°C");
+Angle angle = system.CreateAngle(45.0, "deg");
 
 // Derived measurements  
-var area = system.CreateArea(100.0, "m²");
-var volume = system.CreateVolume(50.0, "L");
-var speed = system.CreateSpeed(100.0, "km/h");
-var force = system.CreateForce(250.0, "N");
+Area area = system.CreateArea(100.0, "m²");
+Volume volume = system.CreateVolume(50.0, "L");
+Speed speed = system.CreateSpeed(100.0, "km/h");
+Force force = system.CreateForce(250.0, "N");
 
 // Electrical measurements
-var voltage = system.CreateVoltage(120.0, "V");
-var current = system.CreateCurrent(10.0, "A");
-var resistance = system.CreateResistance(12.0, "Ω");
-var power = system.CreatePower(1200.0, "W");
-var capacitance = system.CreateCapacitance(100.0, "μF");
-var frequency = system.CreateFrequency(60.0, "Hz");
+Voltage voltage = system.CreateVoltage(120.0, "V");
+Current current = system.CreateCurrent(10.0, "A");
+Resistance resistance = system.CreateResistance(12.0, "Ω");
+Power power = system.CreatePower(1200.0, "W");
+Capacitance capacitance = system.CreateCapacitance(100.0, "μF");
+Frequency frequency = system.CreateFrequency(60.0, "Hz");
+```
 
-// Generic measurement creation
-var genericMeasurement = system.CreateMeasuredValue(UnitFamilyName.Length, 25.4, "mm");
+### Generic Creation Methods
+```csharp
+// Generic creation by family (for parser scenarios)
+MeasuredValue generic = system.CreateMeasuredValue(UnitFamilyName.Length, 25.4, "mm");
 
-// NEW: Strongly-typed generic creation
-var length = system.Create<Length>(25.4, "mm");         // Returns Length, not MeasuredValue
-var mass = system.Create<Mass>(2.3, "kg");              // Returns Mass, not MeasuredValue  
-var voltage = system.Create<Voltage>(120, "V");         // Returns Voltage, not MeasuredValue
+// Strongly-typed generic creation (compile-time type safety)
+Length length = system.CreateUnit<Length>(25.4, "mm");         // Returns Length
+Mass mass = system.CreateUnit<Mass>(2.3, "kg");               // Returns Mass  
+Voltage voltage = system.CreateUnit<Voltage>(120, "V");       // Returns Voltage
 ```
 
 ## Usage Patterns
@@ -99,76 +117,55 @@ foreach (var measurement in measurements)
 ```csharp
 var system = IUnitSystem.SI();
 
-// NEW: Strongly-typed generic creation - best of both worlds!
-var length = system.Create<Length>(10.5, "m");          // Returns Length, not MeasuredValue
-var mass = system.Create<Mass>(2.3, "kg");              // Returns Mass, not MeasuredValue
-var temperature = system.Create<Temperature>(25, "°C");  // Returns Temperature, not MeasuredValue
+// Strongly-typed generic creation - compile-time type safety
+Length length = system.CreateUnit<Length>(10.5, "m");          // Returns Length
+Mass mass = system.CreateUnit<Mass>(2.3, "kg");               // Returns Mass
+Temperature temperature = system.CreateUnit<Temperature>(25, "°C");  // Returns Temperature
 
 // No casting needed - already strongly typed!
 Console.WriteLine($"Length: {length.As("ft")} ft");
 ```
 
-### 4. Advanced Factory Access
+### 4. Parser Integration
 ```csharp
 var system = IUnitSystem.SI();
-var factory = system.GetFactory();  // Get underlying factory for advanced usage
 
-// Use factory directly for specialized operations
-var distance1 = factory.CreateDistance(100, "km");
-var distance2 = factory.CreateDistance(50, "mi");
-
-// Generic creation also works with factory
-var speed = factory.Create<Speed>(100, "km/h");
-var force = factory.Create<Force>(250, "N");
+// Parse user input and create appropriate type
+public MeasuredValue ParseInput(string input)
+{
+    var (value, unit) = ExtractValueAndUnit(input); // "100 cm" → 100, "cm"
+    
+    // Creates correct derived type automatically (Length, Angle, Mass, etc.)
+    return system.CreateMeasuredValueFromParsableUnit(unit, value);
+}
 ```
 
 ## Benefits
 
-1. **Simplified API**: No need to understand UnitGroup injection details
-2. **Consistent Interface**: Same pattern across all measurement types  
-3. **Type Safety**: Returns strongly-typed measurement instances
-4. **Performance**: Internal caching prevents recreation of UnitGroups
-5. **Flexibility**: Can still access underlying factory for advanced scenarios
-6. **Backward Compatibility**: Old UnitFactory approach still works
+1. **Unified Interface**: Single interface for all unit operations (no separate factory classes)
+2. **Type Safety**: Returns strongly-typed measurement instances with compile-time checking
+3. **Consistent Patterns**: Same creation pattern across all measurement types  
+4. **Performance**: Internal UnitGroup injection with cached operations
+5. **Flexibility**: Multiple creation methods for different scenarios (specific, generic, parser)
+6. **Dependency Injection**: Easy to inject and test with IUnitSystem interface
 
 ## Architecture
 
-The factory methods internally:
-1. Create and cache a `UnitFactory` for the current system type
-2. Use the factory's `Create*` methods to generate properly injected measurements
-3. Initialize measurements with the provided value and units
-4. Return fully functional measurement instances with UnitGroup injection
+The creation methods internally:
+1. Use the current unit system specification to get appropriate UnitGroups
+2. Create MeasuredValue instances with proper UnitGroup injection
+3. Initialize measurements with the provided value and units (automatic base unit conversion)
+4. Return fully functional measurement instances ready for mathematical operations
 
-## Examples
-
-See `Examples/UnitSystemFactoryExamples.cs` for comprehensive usage examples including:
-- Basic factory usage  
-- Different unit systems
-- Electrical measurements
-- Persistent system usage
-- Advanced factory operations
-- Before/after comparisons
+**Key Innovation**: No separate factory classes needed - everything through unified IUnitSystem interface
 
 ## Migration Guide
 
-### From UnitFactory Direct Usage
+### From Manual Constructor Usage
 ```csharp
-// Old
-var factory = new UnitFactory(UnitSystemType.SI);
-var length = factory.CreateLength(10, "m");
-
-// New  
-var system = IUnitSystem.SI();
-var length = system.CreateLength(10, "m");
-```
-
-### From Manual UnitGroup Injection
-```csharp
-// Old - complex and error-prone
-var specification = new SIUnitSystemSpecification();
-var unitGroups = specification.GetUnitGroups();
-var lengthGroup = unitGroups[UnitFamilyName.Length];
-var length = new Length(lengthGroup);
+// Old - manual constructor with UnitGroup setup
+var unitGroup = // complex UnitGroup setup...
+var length = new Length(unitGroup);
 length.Init(10, "m");
 
 // New - simple and clean
@@ -176,4 +173,32 @@ var system = IUnitSystem.SI();
 var length = system.CreateLength(10, "m");
 ```
 
-The new factory methods provide a much cleaner, more intuitive API while maintaining all the power and flexibility of the underlying UnitGroup injection architecture.
+### From Static Methods
+```csharp
+// Old - static factory methods (if they existed)
+var length = Length.Create(10, "m");    // Static approach
+
+// New - instance methods with system configuration
+var system = IUnitSystem.SI();
+var length = system.CreateLength(10, "m");  // Configurable system
+```
+
+### For Different Unit Systems
+```csharp
+// Engineering calculations - use MKS
+var mksSystem = IUnitSystem.MKS();
+var distance = mksSystem.CreateLength(100, "m");
+var mass = mksSystem.CreateMass(1000, "kg");
+
+// US construction - use FPS  
+var fpsSystem = IUnitSystem.FPS();
+var height = fpsSystem.CreateLength(20, "ft");
+var weight = fpsSystem.CreateMass(2000, "lb");
+
+// Scientific work - use SI
+var siSystem = IUnitSystem.SI();
+var temperature = siSystem.CreateTemperature(298.15, "K");
+var current = siSystem.CreateCurrent(0.5, "A");
+```
+
+The modern creation methods provide a much cleaner, more intuitive API while maintaining all the power and flexibility of the underlying UnitGroup injection architecture. The unified IUnitSystem interface eliminates the need for separate factory classes and provides consistent patterns across all measurement types.

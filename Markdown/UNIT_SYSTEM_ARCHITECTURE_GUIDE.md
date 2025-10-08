@@ -4,6 +4,10 @@
 
 The FoundryRulesAndUnits unit system implements a revolutionary **hub-and-spoke architecture** that eliminates the traditional N² complexity of unit conversions while providing type-safe, performant, and extensible unit management across multiple engineering domains.
 
+**Current Version**: 9.1.0 targeting .NET 9.0  
+**Architecture Pattern**: UnitGroup-based dependency injection with MeasuredValue base classes  
+**Key Innovation**: Two-tier unit family system eliminating parser ambiguity
+
 ## 🏗️ Core Architecture Principles
 
 ### Hub-and-Spoke Conversion Model
@@ -19,51 +23,83 @@ Dictionary<(string from, string to), double> conversions = {
     // ... grows exponentially!
 };
 
-// Hub-and-spoke approach (GOOD):
-UnitDefinition.BaseUnit("m", "meters", UnitFamilyName.Length),
-UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),  // 1 ft = 0.3048 m
-UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254) // 1 in = 0.0254 m
-
-// Any conversion: Value → Base Unit → Target Unit (max 2 operations)
+// Modern UnitGroup approach (GOOD):
+// Each unit family has a UnitGroup with base unit and conversion definitions
+var lengthGroup = new UnitGroup(UnitFamilyName.Length, baseUnit, members, systemType);
+// All conversions: Value → Base Unit → Target Unit (max 2 operations)
 ```
 
-### Performance Through Lazy Caching
+### Performance Through UnitGroup Injection and Caching
 All unit systems implement identical caching patterns for O(1) lookups:
 
 ```csharp
-private Dictionary<string, UnitFamilyName>? _cachedSymbolToFamily = null;
-
-public Dictionary<string, UnitFamilyName> GetSymbolToFamilyMap()
+// Modern MeasuredValue with UnitGroup injection
+public class MeasuredValue
 {
-    if (_cachedSymbolToFamily == null)  // Lazy evaluation
+    protected UnitGroup _unitGroup; // Injected dependency
+    
+    public MeasuredValue(UnitGroup unitGroup)
     {
-        _cachedSymbolToFamily = new Dictionary<string, UnitFamilyName>();
-        foreach (var unit in UnitDefinitions)
-        {
-            _cachedSymbolToFamily[unit.Symbol] = unit.Family;
-        }
+        _unitGroup = unitGroup ?? throw new ArgumentNullException(nameof(unitGroup));
+        // All conversion logic centralized in UnitGroup
     }
-    return _cachedSymbolToFamily;  // O(1) lookups after initialization
+    
+    public virtual double As(string units)
+    {
+        return _unitGroup.Convert(V, I, units); // O(1) with caching
+    }
+}
+
+// UnitSystem provides O(1) cached lookups
+private Dictionary<string, UnitLookupInfo>? _cachedUnitLookup = null;
+
+public Dictionary<string, UnitLookupInfo> GetUnitLookup()
+{
+    if (_cachedUnitLookup == null)  // Lazy evaluation
+    {
+        _cachedUnitLookup = BuildUnitLookupCache();
+    }
+    return _cachedUnitLookup;  // O(1) lookups after initialization
 }
 ```
 
-## 📋 Interface Contract
+## 📋 Current Interface Architecture
 
-All unit systems implement `IUnitSystemSpecification`:
+The unified interface pattern provides complete unit system functionality:
 
 ```csharp
-public interface IUnitSystemSpecification
+public interface IUnitSystem
 {
-    string SystemName { get; }
-    string SystemDescription { get; }
-    IReadOnlyList<UnitDefinition> UnitDefinitions { get; }
+    // Core system management
+    IUnitSystemSpecification Current { get; }
+    UnitSystemType ActiveType { get; }
+    IUnitSystemSpecification Apply(UnitSystemType systemType);
 
-    // Performance-optimized cached methods
-    List<string> GetAllUnitSymbols();
-    List<UnitDefinition> GetAllBaseUnits();
-    Dictionary<UnitFamilyName, UnitDefinition> GetBaseUnitsByFamily();
-    Dictionary<UnitFamilyName, List<UnitDefinition>> GetAllUnitsByFamily();
-    Dictionary<string, UnitFamilyName> GetSymbolToFamilyMap();
+    // Conversion and validation
+    double Convert(double value, string fromUnit, string toUnit);
+    bool IsValidUnit(string unit);
+    bool IsValidUnit(string unit, UnitFamilyName family);
+
+    // Efficient lookup services
+    UnitFamilyName GetUnitFamily(string unit);
+    bool TryGetUnitInfo(string unit, out UnitLookupInfo? unitInfo);
+
+    // Modern creation methods with type safety
+    T CreateUnit<T>(double value = 0, string? units = null) where T : MeasuredValue;
+    MeasuredValue CreateMeasuredValue(UnitFamilyName family, double value = 0, string? units = null);
+    
+    // Specific typed creation methods
+    Length CreateLength(double value = 0, string? units = null);
+    Angle CreateAngle(double value = 0, string? units = null);
+    Mass CreateMass(double value = 0, string? units = null);
+    Temperature CreateTemperature(double value = 0, string? units = null);
+    // ... and more
+    
+    // Static convenience methods
+    static IUnitSystem MKS() => new UnitSystem(UnitSystemType.MKS);
+    static IUnitSystem SI() => new UnitSystem(UnitSystemType.SI);
+    static IUnitSystem FPS() => new UnitSystem(UnitSystemType.FPS);
+    // ... and more
 }
 ```
 
@@ -99,49 +135,69 @@ public interface IUnitSystemSpecification
 - **Target**: Precision mechanical engineering and CAD
 - **Key Features**: kPa pressure, mJ energy scales for mechanical design
 
-## 🚀 Usage Patterns
+## 🚀 Modern Usage Patterns
 
-### Basic Unit Conversion
+### Basic Unit Creation (Recommended)
 ```csharp
-public class UniversalConverter
-{
-    public double Convert(double value, string fromUnit, string toUnit, 
-                         IUnitSystemSpecification system)
-    {
-        var fromDef = system.FindUnit(fromUnit);
-        var toDef = system.FindUnit(toUnit);
-        
-        // Hub-and-spoke: from → base → to
-        var baseValue = fromDef.ConvertToBase(value);
-        return toDef.ConvertFromBase(baseValue);
-    }
-}
+// Create unit system 
+var unitSystem = IUnitSystem.MKS(); // or SI(), FPS(), etc.
 
-// Usage:
-var siSystem = new SIUnitSystemSpecification();
-var result = converter.Convert(100, "cm", "m", siSystem); // Result: 1.0
+// Type-safe creation with compile-time checking
+Length distance = unitSystem.CreateLength(100, "cm");  // Returns Length object
+Angle rotation = unitSystem.CreateAngle(90, "deg");    // Returns Angle object
+Mass weight = unitSystem.CreateMass(5.5, "kg");        // Returns Mass object
+
+// Generic creation for parser scenarios
+MeasuredValue parsed = unitSystem.CreateMeasuredValue(UnitFamilyName.Length, 100, "cm");
 ```
 
-### Equation Processing Engine
+### Unit System Switching
 ```csharp
-public class EquationParser 
+// Same API works with any unit system
+var mksSystem = IUnitSystem.MKS();    // meters, kg, seconds
+var fpsSystem = IUnitSystem.FPS();    // feet, pounds, seconds  
+var siSystem = IUnitSystem.SI();      // full scientific SI
+
+// Switch systems dynamically
+var engineeringCalc = new Calculator(mksSystem);
+var scientificCalc = new Calculator(siSystem);
+```
+
+### Mathematical Operations with Type Safety
+```csharp
+// Strongly-typed mathematical operations
+Length width = unitSystem.CreateLength(5, "m");
+Length height = unitSystem.CreateLength(3, "m");
+var area = width * height;  // Returns Area object automatically
+
+Mass mass = unitSystem.CreateMass(100, "kg");
+var acceleration = unitSystem.CreateAcceleration(9.8, "m/s2");
+var force = mass * acceleration;  // Returns Force object automatically
+
+// Operations maintain unit consistency
+Length total = unitSystem.CreateLength(100, "cm") + unitSystem.CreateLength(1, "m");
+// Result: 2.0 meters (automatic unit conversion)
+```
+
+### Parser Integration Pattern
+```csharp
+public class UnitParser
 {
-    public ParsedEquation Parse(string equation, IUnitSystemSpecification system)
+    private readonly IUnitSystem _unitSystem;
+    
+    public UnitParser(IUnitSystem unitSystem)
     {
-        // "Force = 100 lbf * 2.5 ft / 3.2 s²"
-        var units = ExtractUnits(equation); // ["lbf", "ft", "s"]
+        _unitSystem = unitSystem;
+    }
+    
+    public MeasuredValue ParseExpression(string input)
+    {
+        // Parse: "100 cm" → value=100, unit="cm"
+        var (value, units) = ExtractValueAndUnit(input);
         
-        // Use cached lookup - O(1) performance!
-        var families = system.GetSymbolToFamilyMap();
-        
-        foreach(var unit in units) 
-        {
-            var family = families[unit];           // O(1) lookup
-            var baseUnit = system.GetBaseUnitsByFamily()[family]; // O(1) lookup
-            // Convert: unit → baseUnit → target automatically
-        }
-        
-        return new ParsedEquation(/* ... */);
+        // Create strongly-typed object automatically
+        return _unitSystem.CreateMeasuredValueFromParsableUnit(units, value);
+        // Returns: Length, Angle, Mass, etc. (correct derived type)
     }
 }
 ```
@@ -150,82 +206,101 @@ public class EquationParser
 ```csharp
 public class EngineeringCalculator
 {
-    private IUnitSystemSpecification currentSystem;
+    private IUnitSystem currentSystem;
     
     public void SwitchToSystem(string domain)
     {
         currentSystem = domain switch
         {
-            "structural" => new FPSUnitSystemSpecification(),    // feet, pounds, psi
-            "precision"  => new mmNsUnitSystemSpecification(),   // mm, newtons, kPa  
-            "laboratory" => new CGSUnitSystemSpecification(),    // cm, grams, dynes
-            "scientific" => new SIUnitSystemSpecification(),     // complete SI
-            "imperial"   => new IPSUnitSystemSpecification(),    // inches, pounds
-            _ => new MKSUnitSystemSpecification()                // default metric
+            "structural" => IUnitSystem.FPS(),     // feet, pounds, psi
+            "precision"  => IUnitSystem.MKS(),     // mm, newtons, kPa  
+            "laboratory" => IUnitSystem.CGS(),     // cm, grams, dynes
+            "scientific" => IUnitSystem.SI(),      // complete SI
+            "imperial"   => IUnitSystem.IPS(),     // inches, pounds
+            _ => IUnitSystem.MKS()                 // default metric
         };
     }
     
-    public StressResult CalculateStress(Force force, Area area)
+    public MeasuredValue CalculateStress(Force force, Area area)
     {
         // Works with ANY unit system automatically!
-        var baseUnits = currentSystem.GetBaseUnitsByFamily();
-        var forceBase = baseUnits[UnitFamilyName.Force];
-        var areaBase = baseUnits[UnitFamilyName.Area];
-        var pressureBase = baseUnits[UnitFamilyName.Pressure];
+        var forceValue = force.BaseValue();     // Get base unit value
+        var areaValue = area.BaseValue();       // Get base unit value
         
-        // Convert inputs to base units
-        var forceInBase = ConvertToBase(force.Value, force.Unit);
-        var areaInBase = ConvertToBase(area.Value, area.Unit);
+        // Calculate in base units
+        var stressValue = forceValue / areaValue;
         
-        // Calculate stress in base pressure units
-        var stressInBase = forceInBase / areaInBase;
-        
-        return new StressResult(stressInBase, pressureBase.Symbol);
+        // Return pressure object in current system
+        return currentSystem.CreateMeasuredValue(UnitFamilyName.Pressure, stressValue);
     }
 }
 ```
 
-### Type-Safe Unit Family Validation
+### Type-Safe Unit Family Validation with UnitTypeRegistry
 ```csharp
 // UnitFamilyName enum prevents runtime errors
 public enum UnitFamilyName 
 {
     Length, Mass, Force, Temperature, Time, Area, Volume, Speed, 
-    Pressure, Energy, Power, Frequency, Voltage, Current, 
+    Pressure, Energy, Power, Frequency, Voltage, Current,
+    Angle, Distance, Duration, Bearing, // Two-tier system
     AmountOfSubstance, LuminousIntensity, // ... and more
 }
 
-// Compiler catches mistakes at build time:
-UnitDefinition.LinearUnit("kg", "kilograms", UnitFamilyName.Mass, 1000.0);     // ✅ Correct
-UnitDefinition.LinearUnit("kg", "kilograms", UnitFamilyName.Length, 1000.0);   // ❌ Compile error!
+// UnitTypeAttribute ensures compile-time correctness:
+[UnitType(UnitFamilyName.Length, Description = "Length measurement")]
+public class Length : MeasuredValue { ... }
+
+[UnitType(UnitFamilyName.Mass, Description = "Mass measurement")]
+public class Mass : MeasuredValue { ... }
+
+// UnitTypeRegistry provides fast lookups:
+var instance = UnitTypeRegistry.CreateInstance(UnitFamilyName.Length, unitGroup);
+// Returns: Length object (correct derived type)
 ```
 
 ## 🔧 Integration Guidelines
 
-### Adding New Unit Systems
-1. **Implement IUnitSystemSpecification**
-2. **Define all 5 cached methods** (copy pattern from existing systems)
-3. **Choose appropriate base units** for your engineering domain
-4. **Use UnitFamilyName enum** for type safety
-5. **Follow naming conventions**: `[Domain]UnitSystemSpecification`
+### Modern Creation Pattern (Recommended)
+```csharp
+// Use IUnitSystem interface for all unit creation
+public class Calculator
+{
+    private readonly IUnitSystem _unitSystem;
+    
+    public Calculator(IUnitSystem unitSystem)
+    {
+        _unitSystem = unitSystem ?? IUnitSystem.MKS(); // Default to MKS
+    }
+    
+    public Force CalculateForce(double mass, double acceleration)
+    {
+        var massObj = _unitSystem.CreateMass(mass, "kg");
+        var accelObj = _unitSystem.CreateAcceleration(acceleration, "m/s2");
+        return massObj * accelObj; // Type-safe multiplication
+    }
+}
+```
+
+### Adding New Unit Types
+1. **Create MeasuredValue derived class** with UnitTypeAttribute
+2. **Register in UnitTypeRegistry** (automatic via attribute)
+3. **Add to IUnitSystem interface** for direct creation
+4. **Implement in UnitSystem class**
+5. **Add to unit specifications** as needed
 
 ```csharp
-public class CustomUnitSystemSpecification : IUnitSystemSpecification
+[UnitType(UnitFamilyName.Torque, Description = "Torque measurement")]
+public class Torque : MeasuredValue
 {
-    public string SystemName => "Custom";
-    public string SystemDescription => "Custom unit system for [domain]";
-    
-    // Implement all 5 cached methods (copy from existing systems)
-    private List<string>? _cachedUnitSymbols = null;
-    // ... etc
-    
-    public IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+    public Torque(UnitGroup unitGroup) : base(unitGroup)
     {
-        // Define your base units and conversions
-        UnitDefinition.BaseUnit("baseUnit", "description", UnitFamilyName.Length),
-        UnitDefinition.LinearUnit("derived", "description", UnitFamilyName.Length, 0.001),
-        // ...
-    };
+        if (unitGroup.Family != UnitFamilyName.Torque)
+            throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.Torque}");
+    }
+    
+    // Implement required methods (Assign, Copy, operators)
+    // Follow gold standard pattern from Length.cs and Angle.cs
 }
 ```
 
@@ -247,18 +322,16 @@ public enum UnitFamilyName
 ```csharp
 public static class UnitConversionExtensions
 {
-    public static double ConvertBetweenSystems(this double value, 
-        string unit, IUnitSystemSpecification fromSystem, IUnitSystemSpecification toSystem)
+    public static double ConvertBetweenSystems(this MeasuredValue value, 
+        IUnitSystem fromSystem, IUnitSystem toSystem)
     {
-        // Find unit definitions in both systems
-        var fromUnit = fromSystem.UnitDefinitions.First(u => u.Symbol == unit);
-        var toUnit = toSystem.UnitDefinitions.First(u => u.Symbol == unit && u.Family == fromUnit.Family);
+        // Get base value from source system
+        var baseValue = value.BaseValue();
+        var baseUnit = fromSystem.GetBaseUnitForFamily(value.UnitFamily);
         
-        // Convert: value → fromBase → universal → toBase → target
-        var fromBase = fromUnit.ConvertToBase(value);
-        // Apply system-to-system conversion factors if needed
-        var toBase = ConvertBetweenBaseSystems(fromBase, fromUnit.Family, fromSystem, toSystem);
-        return toUnit.ConvertFromBase(toBase);
+        // Convert to target system
+        var targetUnit = toSystem.GetBaseUnitForFamily(value.UnitFamily);
+        return toSystem.Convert(baseValue, baseUnit, targetUnit);
     }
 }
 ```
@@ -266,99 +339,112 @@ public static class UnitConversionExtensions
 ## 📊 Performance Characteristics
 
 ### Scalability Comparison
-| Approach | Adding 1 Unit | Adding N Units | Lookup Performance |
-|----------|---------------|----------------|-------------------|
-| Traditional Matrix | O(N) conversions | O(N²) conversions | O(1) |
-| Hub-and-Spoke | O(1) definition | O(N) definitions | O(1) with caching |
+| Approach | Adding 1 Unit | Adding N Units | Lookup Performance | Memory Usage |
+|----------|---------------|----------------|-------------------|--------------|
+| Traditional Matrix | O(N) conversions | O(N²) conversions | O(1) | N² space |
+| Hub-and-Spoke + Injection | O(1) definition | O(N) definitions | O(1) with caching | O(N) space |
+| UnitGroup Pattern | O(1) definition | O(N) definitions | O(1) with injection | O(N) space |
 
-### Memory Usage
-- **Traditional**: N² conversion factors stored
-- **Hub-and-Spoke**: 2N conversion functions (to/from base)
-- **Caching**: 5 lookup dictionaries per system (lazy initialized)
+### Modern Architecture Benefits
+- **UnitGroup Injection**: Each MeasuredValue has direct access to conversion logic
+- **UnitTypeRegistry Caching**: O(1) type creation via reflection cache
+- **Lazy Evaluation**: Cached lookups initialized only when needed
+- **Type Safety**: Compile-time checking prevents runtime errors
 
 ## 🎯 Best Practices
 
-### 1. **Always Use Interface**
+### 1. **Always Use IUnitSystem Interface**
 ```csharp
 // Good - flexible and testable
-public void ProcessUnits(IUnitSystemSpecification system) { }
-
-// Bad - tightly coupled
-public void ProcessUnits(SIUnitSystemSpecification system) { }
-```
-
-### 2. **Leverage Cached Methods**
-```csharp
-// Good - O(1) after first call
-var symbolMap = system.GetSymbolToFamilyMap();
-foreach(var symbol in userInput)
+public void ProcessUnits(IUnitSystem unitSystem) 
 {
-    var family = symbolMap[symbol]; // O(1)
+    var length = unitSystem.CreateLength(100, "cm");
 }
 
-// Bad - O(N) every time
-foreach(var symbol in userInput)
+// Bad - tightly coupled to specific implementation
+public void ProcessUnits(UnitSystem unitSystem) { }
+```
+
+### 2. **Leverage Type-Safe Creation Methods**
+```csharp
+// Good - compile-time type safety
+Length distance = unitSystem.CreateLength(100, "cm");
+Angle rotation = unitSystem.CreateAngle(90, "deg");
+
+// Acceptable for parser scenarios
+MeasuredValue parsed = unitSystem.CreateMeasuredValue(family, value, units);
+
+// Bad - no type safety
+var distance = new Length(unitGroup); // Requires manual UnitGroup creation
+```
+
+### 3. **Use Static Factory Methods for Quick Setup**
+```csharp
+// Good - quick and readable
+var engineeringSystem = IUnitSystem.MKS();
+var scientificSystem = IUnitSystem.SI();
+var imperialSystem = IUnitSystem.FPS();
+
+// Also good - explicit configuration
+var customSystem = new UnitSystem(UnitSystemType.CGS);
+```
+
+### 4. **Handle Unit Family Compatibility**
+```csharp
+// Use built-in compatibility checking
+public bool CanAdd(MeasuredValue a, MeasuredValue b)
 {
-    var family = system.UnitDefinitions.First(u => u.Symbol == symbol).Family; // O(N)
+    return a.IsCompatibleWith(b); // Handles Length + Distance, Time + Duration, etc.
+}
+
+// Use safe mathematical operations
+public MeasuredValue AddSafely(MeasuredValue a, MeasuredValue b, IUnitSystem unitSystem)
+{
+    return a.AddCompatible(b, unitSystem); // Throws on incompatible types
 }
 ```
 
-### 3. **Choose Appropriate Base Units**
-- **Scientific**: Use SI base units (meters, kilograms, seconds, Kelvin)
-- **Engineering**: Use practical base units (appropriate scale for calculations)
-- **Domain-Specific**: Use base units that minimize conversion factors
+## 🔄 Integration with Modern Architecture
 
-### 4. **Handle Temperature Conversions Carefully**
+### Parser Integration (Zero-Ambiguity Pattern)
 ```csharp
-// Temperature requires special handling (not linear)
-UnitDefinition.DerivedUnit("F", "Fahrenheit", UnitFamilyName.Temperature,
-    f => (f - 32.0) * 5.0/9.0,       // F to base (C): (F-32)*5/9
-    c => c * 9.0/5.0 + 32.0),        // base (C) to F: C*9/5 + 32
-```
-
-## 🔄 Integration with Existing Modules
-
-### Parser Integration
-```csharp
-// Equation parser can now handle units automatically
-public class FormulaParser
+// Two-tier system eliminates parser ambiguity
+public class ModernParser
 {
-    private IUnitSystemSpecification unitSystem;
+    private readonly IUnitSystem _unitSystem;
     
-    public ParsedFormula Parse(string formula)
+    public MeasuredValue Parse(string input)
     {
-        var tokens = Tokenize(formula);
-        var unitTokens = tokens.Where(IsUnitSymbol);
+        var (value, unit) = ExtractValueAndUnit(input); // "100 cm" → 100, "cm"
         
-        // Validate all units exist in current system
-        var symbolMap = unitSystem.GetSymbolToFamilyMap();
-        foreach(var unit in unitTokens)
-        {
-            if (!symbolMap.ContainsKey(unit.Value))
-                throw new UnknownUnitException(unit.Value);
-        }
-        
-        return new ParsedFormula(tokens, unitSystem);
+        // Direct creation - no ambiguity!
+        // "cm" always maps to Length (parser-accessible)
+        // Distance requires explicit ASDISTANCE() function
+        return _unitSystem.CreateMeasuredValueFromParsableUnit(unit, value);
     }
 }
 ```
 
 ### Calculation Engine Integration
 ```csharp
-// Calculation engine with automatic unit handling
+// Modern calculation with automatic type handling
 public class CalculationEngine
 {
-    public CalculationResult Evaluate(ParsedFormula formula, 
-                                    Dictionary<string, ValueWithUnit> variables)
+    private readonly IUnitSystem _unitSystem;
+    
+    public MeasuredValue Evaluate(string expression)
     {
-        // All calculations automatically handle unit conversions
-        foreach(var variable in variables)
+        // Parse: "5m * 3m" → Length(5, "m"), Length(3, "m")
+        var terms = ParseTerms(expression);
+        
+        // Mathematical operations return correct types automatically
+        if (terms.Count == 2 && IsMultiplication(expression))
         {
-            // Convert to base units for calculation
-            var baseValue = ConvertToBaseUnit(variable.Value, variable.Unit);
-            // Perform calculation in consistent base units
-            // Convert result back to appropriate target units
+            var result = terms[0] * terms[1]; // Length * Length = Area
+            return result; // Returns Area object
         }
+        
+        return terms[0];
     }
 }
 ```
@@ -367,73 +453,87 @@ public class CalculationEngine
 ```csharp
 public class UnitValidator
 {
-    public ValidationResult ValidateFormula(string formula, IUnitSystemSpecification system)
+    private readonly IUnitSystem _unitSystem;
+    
+    public ValidationResult ValidateExpression(string expression)
     {
         var errors = new List<string>();
-        var units = ExtractUnits(formula);
-        var symbolMap = system.GetSymbolToFamilyMap();
+        var units = ExtractUnits(expression);
         
         foreach(var unit in units)
         {
-            if (!symbolMap.ContainsKey(unit))
+            if (!_unitSystem.IsValidUnit(unit))
                 errors.Add($"Unknown unit: {unit}");
         }
         
         return new ValidationResult(errors.Count == 0, errors);
+    }
+    
+    public bool ValidateMathematicalOperation(MeasuredValue a, MeasuredValue b, string operation)
+    {
+        return operation switch
+        {
+            "+" or "-" => a.IsCompatibleWith(b), // Length + Distance = OK
+            "*" or "/" => true, // Cross-family operations allowed
+            _ => false
+        };
     }
 }
 ```
 
 ## 🚀 Future Enhancements
 
-### 1. **Dynamic Unit System Loading**
+### 1. **Dynamic Unit System Configuration**
 ```csharp
-public class UnitSystemFactory
+public class UnitSystemConfiguration
 {
-    public IUnitSystemSpecification LoadFromConfiguration(string configPath)
+    public static IUnitSystem LoadFromJson(string configPath)
     {
-        // Load unit definitions from JSON/XML/database
-        // Generate unit system at runtime
+        // Load unit definitions from configuration
+        // Generate unit system at runtime with custom base units
     }
 }
 ```
 
-### 2. **Unit Dimension Analysis**
+### 2. **Enhanced Cross-Family Operations**
 ```csharp
-public class DimensionalAnalyzer
-{
-    public bool ValidateDimensionalConsistency(ParsedFormula formula)
-    {
-        // Verify that equation dimensions balance
-        // E.g., Force = Mass × Acceleration
-        //       [MLT⁻²] = [M] × [LT⁻²] ✓
-    }
-}
+// Already implemented in current version:
+// Length × Length → Area
+// Mass × Acceleration → Force  
+// Length ÷ Time → Speed
+
+// Future enhancements:
+// Volume × Density → Mass
+// Force × Distance → Energy
+// Power × Time → Energy
 ```
 
-### 3. **Cross-System Conversion Tables**
+### 3. **AI-Powered Unit Inference**
 ```csharp
-public class CrossSystemConverter
+public class IntelligentUnitParser
 {
-    public double Convert(double value, string unit, 
-                         IUnitSystemSpecification fromSystem,
-                         IUnitSystemSpecification toSystem)
+    public MeasuredValue ParseWithContext(string input, string context)
     {
-        // Handle conversions between different unit systems
-        // E.g., SI meters to FPS feet
+        // "5" in context "distance to target" → infer Length
+        // "5" in context "rotation angle" → infer Angle
+        // Use machine learning for context-aware parsing
     }
 }
 ```
 
 ## 📝 Summary
 
-This unit system architecture provides:
+The FoundryRulesAndUnits unit system architecture (v9.1.0) provides:
 
-- **Scalability**: O(N) instead of O(N²) complexity
-- **Performance**: O(1) lookups with lazy caching
-- **Type Safety**: Enum-based unit family validation
-- **Flexibility**: Drop-in unit system replacement
-- **Maintainability**: Single source of truth per unit
-- **Extensibility**: Easy addition of new units and systems
+- **Modern Architecture**: UnitGroup injection pattern with MeasuredValue base classes
+- **Type Safety**: UnitTypeRegistry with compile-time and runtime type checking
+- **Zero Ambiguity**: Two-tier unit family system for parser integration
+- **Performance**: O(1) lookups with lazy caching and reflection optimization
+- **Flexibility**: Drop-in unit system replacement via IUnitSystem interface
+- **Maintainability**: Single source of truth per unit family with hub-and-spoke conversions
+- **Extensibility**: Easy addition of new units and mathematical operations
+- **Cross-Family Operations**: Automatic type inference (Length × Length → Area)
 
-The hub-and-spoke model with interface-based design creates a robust foundation for building sophisticated engineering calculation tools while maintaining simplicity and performance.
+The hub-and-spoke model with UnitGroup injection and interface-based design creates a robust foundation for building sophisticated engineering calculation tools while maintaining simplicity, performance, and type safety.
+
+**Key Achievement**: Seamless integration of parser requirements, mathematical operations, and unit system flexibility in a production-ready .NET 9.0 library.

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace FoundryRulesAndUnits.Units;
 
 [System.Serializable]
-[UnitType(UnitFamilyName.Length, Description = "Length/distance measurement")]
+[UnitType(UnitFamilyName.Length, Description = "Length measurement")]
 public class Length : MeasuredValue
 {
 	// UnitFamily comes from UnitTypeAttribute - no need for redundant property override

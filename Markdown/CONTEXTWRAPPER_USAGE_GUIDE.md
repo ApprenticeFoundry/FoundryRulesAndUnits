@@ -2,7 +2,11 @@
 
 ## Overview
 
-The `ContextWrapper<T>` class from the FoundryRulesAndUnits library provides a standardized pattern for API responses, error handling, and data exchange with built-in metadata support. It wraps your data with contextual information including timestamps, error states, and collection metadata.
+The `ContextWrapper<T>` class from the FoundryRulesAndUnits library (v9.1.0) provides a standardized pattern for API responses, error handling, and data exchange with built-in metadata support. It wraps your data with contextual information including timestamps, error states, and collection metadata.
+
+**Current Version**: 9.1.0 targeting .NET 9.0  
+**JSON Support**: System.Text.Json with FoundryRulesAndUnits.Extensions  
+**Architecture**: Collection-based internal storage with type-safe access methods
 
 ## Key Features
 
@@ -29,8 +33,10 @@ This means:
 Add reference to FoundryRulesAndUnits library:
 
 ```xml
-<PackageReference Include="FoundryRulesAndUnits" Version="[latest-version]" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="9.1.0" />
 ```
+
+**Note**: The package ID is `ApprenticeFoundryRulesAndUnits` (see project file for current version).
 
 ## Basic Usage Examples
 
@@ -186,16 +192,21 @@ public class DataService
 
 ```csharp
 using FoundryRulesAndUnits.Extensions;
+using System.Text.Json;
 
-// Serialize wrapper to JSON
+// Serialize wrapper to JSON (using System.Text.Json)
 var wrapper = new ContextWrapper<MyData>(myDataObject);
-string json = CodingExtensions.Dehydrate(wrapper, true);
+string json = JsonSerializer.Serialize(wrapper, new JsonSerializerOptions { WriteIndented = true });
 
 // Deserialize from JSON
-var deserializedWrapper = CodingExtensions.HydrateWrapper<MyData>(json, true);
+var deserializedWrapper = JsonSerializer.Deserialize<ContextWrapper<MyData>>(json);
+
+// Alternative: Using FoundryRulesAndUnits extensions (if available)
+// string json = CodingExtensions.Dehydrate(wrapper, true);
+// var deserializedWrapper = CodingExtensions.HydrateWrapper<MyData>(json, true);
 
 // Access the deserialized data
-if (!deserializedWrapper.hasError)
+if (deserializedWrapper != null && !deserializedWrapper.hasError)
 {
     var data = deserializedWrapper.PayloadAsList().FirstOrDefault();
     // Use your data...
@@ -205,14 +216,14 @@ if (!deserializedWrapper.hasError)
 ### Client-Side Consumption Pattern
 
 ```csharp
-public async Task<MyData> GetDataAsync(int id)
+public async Task<MyData?> GetDataAsync(int id)
 {
     var response = await httpClient.GetStringAsync($"/api/data/{id}");
-    var wrapper = CodingExtensions.HydrateWrapper<MyData>(response, true);
+    var wrapper = JsonSerializer.Deserialize<ContextWrapper<MyData>>(response);
     
-    if (wrapper.hasError)
+    if (wrapper == null || wrapper.hasError)
     {
-        throw new ApplicationException($"API Error: {wrapper.message}");
+        throw new ApplicationException($"API Error: {wrapper?.message ?? "Unknown error"}");
     }
     
     return wrapper.payload.FirstOrDefault(); // Direct access to collection
@@ -221,11 +232,11 @@ public async Task<MyData> GetDataAsync(int id)
 public async Task<List<MyData>> GetDataListAsync()
 {
     var response = await httpClient.GetStringAsync("/api/data");
-    var wrapper = CodingExtensions.HydrateWrapper<MyData>(response, true);
+    var wrapper = JsonSerializer.Deserialize<ContextWrapper<MyData>>(response);
     
-    if (wrapper.hasError)
+    if (wrapper == null || wrapper.hasError)
     {
-        logger.LogError($"Failed to retrieve data: {wrapper.message}");
+        logger.LogError($"Failed to retrieve data: {wrapper?.message ?? "Unknown error"}");
         return new List<MyData>();
     }
     
@@ -421,5 +432,11 @@ Error response example:
 ## Summary
 
 The ContextWrapper<T> class provides a robust, standardized approach to API responses and data exchange. It combines data payload with essential metadata, error handling, and timestamps in a type-safe, serializable package. This pattern promotes consistency across your application and simplifies error handling for consuming code.
+
+**Version 9.1.0 Benefits:**
+- Native .NET 9.0 support with System.Text.Json
+- Enhanced performance and memory efficiency
+- Simplified serialization patterns
+- Type-safe collection handling
 
 For more information about the FoundryRulesAndUnits library, see the complete documentation and other utility classes available in the library.
