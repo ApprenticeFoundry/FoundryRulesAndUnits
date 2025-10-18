@@ -96,6 +96,7 @@ public class Length : MeasuredValue
 		return result;
 	}
 
+	// ============================================================================
 	public static Length operator *(double left, Length right)
 	{
 		var result = new Length(right._unitGroup);
