@@ -2,16 +2,19 @@
 
 ## Overview
 
-FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and full backward compatibility. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 39+ unit families and advanced features for engineering and scientific applications.
+FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 24+ unit families and advanced features for engineering and scientific applications.
+
+**Current Version**: 9.2.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
 ### **Modern Architecture**
-- **Unified Unit System**: Clean IUnitSystem interface handling all conversions (no singletons!)
-- **Type-Safe Conversions**: Strongly-typed unit operations with compile-time safety
+- **Unified IUnitSystem Interface**: Clean, dependency-injection friendly design
+- **UnitGroup Injection**: Each MeasuredValue receives proper conversion logic via constructor
+- **Type-Safe Creation**: Strongly-typed unit creation with compile-time safety
 - **24+ Unit Types**: Complete coverage from Length/Mass to specialized units like Frequency/Resistance
-- **Factory Methods**: Intuitive construction with `Length.FromMeters(5.0)`, `Temperature.FromCelsius(25)`
-- **Full Operator Support**: Natural arithmetic with `length1 + length2`, `force * scalar`
+- **Mathematical Operations**: Automatic type inference (Length × Length → Area, Mass × Acceleration → Force)
+- **Zero Ambiguity Parser**: Two-tier unit family system eliminates parser conflicts
 
 ### **Unit Systems Supported**
 - **SI** (International System of Units)
@@ -21,73 +24,89 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **IPS** (Inch-Pound-Second)
 - **mmNs** (Millimeter-Newton-Second)
 
-### **39+ Unit Families**
+### **24+ Unit Families**
 - **Mechanical**: Length, Mass, Force, Speed, Power, Area, Volume
-- **Thermal**: Temperature, Pressure
+- **Thermal**: Temperature, Pressure  
 - **Electrical**: Voltage, Current, Resistance, Capacitance
 - **Digital**: DataStorage, DataFlow
 - **Scientific**: Frequency, Time, Duration, Angle
 - **Specialized**: Quantity, QuantityFlow, Percent, Dimensionless
-- **Dual Families**: Distance (geographic Length), Bearing (navigation Angle)
+- **Two-Tier Families**: Distance (function-only), Bearing (function-only), Time (function-only)
 
 ## 📦 Installation & Setup
 
 ### NuGet Package
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="8.0.0" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="9.2.0" />
 ```
 
 ### Basic Setup
 ```csharp
 using FoundryRulesAndUnits.Units;
 
-// Initialize the global unit system (do this once at app startup)
-MeasuredValue.SetGlobalUnitSystem(UnitSystemType.SI); // or MKS, CGS, FPS, IPS, mmNs
+// Create unit system (dependency injection friendly)
+var unitSystem = IUnitSystem.MKS(); // or SI(), FPS(), IPS(), CGS()
 
-// Alternatively, set it with a UnitSystem instance
-var unitSystem = new UnitSystem(UnitSystemType.SI);
-MeasuredValue.SetGlobalUnitSystem(unitSystem);
+// Alternative: Constructor approach
+var unitSystem = new UnitSystem(UnitSystemType.MKS);
+
+// Use throughout application via dependency injection or direct usage
 ```
 
 ## 💡 Quick Start Examples
 
 ### **Creating Measurements**
 ```csharp
-// Factory methods (recommended)
-var length = Length.FromMeters(5.0);
-var temp = Temperature.FromCelsius(25.0);
-var force = Force.FromNewtons(100.0);
+var unitSystem = IUnitSystem.MKS(); // Create once, use everywhere
 
-// Constructor approach
-var mass = new Mass(50.0, "kg");
-var speed = new Speed(60.0, "mph");
+// Type-safe creation methods (recommended)
+Length length = unitSystem.CreateLength(5.0, "m");
+Temperature temp = unitSystem.CreateTemperature(25.0, "°C");  
+Force force = unitSystem.CreateForce(100.0, "N");
+Mass mass = unitSystem.CreateMass(50.0, "kg");
+Speed speed = unitSystem.CreateSpeed(60.0, "mph");
+
+// Generic creation (for parsers)
+MeasuredValue parsed = unitSystem.CreateMeasuredValue(UnitFamilyName.Length, 5.0, "m");
 ```
 
 ### **Unit Conversions**
 ```csharp
-var length = Length.FromMeters(5.0);
+var unitSystem = IUnitSystem.MKS();
+var length = unitSystem.CreateLength(5.0, "m");
+
 double feet = length.As("ft");        // Convert to feet
 double inches = length.As("in");      // Convert to inches
-double pixels = length.AsPixels();    // Special conversion for UI
+string display = length.AsString("cm"); // "500 cm"
+
+// Direct system conversion
+double converted = unitSystem.Convert(100, "cm", "in"); // 39.37 inches
 ```
 
 ### **Arithmetic Operations**
 ```csharp
-var length1 = Length.FromMeters(10);
-var length2 = Length.FromFeet(5);
+var unitSystem = IUnitSystem.MKS();
+var length1 = unitSystem.CreateLength(10, "m");
+var length2 = unitSystem.CreateLength(5, "ft");
 
-var total = length1 + length2;         // Addition
-var difference = length1 - length2;    // Subtraction
+var total = length1 + length2;         // Addition (same family)
+var difference = length1 - length2;    // Subtraction  
 var scaled = length1 * 2.0;           // Scalar multiplication
 var ratio = length1 / length2;        // Ratio (returns double)
 ```
 
-### **Advanced Operations**
+### **Advanced Operations with Type Inference**
 ```csharp
-// Create flow rates from quantities and time
-var quantity = Quantity.FromEach(1000);
-var time = Time.FromSeconds(60);
-var flow = quantity / time;            // QuantityFlow in "ea/s"
+var unitSystem = IUnitSystem.MKS();
+
+// Cross-family operations with automatic type inference
+Length width = unitSystem.CreateLength(5, "m");
+Length height = unitSystem.CreateLength(3, "m");
+var area = width * height;              // Returns Area automatically!
+
+Mass mass = unitSystem.CreateMass(100, "kg");
+var acceleration = unitSystem.CreateAcceleration(9.8, "m/s2");  
+var force = mass * acceleration;        // Returns Force automatically!
 
 // Compare measurements
 if (length1 > length2) {
@@ -95,47 +114,45 @@ if (length1 > length2) {
 }
 ```
 
-### **Dual Family Pattern (Scale-Optimized Units)**
+### **Two-Tier Family System (Zero Ambiguity)**
 ```csharp
-// Same physical quantity, different optimal scales and base units
+var unitSystem = IUnitSystem.MKS();
 
-// Length family (engineering scale - meter base)
-var roomWidth = Length.FromMeters(3.2);     // 3.2 m base
-var partSize = Length.FromMillimeters(15);  // 0.015 m base
+// Parser-accessible families (primary - used by parsers)
+Length length = unitSystem.CreateLength(5.0, "ft");     // Length family  
+Angle angle = unitSystem.CreateAngle(45.0, "deg");      // Angle family
+Duration duration = unitSystem.CreateDuration(30, "s"); // Duration family
 
-// Distance family (geographic scale - kilometer base)  
-var cityDistance = Distance.FromKilometers(45);   // 45 km base
-var walkingRoute = Distance.FromMeters(500);      // 0.5 km base
+// Function-only families (secondary - via AS functions)
+// These prevent parser ambiguity but provide specialized functionality
+Distance distance = unitSystem.CreateDistance(5.0, "ft");   // Distance family
+Bearing bearing = unitSystem.CreateBearing(45.0, "deg");    // Bearing family  
+Time time = unitSystem.CreateTime(30, "s");                 // Time family
 
-// Both families accept the same input units:
-var engineeringLength = new Length(5.0, "ft");    // Length family
-var geographicDistance = new Distance(5.0, "ft"); // Distance family
-
-// Key difference: optimized base units for different scales
-Console.WriteLine(engineeringLength.BaseValue()); // 1.524 (meters)
-Console.WriteLine(geographicDistance.BaseValue()); // 0.001524 (kilometers)
+// Key insight: Parser sees "ft" → Length, "deg" → Angle, "s" → Duration
+// No ambiguity! Distance/Bearing/Time accessed via specific creation methods
 ```
 
-**Dual Family Benefits:**
-- **Scale-Appropriate Math**: Clean calculations at different scales
-- **Context Clarity**: Length for engineering, Distance for geography
-- **Shared Input Units**: Both accept m, ft, km, mi, etc.
-- **Optimized Storage**: Meters for small-scale, kilometers for large-scale
+**Two-Tier Benefits:**
+- **Zero Parser Ambiguity**: Each unit symbol maps to exactly one family
+- **Specialized Context**: Length vs Distance, Angle vs Bearing, Duration vs Time
+- **Same Input Units**: Both tiers accept the same unit symbols
+- **Clear Separation**: Parser-accessible vs function-only families
 
-**Available Dual Families:**
-- **Length/Distance**: Engineering vs Geographic measurements
-- **Time/Duration**: Precise timing vs Human-scale scheduling  
-- **Angle/Bearing**: Mathematical vs Navigation contexts
+**Available Two-Tier Families:**
+- **Length/Distance**: Engineering measurements vs geographic distances
+- **Duration/Time**: Event timing vs precise scientific time  
+- **Angle/Bearing**: Mathematical angles vs navigation bearings
 
 ## 🏗️ Architecture Overview
 
-### **Modern Unit Classes (24/24 FULLY MODERNIZED) 🎉**
-**ALL unit classes now follow the clean, modern pattern:**
+### **Unit Classes with UnitGroup Injection Architecture**
+**ALL unit classes follow the modern UnitGroup injection pattern:**
 
 **✅ Physical & Mechanical Units:**
 - `Length`, `Mass`, `Temperature`, `Volume`, `Force`
-- `Speed`, `Power`, `Area`, `Time`, `Duration`
-- `Distance`, `Frequency`
+- `Speed`, `Power`, `Area`, `Duration`, `Distance`  
+- `Frequency`, `Time`
 
 **✅ Electrical Units:**
 - `Voltage`, `Resistance`, `Current`, `Capacitance`
@@ -144,76 +161,95 @@ Console.WriteLine(geographicDistance.BaseValue()); // 0.001524 (kilometers)
 - `DataStorage`, `DataFlow`
 
 **✅ Specialized Units:**
-- `Quantity`, `QuantityFlow`, `Percent`, `Heading`, `Dimensionless`
+- `Quantity`, `QuantityFlow`, `Percent`, `Dimensionless`
+- `Angle`, `Bearing`
 
 **🚀 ALL CLASSES FEATURE:**
-- Factory methods (`FromMeters()`, `FromVolts()`, etc.)
-- Enhanced operators (+, -, *, /, >, <, etc.)
-- JSON serialization support
-- Full backward compatibility
+- UnitGroup injection via constructor
+- UnitTypeAttribute for registry lookup  
+- Enhanced operators (+, -, *, /, >, <, ==, !=, etc.)
+- System.Text.Json serialization support (.NET 9.0)
+- Cross-family mathematical operations (Length × Length → Area)
 
 ### **Unit System Management**
 ```csharp
-// Global unit system manages all conversions (clean, no singletons!)
-var globalSystem = MeasuredValue.GlobalSystem;
+// Create unit systems (dependency injection friendly)
+var mksSystem = IUnitSystem.MKS();
+var siSystem = IUnitSystem.SI();
+var fpsSystem = IUnitSystem.FPS();
 
-// Switch unit systems at runtime
-globalSystem.Apply(UnitSystemType.FPS);  // Switch to Imperial
-var converted = globalSystem.Convert(100, "m", "ft"); // 328.084 feet
+// Switch unit systems dynamically
+var system = IUnitSystem.MKS();
+system.Apply(UnitSystemType.FPS);  // Switch to Imperial
+var converted = system.Convert(100, "m", "ft"); // 328.084 feet
 
-// Or change globally for all measurements
-MeasuredValue.SetGlobalUnitSystem(UnitSystemType.FPS);
-
-// Validation
-bool isValid = globalSystem.IsValidUnit("mph");  // true
-var units = globalSystem.GetUnitsForFamily(UnitFamilyName.Length); // ["m", "cm", "km", ...]
+// Validation and metadata
+bool isValid = system.IsValidUnit("mph");  // true
+var units = system.GetUnitsForFamily(UnitFamilyName.Length); // ["m", "cm", "km", ...]
+string baseUnit = system.GetBaseUnitForFamily(UnitFamilyName.Mass); // "kg" (MKS)
 ```
 
-## 🔄 Backward Compatibility
+## 🔄 Modern Architecture
 
-### **Legacy Support Classes**
-For existing codebases, we provide full compatibility:
+### **Dependency Injection Pattern**
+The modern architecture supports clean dependency injection:
 
 ```csharp
-// Legacy UnitSystem class (now contains all functionality directly)
-var unitSystem = new UnitSystem(UnitSystemType.MKS);
-unitSystem.Apply(UnitSystemType.SI);
-var categories = unitSystem.Categories();
+// Service registration (e.g., in Program.cs or Startup.cs)
+services.AddSingleton<IUnitSystem>(_ => IUnitSystem.MKS());
 
-// Legacy extension methods
-var family = UnitCategoryExtensions.GetUnitFamily("kg");  // UnitFamilyName.Mass
-bool known = UnitCategoryExtensions.IsKnownUnit("mph");   // true
-
-// Legacy Length methods
-var length = new Length(100, "m");
-var category = Length.Category();        // UnitCategory (marked obsolete)
-double pixels = length.AsPixels();       // UI conversion
+// Usage in classes
+public class Calculator
+{
+    private readonly IUnitSystem _unitSystem;
+    
+    public Calculator(IUnitSystem unitSystem)
+    {
+        _unitSystem = unitSystem;
+    }
+    
+    public Force CalculateForce(double mass, double acceleration)
+    {
+        var m = _unitSystem.CreateMass(mass, "kg");
+        var a = _unitSystem.CreateAcceleration(acceleration, "m/s2");
+        return m * a; // Returns Force automatically
+    }
+}
 ```
 
-## 🚀 Migration Guide
+## 🚀 Parser Integration
 
-### **From Legacy to Modern**
+### **Zero-Ambiguity Parser Support**
 
-**Old Pattern:**
+The two-tier family system eliminates parser ambiguity:
+
 ```csharp
-// Legacy approach
-var length = new Length(5.0, "m");
-var convertedValue = length.As("ft");
+public class UnitParser
+{
+    private readonly IUnitSystem _unitSystem;
+    
+    public UnitParser(IUnitSystem unitSystem)
+    {
+        _unitSystem = unitSystem;
+    }
+    
+    public MeasuredValue Parse(string input)
+    {
+        var (value, unit) = ExtractValueAndUnit(input); // "100 cm" → 100, "cm"
+        
+        // Creates correct derived type automatically (Length, Angle, Mass, etc.)
+        // Zero ambiguity: "cm" → Length, "deg" → Angle, "s" → Duration
+        return _unitSystem.CreateMeasuredValueFromParsableUnit(unit, value);
+    }
+}
 ```
 
-**New Pattern:**
-```csharp
-// Modern approach
-var length = Length.FromMeters(5.0);    // Factory method
-var convertedValue = length.As("ft");   // Same conversion API
-```
-
-### **Key Benefits of Modern Classes**
-1. **Factory Methods**: `Length.FromMeters()` vs `new Length(value, "m")`
-2. **Enhanced Operators**: Full arithmetic support including scalar operations
-3. **Better Performance**: Direct integration with global unit system
-4. **JSON Serialization**: Built-in JSON converter support
-5. **Cleaner Code**: No singleton dependencies, clean architecture!
+### **Key Benefits of Modern Architecture**
+1. **Dependency Injection**: Clean, testable architecture via IUnitSystem interface
+2. **Type Safety**: Compile-time checking with generic creation methods
+3. **Performance**: UnitTypeRegistry caching eliminates reflection overhead
+4. **Mathematical Operations**: Automatic type inference (Length × Length → Area)
+5. **Zero Ambiguity**: Two-tier family system prevents parser conflicts
 
 ## 🧪 Testing & Validation
 
@@ -225,13 +261,19 @@ var convertedValue = length.As("ft");   // Same conversion API
 ### **Validation Examples**
 ```csharp
 // Unit system validation
-var globalSystem = MeasuredValue.GlobalSystem;
-Debug.Assert(globalSystem.IsValidUnit("kg"));
-Debug.Assert(globalSystem.Convert(1000, "g", "kg") == 1.0);
+var unitSystem = IUnitSystem.MKS();
+Debug.Assert(unitSystem.IsValidUnit("kg"));
+Debug.Assert(unitSystem.Convert(1000, "g", "kg") == 1.0);
 
 // Measurement validation  
-var length = Length.FromKilometers(1.0);
+var length = unitSystem.CreateLength(1.0, "km");
 Debug.Assert(Math.Abs(length.As("m") - 1000.0) < 0.001);
+
+// Cross-family operations
+var width = unitSystem.CreateLength(5, "m");
+var height = unitSystem.CreateLength(3, "m"); 
+var area = width * height; // Should be Area with 15 m² base value
+Debug.Assert(area.GetType() == typeof(Area));
 ```
 
 ## 📁 Project Structure
@@ -239,60 +281,86 @@ Debug.Assert(Math.Abs(length.As("m") - 1000.0) < 0.001);
 ```
 FoundryRulesAndUnits/
 ├── UnitSystem/
-│   ├── MeasuredValue.cs              # Base class with global unit system
+│   ├── MeasuredValue.cs              # Base class with UnitGroup injection
 │   ├── UnitSystem.cs                 # Complete IUnitSystem implementation  
-│   ├── UnitCategory.cs               # Legacy compatibility (+ enum)
-│   ├── Specifications/               # Unit system definitions
+│   ├── IUnitSystem.cs                # Modern interface with static factory methods
+│   ├── UnitTypeRegistry.cs           # Performance-optimized type cache
+│   ├── UnitFamilyName.cs             # Enum defining all unit families
+│   ├── UnitTypeAttribute.cs          # Attribute for type registration
+│   ├── Specifications/               # Unit system definitions  
 │   │   ├── IUnitSystemSpecification.cs
-│   │   ├── SISpecification.cs        # SI unit definitions
-│   │   ├── MKSSpecification.cs       # MKS unit definitions
-│   │   └── [Other system specs...]
+│   │   ├── SIUnitSystemSpecification.cs    # SI unit definitions
+│   │   ├── MKSUnitSystemSpecification.cs   # MKS unit definitions
+│   │   └── [Other system specifications...]
 │   └── UnitTypes/                    # Individual unit classes
-│       ├── Length.cs                 # ✅ Modernized
-│       ├── Mass.cs                   # ✅ Modernized  
-│       ├── Temperature.cs            # ✅ Modernized
-│       ├── Force.cs                  # ✅ Modernized
+│       ├── Length.cs                 # ✅ UnitGroup injection + UnitTypeAttribute
+│       ├── Mass.cs                   # ✅ Enhanced operators + type safety
+│       ├── Temperature.cs            # ✅ Cross-family operations
+│       ├── Force.cs                  # ✅ Mathematical operations
 │       └── [24+ other unit types...]
 ├── Extensions/
-│   ├── UnitCategoryExtensions.cs     # Legacy compatibility helpers
+│   ├── BasicMath.cs                  # Mathematical utilities
+│   ├── JsonUtilities.cs              # System.Text.Json support
 │   └── [Other utility extensions...]
 └── DataModels/                       # Supporting data structures
+    ├── ContextWrapper.cs             # API response wrapper
+    └── [Other data models...]
 ```
 
 ## 🤝 Contributing
 
 ### **Adding New Unit Types**
-Follow the modernized pattern:
+Follow the UnitGroup injection pattern:
 
 ```csharp
 [System.Serializable]
-[JsonConverter(typeof(MyUnitJsonConverter))]
+[UnitType(UnitFamilyName.MyFamily, Description = "My unit description")]
 public class MyUnit : MeasuredValue
 {
-    public MyUnit() : base(UnitFamilyName.MyFamily) { }
+    // UnitFamily comes from UnitTypeAttribute - no need for redundant property override
     
-    public MyUnit(double value, string? units = null) : base(UnitFamilyName.MyFamily)
+    /// <summary>
+    /// Constructor with UnitGroup injection - preferred for factory pattern
+    /// </summary>
+    public MyUnit(UnitGroup unitGroup) : base(unitGroup)
     {
-        Init(value, units);
+        if (unitGroup.Family != UnitFamilyName.MyFamily)
+            throw new ArgumentException($"UnitGroup family must be {UnitFamilyName.MyFamily}");
     }
     
-    // Factory methods
-    public static MyUnit FromBaseUnit(double value) => new(value, "base");
+    // Required methods: Assign, Copy, operators
+    public MyUnit Assign(double value, string? units)
+    {
+        Init(value, units);
+        return this;
+    }
     
-    // Operators
-    public static MyUnit operator +(MyUnit left, MyUnit right) => 
-        new(left.Value() + right.Value(), left.Internal());
+    public MyUnit Copy()
+    {
+        var copy = new MyUnit(_unitGroup);
+        copy.Init(Value(), Internal());
+        return copy;
+    }
+    
+    // Operators using UnitGroup pattern
+    public static MyUnit operator +(MyUnit left, MyUnit right)
+    {
+        var result = new MyUnit(left._unitGroup);
+        result.Init(left.Value() + right.Value(), left.Internal());
+        return result;
+    }
 }
 ```
 
-### **Extending Unit Systems**
-Add new specifications implementing `IUnitSystemSpecification`:
-
+### **Adding to IUnitSystem Interface**
 ```csharp
-public class MyCustomSpecification : IUnitSystemSpecification
+// Add creation method to interface
+MyUnit CreateMyUnit(double value = 0, string? units = null);
+
+// Implement in UnitSystem class
+public MyUnit CreateMyUnit(double value = 0, string? units = null)
 {
-    public string SystemName => "MySystem";
-    // Implement interface methods...
+    return CreateUnit<MyUnit>(value, units);
 }
 ```
 
@@ -312,4 +380,4 @@ MIT License - See LICENSE file for details.
 - **FoundryMentorModeler**: Advanced modeling toolkit using this unit system
 - **TRISoC Dashboard**: Digital twin dashboard with unit system integration
 
-**Version**: 8.0.0 | **Target**: .NET 9.0 | **Updated**: October 2025
+**Version**: 9.2.0 | **Target**: .NET 9.0 | **Updated**: October 2025
