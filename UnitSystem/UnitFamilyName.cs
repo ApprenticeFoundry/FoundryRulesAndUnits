@@ -34,6 +34,7 @@ public enum UnitFamilyName
     Current,
     Power,
     Energy,
+    Momentum,
     Resistance,
     Capacitance,
     Percent,

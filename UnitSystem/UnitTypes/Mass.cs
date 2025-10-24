@@ -90,30 +90,38 @@ namespace FoundryRulesAndUnits.Units
 		// ============================================================================
 		
 		/// <summary>
-		/// Mass × Energy/Mass (specific energy) → Energy  
-		/// This handles kinetic energy: Mass × Speed² → Energy
-		/// Example: 10 kg × 25 J/kg = 250 J
+		/// Mass × Speed → Momentum (proper physics)
+		/// Example: 10 kg × 5 m/s = 50 kg⋅m/s (momentum)
 		/// </summary>
-		public static MeasuredValue operator *(Mass left, MeasuredValue right)
+		public static Momentum operator *(Mass mass, Speed speed)
 		{
-			// Check if right operand is Energy family (from Speed²)
-			if (right.GetType().GetProperty("UnitFamily")?.GetValue(right)?.ToString() == "Energy")
-			{
-				var unitSystem = new UnitSystem(left.UnitGroup.SystemType);
-				var energyValue = left.BaseValue() * right.BaseValue(); // kg × (J/kg) = J
-				return unitSystem.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
-			}
-			
-			// Fallback to base implementation
-			throw new InvalidOperationException($"Operator '*' cannot be applied to operands of type 'Mass' and '{right.GetType().Name}'");
+			// Reuse existing unit system - no new instances!
+			var momentumValue = mass.BaseValue() * speed.BaseValue(); // kg × (m/s) = kg⋅m/s
+			var momentum = mass._unitGroup.CreateUnit<Momentum>();
+			momentum.Init(momentumValue, momentum.Internal());
+			return momentum;
 		}
 		
 		/// <summary>
-		/// MeasuredValue × Mass → Energy (commutative version)
+		/// Mass × Energy → Energy (for specific energy calculations)
+		/// Example: 10 kg × 25 J/kg = 250 J (kinetic energy)
+		/// Note: The Energy operand should represent specific energy (J/kg)
 		/// </summary>
-		public static MeasuredValue operator *(MeasuredValue left, Mass right)
+		public static Energy operator *(Mass mass, Energy energy)
 		{
-			return right * left; // Delegate to Mass × MeasuredValue
+			// For kinetic energy: mass × specific energy = total energy
+			var energyValue = mass.BaseValue() * energy.BaseValue(); // kg × (J/kg) = J
+			var energy = mass._unitGroup.CreateUnit<Energy>();
+			energy.Init(energyValue, energy.Internal());
+			return energy;
+		}
+		
+		/// <summary>
+		/// Energy × Mass → Energy (commutative version)
+		/// </summary>
+		public static Energy operator *(Energy energy, Mass mass)
+		{
+			return mass * energy; // Delegate to Mass × Energy
 		}
 	}
 

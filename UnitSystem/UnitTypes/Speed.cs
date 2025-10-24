@@ -67,36 +67,69 @@ namespace FoundryRulesAndUnits.Units
 		/// Speed × Time → Length (Distance = Speed × Time)
 		/// Example: 10 m/s × 5s = 50m
 		/// </summary>
-		public static MeasuredValue operator *(Speed left, Time right)
+		/// <summary>
+		/// Speed × Time → Length (Distance = Speed × Time)
+		/// Example: 10 m/s × 5s = 50m
+		/// </summary>
+		public static Length operator *(Speed left, Time right)
 		{
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+			var length = left._unitGroup.CreateUnit<Length>();
+			length.Init(lengthValue, length.Internal());
+			return length;
 		}
 		
 		/// <summary>
 		/// Speed × Duration → Length (Distance = Speed × Time)
 		/// Example: 10 m/s × 5s = 50m
 		/// </summary>
-		public static MeasuredValue operator *(Speed left, Duration right)
+		public static Length operator *(Speed left, Duration right)
 		{
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
+			var length = left._unitGroup.CreateUnit<Length>();
+			length.Init(lengthValue, length.Internal());
+			return length;
 		}
 		
 		/// <summary>
-		/// Speed × Speed → Energy/Mass (Speed² for kinetic energy calculations)
+		/// Speed × Speed → Energy (Speed² for kinetic energy calculations)
 		/// Example: (5 m/s) × (5 m/s) = 25 m²/s² (specific energy)
 		/// This is used in kinetic energy: KE = ½ × Mass × Speed²
 		/// </summary>
-		public static MeasuredValue operator *(Speed left, Speed right)
+		public static Energy operator *(Speed left, Speed right)
 		{
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
 			var speedSquaredValue = left.BaseValue() * right.BaseValue(); // (m/s) × (m/s) = m²/s²
 			// m²/s² has the same units as J/kg (specific energy)
-			// For now, return as Energy to enable Mass × Speed² → Energy
-			return unitSystem.CreateMeasuredValue(UnitFamilyName.Energy, speedSquaredValue, "J/kg");
+			var energy = left._unitGroup.CreateUnit<Energy>();
+			energy.Init(speedSquaredValue, energy.Internal());
+			return energy;
+		}
+		
+		/// <summary>
+		/// Time × Speed → Length (commutative version)
+		/// Example: 5s × 10 m/s = 50m
+		/// </summary>
+		public static Length operator *(Time time, Speed speed)
+		{
+			return speed * time; // Delegate to Speed × Time
+		}
+		
+		/// <summary>
+		/// Duration × Speed → Length (commutative version)
+		/// Example: 5s × 10 m/s = 50m
+		/// </summary>
+		public static Length operator *(Duration duration, Speed speed)
+		{
+			return speed * duration; // Delegate to Speed × Duration
+		}
+		
+		/// <summary>
+		/// Speed × Mass → Momentum (commutative version of Mass × Speed)
+		/// Example: 5 m/s × 10 kg = 50 kg⋅m/s (momentum)
+		/// </summary>
+		public static Momentum operator *(Speed speed, Mass mass)
+		{
+			return mass * speed; // Delegate to Mass × Speed
 		}
 		
 		#endregion
