@@ -84,6 +84,37 @@ namespace FoundryRulesAndUnits.Units
 		}
 
 		public static double operator /(Mass left, Mass right) => left.Value() / right.Value();
+		
+		// ============================================================================
+		// PHASE 4B: CROSS-FAMILY OPERATIONS - Physics calculations
+		// ============================================================================
+		
+		/// <summary>
+		/// Mass × Energy/Mass (specific energy) → Energy  
+		/// This handles kinetic energy: Mass × Speed² → Energy
+		/// Example: 10 kg × 25 J/kg = 250 J
+		/// </summary>
+		public static MeasuredValue operator *(Mass left, MeasuredValue right)
+		{
+			// Check if right operand is Energy family (from Speed²)
+			if (right.GetType().GetProperty("UnitFamily")?.GetValue(right)?.ToString() == "Energy")
+			{
+				var unitSystem = new UnitSystem(left.UnitGroup.SystemType);
+				var energyValue = left.BaseValue() * right.BaseValue(); // kg × (J/kg) = J
+				return unitSystem.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
+			}
+			
+			// Fallback to base implementation
+			throw new InvalidOperationException($"Operator '*' cannot be applied to operands of type 'Mass' and '{right.GetType().Name}'");
+		}
+		
+		/// <summary>
+		/// MeasuredValue × Mass → Energy (commutative version)
+		/// </summary>
+		public static MeasuredValue operator *(MeasuredValue left, Mass right)
+		{
+			return right * left; // Delegate to Mass × MeasuredValue
+		}
 	}
 
 

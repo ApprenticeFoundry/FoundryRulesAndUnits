@@ -85,6 +85,20 @@ namespace FoundryRulesAndUnits.Units
 			return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
+		/// <summary>
+		/// Speed × Speed → Energy/Mass (Speed² for kinetic energy calculations)
+		/// Example: (5 m/s) × (5 m/s) = 25 m²/s² (specific energy)
+		/// This is used in kinetic energy: KE = ½ × Mass × Speed²
+		/// </summary>
+		public static MeasuredValue operator *(Speed left, Speed right)
+		{
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+			var speedSquaredValue = left.BaseValue() * right.BaseValue(); // (m/s) × (m/s) = m²/s²
+			// m²/s² has the same units as J/kg (specific energy)
+			// For now, return as Energy to enable Mass × Speed² → Energy
+			return unitSystem.CreateMeasuredValue(UnitFamilyName.Energy, speedSquaredValue, "J/kg");
+		}
+		
 		#endregion
 	}
 }
