@@ -136,6 +136,17 @@ public class Length : MeasuredValue
 	}
 	
 	/// <summary>
+	/// Length × Area → Volume (commutative with Area × Length)
+	/// Example: 3m * 15m² = 45m³
+	/// </summary>
+	public static MeasuredValue operator *(Length left, Area right)
+	{
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var volumeValue = left.BaseValue() * right.BaseValue(); // m × m² = m³
+		return unitSystem.CreateMeasuredValue(UnitFamilyName.Volume, volumeValue, "m3");
+	}
+	
+	/// <summary>
 	/// Length ÷ Time → Speed
 	/// Example: 100m / 10s = 10 m/s
 	/// </summary>
