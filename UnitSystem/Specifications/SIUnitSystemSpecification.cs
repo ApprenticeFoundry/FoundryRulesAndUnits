@@ -295,7 +295,13 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("mSv", "millisieverts", UnitFamilyName.EquivalentDose, 0.001), // 1 mSv = 0.001 Sv
             UnitDefinition.LinearUnit("μSv", "microsieverts", UnitFamilyName.EquivalentDose, 0.000001), // 1 μSv = 1e-6 Sv
             UnitDefinition.LinearUnit("nSv", "nanosieverts", UnitFamilyName.EquivalentDose, 0.000000001), // 1 nSv = 1e-9 Sv
-            UnitDefinition.LinearUnit("rem", "roentgen equivalent man", UnitFamilyName.EquivalentDose, 0.01) // 1 rem = 0.01 Sv
+            UnitDefinition.LinearUnit("rem", "roentgen equivalent man", UnitFamilyName.EquivalentDose, 0.01), // 1 rem = 0.01 Sv
+
+            // Momentum units (kg⋅m/s as base) - using enhanced approach with UnitFamilyName enum!
+            UnitDefinition.BaseUnit("kg⋅m/s", "kilogram-meters per second", UnitFamilyName.Momentum),
+            UnitDefinition.LinearUnit("kg*m/s", "kilogram-meters per second", UnitFamilyName.Momentum, 1.0), // ASCII alternative
+            UnitDefinition.LinearUnit("g⋅m/s", "gram-meters per second", UnitFamilyName.Momentum, 0.001),     // 1 g⋅m/s = 0.001 kg⋅m/s
+            UnitDefinition.LinearUnit("g*m/s", "gram-meters per second", UnitFamilyName.Momentum, 0.001)      // ASCII alternative
         };
     }
 }

@@ -97,9 +97,8 @@ namespace FoundryRulesAndUnits.Units
 		{
 			// Reuse existing unit system - no new instances!
 			var momentumValue = mass.BaseValue() * speed.BaseValue(); // kg × (m/s) = kg⋅m/s
-			var momentum = mass._unitGroup.CreateUnit<Momentum>();
-			momentum.Init(momentumValue, momentum.Internal());
-			return momentum;
+			var unitSystem = new UnitSystem(mass._unitGroup.SystemType);
+			return (Momentum)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Momentum, momentumValue, "kg*m/s");
 		}
 		
 		/// <summary>
@@ -111,9 +110,8 @@ namespace FoundryRulesAndUnits.Units
 		{
 			// For kinetic energy: mass × specific energy = total energy
 			var energyValue = mass.BaseValue() * energy.BaseValue(); // kg × (J/kg) = J
-			var energy = mass._unitGroup.CreateUnit<Energy>();
-			energy.Init(energyValue, energy.Internal());
-			return energy;
+			var unitSystem = new UnitSystem(mass._unitGroup.SystemType);
+			return (Energy)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
 		}
 		
 		/// <summary>

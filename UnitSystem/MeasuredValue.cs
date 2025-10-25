@@ -50,6 +50,8 @@ public interface IMeasuredValue
 [JsonDerivedType(typeof(Speed))]
 [JsonDerivedType(typeof(Temperature))]
 [JsonDerivedType(typeof(Time))]
+[JsonDerivedType(typeof(Momentum))]
+[JsonDerivedType(typeof(Energy))]
 [JsonDerivedType(typeof(Voltage))]
 [JsonDerivedType(typeof(Volume))]
 [System.Serializable]

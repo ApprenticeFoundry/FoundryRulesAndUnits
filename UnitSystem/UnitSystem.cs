@@ -457,6 +457,16 @@ public class UnitSystem : IUnitSystem
         return CreateUnit<Frequency>(value, units);
     }
 
+    public Momentum CreateMomentum(double value = 0, string? units = null)
+    {
+        return CreateUnit<Momentum>(value, units);
+    }
+
+    public Energy CreateEnergy(double value = 0, string? units = null)
+    {
+        return CreateUnit<Energy>(value, units);
+    }
+
     /// <summary>
     /// Create a generic MeasuredValue for any unit family
     /// </summary>

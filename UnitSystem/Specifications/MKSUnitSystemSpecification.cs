@@ -266,7 +266,15 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("MHz", "megahertz", UnitFamilyName.Frequency, 1000000.0),   // 1 MHz = 1,000,000 Hz
         UnitDefinition.LinearUnit("GHz", "gigahertz", UnitFamilyName.Frequency, 1000000000.0), // 1 GHz = 1,000,000,000 Hz
         UnitDefinition.LinearUnit("rpm", "revolutions per minute", UnitFamilyName.Frequency, 1.0 / 60.0), // 1 rpm = 1/60 Hz
-        UnitDefinition.LinearUnit("rps", "revolutions per second", UnitFamilyName.Frequency, 1.0)  // 1 rps = 1 Hz
+        UnitDefinition.LinearUnit("rps", "revolutions per second", UnitFamilyName.Frequency, 1.0),  // 1 rps = 1 Hz
+
+        // Momentum units (kg⋅m/s as base) - using enhanced approach with UnitFamilyName enum!
+        UnitDefinition.BaseUnit("kg⋅m/s", "kilogram-meters per second", UnitFamilyName.Momentum),
+        UnitDefinition.LinearUnit("kg*m/s", "kilogram-meters per second", UnitFamilyName.Momentum, 1.0), // ASCII alternative
+        UnitDefinition.LinearUnit("g⋅m/s", "gram-meters per second", UnitFamilyName.Momentum, 0.001),     // 1 g⋅m/s = 0.001 kg⋅m/s
+        UnitDefinition.LinearUnit("g*m/s", "gram-meters per second", UnitFamilyName.Momentum, 0.001),     // ASCII alternative
+        UnitDefinition.LinearUnit("lb⋅ft/s", "pound-feet per second", UnitFamilyName.Momentum, 0.138255), // 1 lb⋅ft/s ≈ 0.138255 kg⋅m/s
+        UnitDefinition.LinearUnit("slug⋅ft/s", "slug-feet per second", UnitFamilyName.Momentum, 4.44822)  // 1 slug⋅ft/s ≈ 4.44822 kg⋅m/s
     };
 
 }

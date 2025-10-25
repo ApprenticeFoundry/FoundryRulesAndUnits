@@ -74,9 +74,8 @@ namespace FoundryRulesAndUnits.Units
 		public static Length operator *(Speed left, Time right)
 		{
 			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			var length = left._unitGroup.CreateUnit<Length>();
-			length.Init(lengthValue, length.Internal());
-			return length;
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+			return (Length)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
 		/// <summary>
@@ -86,9 +85,8 @@ namespace FoundryRulesAndUnits.Units
 		public static Length operator *(Speed left, Duration right)
 		{
 			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			var length = left._unitGroup.CreateUnit<Length>();
-			length.Init(lengthValue, length.Internal());
-			return length;
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+			return (Length)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
 		/// <summary>
@@ -100,9 +98,8 @@ namespace FoundryRulesAndUnits.Units
 		{
 			var speedSquaredValue = left.BaseValue() * right.BaseValue(); // (m/s) × (m/s) = m²/s²
 			// m²/s² has the same units as J/kg (specific energy)
-			var energy = left._unitGroup.CreateUnit<Energy>();
-			energy.Init(speedSquaredValue, energy.Internal());
-			return energy;
+			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+			return (Energy)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Energy, speedSquaredValue, "J");
 		}
 		
 		/// <summary>
