@@ -1,9 +1,9 @@
 # NuGet Publishing Guide - Personal Deployment Notes
 
-## Version 9.2.0 Deployment Checklist
+## Version 9.3.0 Deployment Checklist
 
 ### Pre-Deployment Steps
-- [ ] Update FoundryRulesAndUnits.csproj version to 9.2.0
+- [ ] Update FoundryRulesAndUnits.csproj version to 9.3.0
 - [ ] Update README.md version references
 - [ ] Update all markdown documentation 
 - [ ] Verify all unit tests pass
@@ -28,14 +28,14 @@ dotnet pack --configuration Release
 ## Package Information
 
 - **Package ID**: `ApprenticeFoundryRulesAndUnits`
-- **Current Version**: 9.2.0
+- **Current Version**: 9.3.0
 - **Target Framework**: .NET 9.0
 - **License**: MIT
 - **Repository**: https://github.com/SteveStrong/FoundryRulesAndUnits
 
 ## Package Location After Build
 The `.nupkg` file will be created at:
-`./bin/Release/ApprenticeFoundryRulesAndUnits.9.2.0.nupkg`
+`./bin/Release/ApprenticeFoundryRulesAndUnits.9.3.0.nupkg`
 
 ## NuGet.org Publishing Steps
 

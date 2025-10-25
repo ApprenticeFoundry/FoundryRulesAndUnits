@@ -4,7 +4,7 @@
 
 FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 24+ unit families and advanced features for engineering and scientific applications.
 
-**Current Version**: 9.2.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
+**Current Version**: 9.3.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
@@ -37,7 +37,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 
 ### NuGet Package
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="9.2.0" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="9.3.0" />
 ```
 
 ### Basic Setup
@@ -380,4 +380,4 @@ MIT License - See LICENSE file for details.
 - **FoundryMentorModeler**: Advanced modeling toolkit using this unit system
 - **TRISoC Dashboard**: Digital twin dashboard with unit system integration
 
-**Version**: 9.2.0 | **Target**: .NET 9.0 | **Updated**: October 2025
+**Version**: 9.3.0 | **Target**: .NET 9.0 | **Updated**: October 2025
