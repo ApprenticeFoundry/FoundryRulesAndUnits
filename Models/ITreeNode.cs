@@ -3,6 +3,8 @@ namespace FoundryRulesAndUnits.Models;
 
 public interface ITreeNode
 {
+    public string GetUniqueId(); // Stable unique identifier for caching
+    
     public bool GetIsExpanded();
     public bool SetExpanded(bool value);
 
