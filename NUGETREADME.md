@@ -1,11 +1,12 @@
 # NuGet Publishing Guide - Personal Deployment Notes
 
-## Version 9.3.0 Deployment Checklist
+## Version 10.0.0 Deployment Checklist
 
 ### Pre-Deployment Steps
-- [ ] Update FoundryRulesAndUnits.csproj version to 9.3.0
+- [ ] Update FoundryRulesAndUnits.csproj version to 10.0.0
 - [ ] Update README.md version references
 - [ ] Update all markdown documentation 
+- [ ] Review CHANGELOG_10.0.0.md
 - [ ] Verify all unit tests pass
 - [ ] Check build warnings are acceptable
 
@@ -28,14 +29,14 @@ dotnet pack --configuration Release
 ## Package Information
 
 - **Package ID**: `ApprenticeFoundryRulesAndUnits`
-- **Current Version**: 9.3.0
+- **Current Version**: 10.0.0
 - **Target Framework**: .NET 9.0
 - **License**: MIT
 - **Repository**: https://github.com/SteveStrong/FoundryRulesAndUnits
 
 ## Package Location After Build
 The `.nupkg` file will be created at:
-`./bin/Release/ApprenticeFoundryRulesAndUnits.9.3.0.nupkg`
+`./bin/Release/ApprenticeFoundryRulesAndUnits.10.0.0.nupkg`
 
 ## NuGet.org Publishing Steps
 
@@ -46,18 +47,18 @@ The `.nupkg` file will be created at:
 
 2. **Upload Package**
    - Click "Upload" button in top navigation
-   - Click "Browse" and select: `./bin/Release/ApprenticeFoundryRulesAndUnits.9.2.0.nupkg`
+   - Click "Browse" and select: `./bin/Release/ApprenticeFoundryRulesAndUnits.10.0.0.nupkg`
    - Review package details (version, dependencies, etc.)
    - Add release notes if needed
    - Click "Submit"
 
 3. **Verify Upload**
-   - Package should appear at: https://www.nuget.org/packages/ApprenticeFoundryRulesAndUnits/9.2.0
+   - Package should appear at: https://www.nuget.org/packages/ApprenticeFoundryRulesAndUnits/10.0.0
    - May take a few minutes to be available for download
 
 ### Alternative: Command Line (if API key is set up)
 ```bash
-dotnet nuget push ./bin/Release/ApprenticeFoundryRulesAndUnits.9.2.0.nupkg --source https://api.nuget.org/v3/index.json
+dotnet nuget push ./bin/Release/ApprenticeFoundryRulesAndUnits.10.0.0.nupkg --source https://api.nuget.org/v3/index.json
 ```
 
 ## Package Links

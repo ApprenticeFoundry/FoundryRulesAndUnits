@@ -38,30 +38,105 @@ Add reference to FoundryRulesAndUnits library:
 
 **Note**: The package ID is `ApprenticeFoundryRulesAndUnits` (see project file for current version).
 
-## Basic Usage Examples
+## 🚨 CRITICAL: The String Payload Ambiguity Problem (SOLVED!)
+
+### The Problem (Before v10.0.0)
+
+There was a **catastrophic ambiguity** when using `ContextWrapper<string>`:
+
+```csharp
+// 🤔 IMPOSSIBLE TO DETERMINE: Is this an error or a payload?
+var wrapper = new ContextWrapper<string>("some text");
+
+// The compiler accepted this but the intent was ambiguous because
+// there was a constructor that took ONLY a string for error messages:
+public ContextWrapper(string error)  // ← The dangerous constructor
+
+// When T=string, this collided with the payload constructor:
+public ContextWrapper(T? obj, string error = "")  // T=string makes first param also string!
+```
+
+### The Solution (v10.0.0+) ✅
+
+**The dangerous single-string constructor has been REMOVED.**
+
+```csharp
+// ❌ REMOVED - No longer compiles!
+var ambiguous = new ContextWrapper<string>("text");  // COMPILE ERROR if using single string!
+
+// ✅ REQUIRED - Use factory method for error without payload
+var error = ContextWrapper<string>.Error("File not found");
+// hasError = true, message = "File not found", payload is empty
+
+// ✅ CLEAR - Use constructor with payload (still works!)
+var data = new ContextWrapper<string>("Hello World");  // First param is T, so this is payload
+// hasError = false, payload contains "Hello World"
+
+// ✅ CLEAR - Use factory method for extra clarity
+var dataExplicit = ContextWrapper<string>.Ok("Hello World");
+// hasError = false, payload contains "Hello World"
+```
+
+### What Changed in v10.0.0
+
+**REMOVED**:
+- ❌ `new ContextWrapper<T>(string error)` - The ambiguous error-only constructor
+
+**KEPT** (still work perfectly):
+- ✅ `new ContextWrapper<T>()` - Empty wrapper
+- ✅ `new ContextWrapper<T>(T obj)` - Wrapper with payload
+- ✅ `new ContextWrapper<T>(IEnumerable<T> items)` - Wrapper with collection
+- ✅ `new ContextWrapper<T>(T obj, string error)` - Wrapper with payload and error message
+
+**ADDED** (new factory methods):
+- ✨ `ContextWrapper<T>.Error(string message)` - Explicit error creation
+- ✨ `ContextWrapper<T>.Ok(T item)` - Explicit success with item
+- ✨ `ContextWrapper<T>.Ok(IEnumerable<T> items)` - Explicit success with collection
+- ✨ `ContextWrapper<T>.Empty()` - Explicit empty wrapper
+
+### Migration Guide
+
+```csharp
+// ❌ OLD WAY - Ambiguous and dangerous for string payloads
+var result = new ContextWrapper<string>("text");  // Error or data? Nobody knows!
+
+// ✅ NEW WAY - Clear and explicit
+var errorResult = ContextWrapper<string>.Error("Error message");
+var dataResult = ContextWrapper<string>.Ok("Payload data");
+```
+
+**RECOMMENDATION**: Always use factory methods for `ContextWrapper<string>` and other primitive types!
+
+## Installation
 
 ### 1. Creating Success Responses
 
 ```csharp
 using FoundryRulesAndUnits.Models;
 
-// Static success method
-var successResponse = ContextWrapper<MyData>.success("Operation completed successfully");
+// ✨ NEW: Clean static factory methods (RECOMMENDED)
+var successResponse = ContextWrapper<MyData>.Ok(myDataObject);      // Single item
+var listResponse = ContextWrapper<MyData>.Ok(myDataList);           // Multiple items
+var emptyResponse = ContextWrapper<MyData>.Empty();                 // No payload
 
-// Success with single data item
-var dataResponse = new ContextWrapper<MyData>(myDataObject);
+// Legacy: Static success method (still supported)
+var legacySuccess = ContextWrapper<MyData>.success("Operation completed successfully");
 
-// Success with multiple items (pass collection directly, NOT List<T>)
-var listResponse = new ContextWrapper<MyData>(myDataList);
+// Constructor patterns (still supported)
+var dataResponse = new ContextWrapper<MyData>(myDataObject);        // Single item
+var listResponse2 = new ContextWrapper<MyData>(myDataList);         // Collection
 ```
 
 ### 2. Creating Error Responses
 
 ```csharp
-// Static error method
-var errorResponse = ContextWrapper<MyData>.exception("Something went wrong");
+// ✨ NEW: Clean static factory method (RECOMMENDED)
+var errorResponse = ContextWrapper<MyData>.Error("Something went wrong");
 
-// Error constructor
+// Legacy: Static exception method (still supported)
+var legacyError = ContextWrapper<MyData>.exception("Something went wrong");
+
+// Constructor pattern (still supported)
 var error = new ContextWrapper<MyData>("Validation failed");
 
 // Error with specific failure type
@@ -72,7 +147,27 @@ var failure = new ContextWrapper<Failure>(new Failure
 });
 ```
 
-### 3. Accessing Wrapper Data
+### 3. Factory Method Quick Reference
+
+```csharp
+// ✨ Modern API - Static Factory Methods (RECOMMENDED)
+ContextWrapper<T>.Ok(item)          // Success with single item
+ContextWrapper<T>.Ok(items)         // Success with multiple items
+ContextWrapper<T>.Error(message)    // Error with message
+ContextWrapper<T>.Empty()           // Empty success (no payload)
+
+// Legacy API - Still supported for backward compatibility
+ContextWrapper<T>.success(message)  // Success with Success object
+ContextWrapper<T>.exception(message) // Error with Failure object
+
+// Constructor API - Still supported
+new ContextWrapper<T>(item)         // Success with single item
+new ContextWrapper<T>(items)        // Success with collection
+new ContextWrapper<T>(errorMessage) // Error with message
+new ContextWrapper<T>()             // Empty wrapper
+```
+
+### 4. Accessing Wrapper Data
 
 ```csharp
 var wrapper = new ContextWrapper<MyData>(myDataObject);
@@ -110,7 +205,45 @@ else
 
 ## Real-World Usage Patterns
 
-### API Controller Pattern
+### API Controller Pattern (Modern Factory Methods)
+
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class PartsController : ControllerBase
+{
+    public ContextWrapper<PartData> GetParts()
+    {
+        try 
+        {
+            var parts = LoadPartsFromDatabase(); // Returns List<PartData>
+            return ContextWrapper<PartData>.Ok(parts); // ✨ Clean factory method
+        }
+        catch (Exception ex)
+        {
+            return ContextWrapper<PartData>.Error(ex.Message); // ✨ Clean error
+        }
+    }
+
+    public ContextWrapper<PartData> GetPart(int id)
+    {
+        try
+        {
+            var part = FindPartById(id);
+            if (part == null)
+                return ContextWrapper<PartData>.Error("Part not found"); // ✨ Clear intent
+                
+            return ContextWrapper<PartData>.Ok(part); // ✨ Success with single item
+        }
+        catch (Exception ex)
+        {
+            return ContextWrapper<PartData>.Error($"Error retrieving part: {ex.Message}");
+        }
+    }
+}
+```
+
+### API Controller Pattern (Legacy Constructor Pattern - Still Valid)
 
 ```csharp
 [ApiController]

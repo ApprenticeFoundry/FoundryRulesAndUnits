@@ -4,7 +4,7 @@
 
 FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 24+ unit families and advanced features for engineering and scientific applications.
 
-**Current Version**: 9.3.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
+**Current Version**: 10.0.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
@@ -37,7 +37,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 
 ### NuGet Package
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="9.3.0" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.0.0" />
 ```
 
 ### Basic Setup
@@ -308,33 +308,60 @@ if (agentResult.hasError)
 
 // Convenience checks
 if (result.IsEmpty())                    // hasError || length == 0
-    return Error<T>("Not found");
+    return ContextWrapper<T>.Error("Not found");
 
 if (result.HasData())                    // !hasError && length > 0
     ProcessData(result.payload);
 
-// Quick error creation
-return Error<AgentDTO>("Agent not found");
+// Quick error creation (multiple syntaxes)
+return ContextWrapper<AgentDTO>.Error("Agent not found");
+return new ContextWrapper<AgentDTO>("Agent not found");  // Also valid
 
 // Fluent error setting
-return result.SetError<T>("Validation failed");
+return result.SetError("Validation failed");
 ```
 
-### **Clean Syntax with Using Static**
-```csharp
-using static FoundryRulesAndUnits.Extensions.ContextWrapperExtensions;
+### **Clean Syntax with Static Factory Methods** ⭐
 
-// Now you can use Error<T> directly
+**CRITICAL**: The dangerous `new ContextWrapper<string>("text")` constructor has been **REMOVED**!
+
+```csharp
+// 🚨 REMOVED - This constructor no longer exists (was ambiguous for string payloads)
+// new ContextWrapper<string>("text") - ❌ COMPILE ERROR!
+
+// ✅ REQUIRED - Use factory method for errors without payload
+var errorWrapper = ContextWrapper<string>.Error("Error message");     // Explicit error
+
+// ✅ PREFERRED - Use factory method for clarity
+var dataWrapper = ContextWrapper<string>.Ok("Actual string data");    // Explicit payload
+
+// ✅ STILL VALID - Constructor with payload object works fine
+var wrapper1 = new ContextWrapper<string>("data");                    // String is payload (T)
+var wrapper2 = new ContextWrapper<DocumentDTO>(document);             // Object is payload (T)
+var wrapper3 = new ContextWrapper<string>(list);                      // List of strings
+
+// Works perfectly for all types
 public async Task<ContextWrapper<DocumentDTO>> GetDocumentAsync(string id)
 {
     var result = await _service.FindAsync(id);
     
     if (result.IsEmpty())
-        return Error<DocumentDTO>($"Document {id} not found");
+        return ContextWrapper<DocumentDTO>.Error($"Document {id} not found");
     
-    return result;
+    return ContextWrapper<DocumentDTO>.Ok(result);
 }
+
+// All factory methods available:
+return ContextWrapper<T>.Error("Error message");   // Error with no payload (REQUIRED - no constructor for this)
+return ContextWrapper<T>.Ok(singleItem);           // Success with one item (or use constructor)
+return ContextWrapper<T>.Ok(itemList);             // Success with multiple items (or use constructor)
+return ContextWrapper<T>.Empty();                  // Empty success (or use parameterless constructor)
 ```
+
+**Why This Matters**: 
+- Before: `new ContextWrapper<string>("foo")` was ambiguous - error or data?
+- After: Constructor **removed** - must use `Error("foo")` or `Ok("foo")`
+- Constructors with payload (T) still work perfectly and are preferred for clarity
 
 ### **Multi-Service Orchestration Pattern**
 ```csharp
@@ -350,9 +377,7 @@ public async Task<ContextWrapper<DocumentDTO>> CreateDocumentAsync(
     
     // Check for empty data
     if (agentResult.IsEmpty())
-        return Error<DocumentDTO>($"Agent {agentId} not found");
-    
-    // Happy path - continue with document creation
+        return ContextWrapper<DocumentDTO>.Error($"Agent {agentId} not found");    // Happy path - continue with document creation
     var agent = agentResult.payload.First();
     var doc = await _documentService.CreateAsync(agent, content);
     return doc;
@@ -498,4 +523,4 @@ MIT License - See LICENSE file for details.
 - **FoundryMentorModeler**: Advanced modeling toolkit using this unit system
 - **TRISoC Dashboard**: Digital twin dashboard with unit system integration
 
-**Version**: 9.3.0 | **Target**: .NET 9.0 | **Updated**: October 2025
+**Version**: 10.0.0 | **Target**: .NET 9.0 | **Updated**: October 2025
