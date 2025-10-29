@@ -251,6 +251,121 @@ public class UnitParser
 4. **Mathematical Operations**: Automatic type inference (Length × Length → Area)
 5. **Zero Ambiguity**: Two-tier family system prevents parser conflicts
 
+## 🔄 ContextWrapper API Pattern
+
+### **Overview**
+`ContextWrapper<T>` provides a standardized response pattern for service APIs with built-in error handling, timestamps, and payload management.
+
+### **Basic Usage**
+```csharp
+// Success response
+var agents = new List<AgentDTO> { agent1, agent2 };
+return new ContextWrapper<AgentDTO>(agents) 
+{ 
+    message = "Retrieved 2 agents" 
+};
+
+// Error response
+return new ContextWrapper<AgentDTO> 
+{ 
+    hasError = true, 
+    message = "Database connection failed" 
+};
+```
+
+### **Interface Design**
+```csharp
+// Non-generic interface for common properties
+public interface IContextWrapper
+{
+    bool hasError { get; set; }
+    string message { get; set; }
+    int length { get; }
+    DateTime timestamp { get; }
+}
+
+// Generic interface with typed payload
+public interface IContextWrapper<out T> : IContextWrapper
+{
+    List<T> payload { get; }
+}
+
+// Implementation
+public class ContextWrapper<T> : IContextWrapper<T>
+{
+    // Existing implementation
+}
+```
+
+### **Extension Methods**
+```csharp
+using FoundryRulesAndUnits.Extensions;
+
+// Error propagation across different types
+var agentResult = await GetAgentAsync(id);
+if (agentResult.hasError)
+    return agentResult.AsErrorFor<DocumentDTO>();  // Type conversion
+
+// Convenience checks
+if (result.IsEmpty())                    // hasError || length == 0
+    return Error<T>("Not found");
+
+if (result.HasData())                    // !hasError && length > 0
+    ProcessData(result.payload);
+
+// Quick error creation
+return Error<AgentDTO>("Agent not found");
+
+// Fluent error setting
+return result.SetError<T>("Validation failed");
+```
+
+### **Clean Syntax with Using Static**
+```csharp
+using static FoundryRulesAndUnits.Extensions.ContextWrapperExtensions;
+
+// Now you can use Error<T> directly
+public async Task<ContextWrapper<DocumentDTO>> GetDocumentAsync(string id)
+{
+    var result = await _service.FindAsync(id);
+    
+    if (result.IsEmpty())
+        return Error<DocumentDTO>($"Document {id} not found");
+    
+    return result;
+}
+```
+
+### **Multi-Service Orchestration Pattern**
+```csharp
+public async Task<ContextWrapper<DocumentDTO>> CreateDocumentAsync(
+    string agentId, string content)
+{
+    // Get agent first
+    var agentResult = await _agentService.GetByIdAsync(agentId);
+    
+    // Fail fast - propagate error with type conversion
+    if (agentResult.hasError)
+        return agentResult.AsErrorFor<DocumentDTO>();
+    
+    // Check for empty data
+    if (agentResult.IsEmpty())
+        return Error<DocumentDTO>($"Agent {agentId} not found");
+    
+    // Happy path - continue with document creation
+    var agent = agentResult.payload.First();
+    var doc = await _documentService.CreateAsync(agent, content);
+    return doc;
+}
+```
+
+### **Key Benefits**
+- **Type Safety**: Compile-time checking with generics
+- **Error Propagation**: Clean error handling across service boundaries
+- **Consistent API**: Same pattern for all service responses
+- **Fluent API**: Readable, chainable extension methods
+- **Polymorphic**: Interface-based extensions work on any ContextWrapper type
+
 ## 🧪 Testing & Validation
 
 ### **Build Status**
@@ -302,9 +417,12 @@ FoundryRulesAndUnits/
 │   ├── BasicMath.cs                  # Mathematical utilities
 │   ├── JsonUtilities.cs              # System.Text.Json support
 │   └── [Other utility extensions...]
-└── DataModels/                       # Supporting data structures
-    ├── ContextWrapper.cs             # API response wrapper
+└── Models/                           # Data models and wrappers
+    ├── ContextWrapper.cs             # Generic API response wrapper with IContextWrapper interface
+    ├── IContextWrapper.cs            # Non-generic interface for error handling
     └── [Other data models...]
+├── Extensions/
+    └── ContextWrapperExtensions.cs   # Helper methods (AsErrorFor, IsEmpty, HasData, etc.)
 ```
 
 ## 🤝 Contributing

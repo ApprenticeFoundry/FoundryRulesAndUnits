@@ -35,9 +35,21 @@ namespace FoundryRulesAndUnits.Models
 		}
 	}
 
+    public interface IContextWrapper
+    {
+        bool hasError { get; set; }
+        string message { get; set; }
+        int length { get; }
+        DateTime timestamp { get; }
+
+		bool IsEmpty();
+		bool IsError();
+
+
+    }
 
 	[System.Serializable]
-	public class ContextWrapper<T>
+	public class ContextWrapper<T> :IContextWrapper
 	{
 
 		public DateTime dateTime;
@@ -57,6 +69,31 @@ namespace FoundryRulesAndUnits.Models
 			this.message = string.Empty;
 		}
 
+		public bool IsEmpty()
+		{
+			return this.length == 0;
+		}
+
+		public bool IsError()
+		{
+			return this.hasError;
+		}
+
+		public ContextWrapper<T> SetError(string error)
+		{
+			this.hasError = true;
+			this.message = $"{this.message} {error}".Trim();
+			return this;
+		}
+
+		public ContextWrapper<TResult> AsErrorFor<TSource, TResult>(this ContextWrapper<TSource> source)
+		{
+			return new ContextWrapper<TResult>
+			{
+				hasError = true,
+				message = source.message
+			};
+		}
 		public ContextWrapper(T? obj, string error = "")
 		{
 			this.dateTime = DateTime.UtcNow;
