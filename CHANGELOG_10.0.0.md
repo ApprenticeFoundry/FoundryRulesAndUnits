@@ -248,9 +248,78 @@ This release represents a comprehensive documentation modernization effort to en
 
 ---
 
-**Previous Version**: 9.3.0  
-**Upgrade Recommended**: Yes - for documentation accuracy  
-**Breaking Changes**: None (code-level)  
-**Migration Effort**: Zero (optional migration to modern patterns recommended)  
+# FoundryRulesAndUnits 10.1.0 Release Notes
 
-**Note**: Version 10.0.0 signifies a mature, well-documented, production-ready library with comprehensive architectural documentation aligned with the actual implementation.
+**Release Date**: October 30, 2025  
+**Package**: `ApprenticeFoundryRulesAndUnits` version 10.1.0
+
+## 🎯 **Minor Release: Enhancements and Deprecations**
+
+This release introduces minor enhancements to the `ContextWrapper` class, including deprecation support, removal of legacy methods, and improved JSON serialization. These changes are backward-compatible and align with semantic versioning principles.
+
+---
+
+## 🔧 **Enhancements**
+
+### **`ContextWrapper` Class Updates**
+
+#### ✅ **`length` Property Fix**
+- Converted `length` to a calculated property to ensure accurate values.
+- Added `[JsonInclude]` attribute to include `length` in JSON serialization.
+
+#### ✅ **Deprecation Support**
+- Introduced `isDeprecated` property to mark deprecated instances.
+- Added `Deprecated()` method for marking objects as deprecated.
+
+#### ✅ **Legacy Method Removal**
+- Removed `success()` and `exception()` methods as they are no longer relevant.
+
+---
+
+## 📦 **Version Consistency Updates**
+
+### ✅ **Project Files**
+- `FoundryRulesAndUnits.csproj`: Version **10.1.0**
+- `AssemblyVersion`: **10.1.0**
+
+### ✅ **Documentation Version References**
+- Updated all relevant documentation to reference version **10.1.0**.
+
+---
+
+## 🚀 **Upgrade Instructions**
+
+### From 10.0.0 versions:
+
+```xml
+<!-- Update package reference -->
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.1.0" />
+```
+
+### Compatibility:
+- ✅ **Fully Backward Compatible**: Core library unchanged
+- ✅ **No Code Changes Required**: Existing code continues to work
+- ✅ **Recommended Migration**: Update to new patterns for better testability
+- ✅ **Documentation Aligned**: All examples now show current best practices
+
+---
+
+## 🎉 **Key Benefits of This Release**
+
+### 1. **Improved Accuracy**
+- Fixed `length` property to ensure accurate values.
+
+### 2. **Modernized API**
+- Added deprecation support for better lifecycle management.
+- Removed outdated methods to streamline the API.
+
+### 3. **Production Readiness**
+- Enhanced JSON serialization for better integration.
+- Comprehensive documentation updates to reflect changes.
+
+---
+
+**Previous Version**: 10.0.0  
+**Upgrade Recommended**: Yes - for enhanced functionality  
+**Breaking Changes**: None  
+**Migration Effort**: Zero (optional migration to modern patterns recommended)  

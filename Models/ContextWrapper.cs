@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Models
 {
@@ -53,11 +54,15 @@ namespace FoundryRulesAndUnits.Models
 	{
 
 		public DateTime dateTime;
-		public int length;
+		
+		[JsonInclude]  // Ensure calculated property is serialized to JSON
+		public int length => payload?.Count ?? 0;  // Calculated property - always accurate
+		
 		public String payloadType;
 		public ICollection<T> payload;
 		public bool hasError;
 		public string message;
+		public bool isDeprecated;
 
 		// Explicit interface property implementations - expose fields as properties for interface
 		DateTime IContextWrapper.timestamp => dateTime;
@@ -68,11 +73,12 @@ namespace FoundryRulesAndUnits.Models
 		public ContextWrapper()
 		{
 			this.dateTime = DateTime.UtcNow;
-			this.length = 0;
+			// length is now calculated automatically
 			this.payloadType = typeof(T).Name;
 			this.payload = new List<T>() { };
 			this.hasError = false;
 			this.message = string.Empty;
+			this.isDeprecated = false;
 		}
 
 		public bool IsEmpty()
@@ -121,7 +127,7 @@ namespace FoundryRulesAndUnits.Models
 			if ( obj != null )
 				this.payload.Add(obj);
 
-			this.length = this.payload.Count;
+			// length is now calculated automatically
 
 			this.hasError = error != string.Empty;
 			this.message = error != string.Empty ? error : string.Empty;
@@ -133,7 +139,7 @@ namespace FoundryRulesAndUnits.Models
 		public ContextWrapper(ICollection<T> list, string error = "") : this(list.FirstOrDefault(), error)
 		{
 			this.payload = list;
-			this.length = payload.Count;
+			// length is now calculated automatically
 		}
 
 		/// <summary>
@@ -142,7 +148,7 @@ namespace FoundryRulesAndUnits.Models
 		public ContextWrapper(IEnumerable<T> list, string error = "") : this(list.FirstOrDefault(), error)
 		{
 			this.payload = list.ToArray();
-			this.length = payload.Count;
+			// length is now calculated automatically
 		}
 
 		// ============================================================================
@@ -182,7 +188,7 @@ namespace FoundryRulesAndUnits.Models
 		return new ContextWrapper<T>
 		{
 			dateTime = DateTime.UtcNow,
-			length = 0,
+			// length is now calculated automatically
 			payloadType = typeof(T).Name,
 			payload = new List<T>(),
 			hasError = true,
@@ -219,33 +225,35 @@ namespace FoundryRulesAndUnits.Models
 		return new ContextWrapper<T>();
 	}
 
-	// ============================================================================
-	// LEGACY FACTORY METHODS - Preserved for backward compatibility
-	// ============================================================================
-
-	public static ContextWrapper<Success> success(string message = "")
+	/// <summary>
+	/// Creates a deprecated wrapper with a single item - used to mark code that needs migration
+	/// The wrapper works normally but signals that this code path should be updated
+	/// Usage: return ContextWrapper<DocumentDTO>.Deprecated(data, "Migrate to new Result<T> pattern");
+	/// </summary>
+	public static ContextWrapper<T> Deprecated(T item, string migrationMessage = "")
 	{
-		var wrap = new ContextWrapper<Success>(new Success()
+		return new ContextWrapper<T>(item)
 		{
-			Message = message,
-			Status = true
-		})
-		{
-			hasError = false
+			isDeprecated = true,
+			message = string.IsNullOrWhiteSpace(migrationMessage) 
+				? "[DEPRECATED]" 
+				: $"[DEPRECATED] {migrationMessage}"
 		};
-		return wrap;
 	}
-	public static ContextWrapper<Failure> exception(string message = "")
+
+	/// <summary>
+	/// Creates a deprecated wrapper with a collection - used to mark code that needs migration
+	/// Usage: return ContextWrapper<DocumentDTO>.Deprecated(items, "Migrate to new Result<T> pattern");
+	/// </summary>
+	public static ContextWrapper<T> Deprecated(IEnumerable<T> items, string migrationMessage = "")
 	{
-		var wrap = new ContextWrapper<Failure>(new Failure()
+		return new ContextWrapper<T>(items)
 		{
-			Message = message,
-			Status = false
-		})
-		{
-			hasError = true
+			isDeprecated = true,
+			message = string.IsNullOrWhiteSpace(migrationMessage) 
+				? "[DEPRECATED]" 
+				: $"[DEPRECATED] {migrationMessage}"
 		};
-		return wrap;
 	}
 
 }}
