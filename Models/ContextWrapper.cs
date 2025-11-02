@@ -133,6 +133,8 @@ namespace FoundryRulesAndUnits.Models
 				this.payload.Add(obj);
 
 			// length is now calculated automatically
+			message = string.Empty;
+			hasError = false;
 			SetMessage(note);
 		}
 

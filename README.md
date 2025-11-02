@@ -325,6 +325,15 @@ return result.SetError("Validation failed");
 
 **CRITICAL**: The dangerous `new ContextWrapper<string>("text")` constructor has been **REMOVED**!
 
+#### **Quick Reference: Factory Methods**
+
+| Method | Use Case | Result |
+|--------|----------|---------|
+| `Error("message")` | Something went wrong | `hasError = true`, no payload |
+| `Ok(item)` | Success with single item | `hasError = false`, 1 item in payload |
+| `Ok(items)` | Success with collection | `hasError = false`, multiple items |
+| `Empty()` | Success but no data | `hasError = false`, empty payload |
+
 ```csharp
 // 🚨 REMOVED - This constructor no longer exists (was ambiguous for string payloads)
 // new ContextWrapper<string>("text") - ❌ COMPILE ERROR!
@@ -362,6 +371,87 @@ return ContextWrapper<T>.Empty();                  // Empty success (or use para
 - Before: `new ContextWrapper<string>("foo")` was ambiguous - error or data?
 - After: Constructor **removed** - must use `Error("foo")` or `Ok("foo")`
 - Constructors with payload (T) still work perfectly and are preferred for clarity
+
+### **Factory Methods - Recommended Usage Patterns** 🎯
+
+The static factory methods are the **preferred way** to create `ContextWrapper<T>` instances:
+
+#### **Real-World API Controller Example**
+```csharp
+[ApiController]
+[Route("api/[controller]")]
+public class UsersController : ControllerBase
+{
+    [HttpGet("{id}")]
+    public async Task<ContextWrapper<User>> GetUser(int id)
+    {
+        // Input validation - crystal clear this is an error
+        if (id <= 0)
+            return ContextWrapper<User>.Error("Invalid user ID");
+        
+        // Database lookup
+        var user = await _userService.GetByIdAsync(id);
+        if (user == null)
+            return ContextWrapper<User>.Error($"User {id} not found");
+        
+        // Success - crystal clear this is data
+        return ContextWrapper<User>.Ok(user);
+    }
+    
+    [HttpGet]
+    public async Task<ContextWrapper<User>> GetAllUsers()
+    {
+        var users = await _userService.GetAllAsync();
+        
+        // Empty but not an error - crystal clear intent
+        if (!users.Any())
+            return ContextWrapper<User>.Empty();
+        
+        // Success with collection
+        return ContextWrapper<User>.Ok(users, $"Found {users.Count()} users");
+    }
+}
+```
+
+#### **Service Layer Pattern**
+```csharp
+public class DocumentService
+{
+    public async Task<ContextWrapper<string>> GetContentAsync(string path)
+    {
+        // Validation errors
+        if (string.IsNullOrWhiteSpace(path))
+            return ContextWrapper<string>.Error("Document path is required");
+        
+        if (!File.Exists(path))
+            return ContextWrapper<string>.Error($"File not found: {path}");
+        
+        try
+        {
+            var content = await File.ReadAllTextAsync(path);
+            
+            // Empty file (success, but no content)
+            if (string.IsNullOrEmpty(content))
+                return ContextWrapper<string>.Empty();
+            
+            // Success with string payload
+            return ContextWrapper<string>.Ok(content, "Document loaded");
+        }
+        catch (Exception ex)
+        {
+            return ContextWrapper<string>.Error($"Error reading: {ex.Message}");
+        }
+    }
+}
+```
+
+#### **Why Factory Methods Are Superior**
+- **🔍 Clear Intent**: `Error()` vs `Ok()` vs `Empty()` - no guessing
+- **🛡️ Type Safety**: Eliminates string ambiguity completely  
+- **📖 Self-Documenting**: Code reads like plain English
+- **🔧 IntelliSense**: Shows all options when you type `ContextWrapper<T>.`
+
+**Recommendation**: Use factory methods for all new code! 🚀
 
 ### **Multi-Service Orchestration Pattern**
 ```csharp
