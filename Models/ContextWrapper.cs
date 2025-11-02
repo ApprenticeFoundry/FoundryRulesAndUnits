@@ -97,7 +97,12 @@ namespace FoundryRulesAndUnits.Models
 			this.message = $"{this.message} {error}".Trim();
 			return this;
 		}
-
+		public ContextWrapper<T> SetMessage(string message)
+		{
+			this.hasError = false;
+			this.message = $"{this.message} {message}".Trim();
+			return this;
+		}
 		/// <summary>
 		/// Converts this error wrapper to a different type while preserving the error state
 		/// Usage: var docError = agentError.AsErrorFor<DocumentDTO>();
@@ -118,20 +123,19 @@ namespace FoundryRulesAndUnits.Models
 		/// <summary>
 		/// Creates a wrapper with a single payload item
 		/// </summary>
-		public ContextWrapper(T? obj, string error = "")
+		public ContextWrapper(T? obj, string note = "")
 		{
 			this.dateTime = DateTime.UtcNow;
 
 			this.payloadType = obj == null ? "NONE" : obj.GetType().Name;
 			this.payload = new List<T>() { };
-			if ( obj != null )
+			if (obj != null)
 				this.payload.Add(obj);
 
 			// length is now calculated automatically
-
-			this.hasError = error != string.Empty;
-			this.message = error != string.Empty ? error : string.Empty;
+			SetMessage(note);
 		}
+
 
 		/// <summary>
 		/// Creates a wrapper with a collection of items
@@ -151,17 +155,6 @@ namespace FoundryRulesAndUnits.Models
 			// length is now calculated automatically
 		}
 
-		// ============================================================================
-		// REMOVED: Dangerous ambiguous constructor
-		// ============================================================================
-		// public ContextWrapper(string error) - REMOVED!
-		// This constructor was dangerous because when T=string, it created ambiguity:
-		//   new ContextWrapper<string>("text") - Error or payload? Impossible to tell!
-		// 
-		// Use factory methods instead:
-		//   ContextWrapper<string>.Error("error message")  // Explicit error
-		//   ContextWrapper<string>.Ok("payload data")      // Explicit payload
-		// ============================================================================
 
 		public List<T> PayloadAsList()
 		{
@@ -202,18 +195,26 @@ namespace FoundryRulesAndUnits.Models
 	/// 
 	/// Equivalent to: new ContextWrapper<T>(item)
 	/// </summary>
-	public static ContextWrapper<T> Ok(T item)
+	public static ContextWrapper<T> Ok(T item, string message = "")
 	{
-		return new ContextWrapper<T>(item);
+		return new ContextWrapper<T>(item)
+		{
+			hasError = false,
+			message = message
+		};
 	}
 
 	/// <summary>
 	/// Creates a successful wrapper with multiple payload items
 	/// Usage: return ContextWrapper<DocumentDTO>.Ok(documentList);
 	/// </summary>
-	public static ContextWrapper<T> Ok(IEnumerable<T> items)
+	public static ContextWrapper<T> Ok(IEnumerable<T> items, string message = "")
 	{
-		return new ContextWrapper<T>(items);
+		return new ContextWrapper<T>(items)
+		{
+			hasError = false,
+			message = message
+		};
 	}
 
 	/// <summary>
