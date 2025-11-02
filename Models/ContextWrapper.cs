@@ -142,7 +142,7 @@ namespace FoundryRulesAndUnits.Models
 		/// <summary>
 		/// Creates a wrapper with a collection of items
 		/// </summary>
-		public ContextWrapper(ICollection<T> list, string error = "") : this(list.FirstOrDefault(), error)
+		public ContextWrapper(ICollection<T> list, string note = "") : this(list.FirstOrDefault(), note)
 		{
 			this.payload = list;
 			// length is now calculated automatically
@@ -151,7 +151,7 @@ namespace FoundryRulesAndUnits.Models
 		/// <summary>
 		/// Creates a wrapper with an enumerable of items
 		/// </summary>
-		public ContextWrapper(IEnumerable<T> list, string error = "") : this(list.FirstOrDefault(), error)
+		public ContextWrapper(IEnumerable<T> list, string note = "") : this(list.FirstOrDefault(), note)
 		{
 			this.payload = list.ToArray();
 			// length is now calculated automatically
@@ -223,9 +223,13 @@ namespace FoundryRulesAndUnits.Models
 	/// Creates an empty successful wrapper (no payload, no error)
 	/// Usage: return ContextWrapper<DocumentDTO>.Empty();
 	/// </summary>
-	public static ContextWrapper<T> Empty()
+	public static ContextWrapper<T> Empty(string message = "")
 	{
-		return new ContextWrapper<T>();
+		return new ContextWrapper<T>
+		{
+			hasError = false,
+			message = message
+		};
 	}
 
 	/// <summary>
