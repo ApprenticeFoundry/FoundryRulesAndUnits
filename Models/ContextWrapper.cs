@@ -36,28 +36,28 @@ namespace FoundryRulesAndUnits.Models
 		}
 	}
 
-    public interface IContextWrapper
-    {
-        bool hasError { get; set; }
-        string message { get; set; }
-        int length { get; }
-        DateTime timestamp { get; }
+	public interface IContextWrapper
+	{
+		bool hasError { get; set; }
+		string message { get; set; }
+		int length { get; }
+		DateTime timestamp { get; }
 
 		bool IsEmpty();
 		bool IsError();
 
 
-    }
+	}
 
 	[System.Serializable]
-	public class ContextWrapper<T> :IContextWrapper
+	public class ContextWrapper<T> : IContextWrapper
 	{
 
 		public DateTime dateTime;
-		
+
 		[JsonInclude]  // Ensure calculated property is serialized to JSON
 		public int length => payload?.Count ?? 0;  // Calculated property - always accurate
-		
+
 		public String payloadType;
 		public ICollection<T> payload;
 		public bool hasError;
@@ -163,104 +163,129 @@ namespace FoundryRulesAndUnits.Models
 			return this.payload.ToList();
 		}
 
-	// ============================================================================
-	// STATIC FACTORY METHODS - Explicit, unambiguous API
-	// ============================================================================
-	// Factory methods provide clear intent, especially for ContextWrapper<string>
-	// where the dangerous single-string constructor has been removed.
-	// ============================================================================
+		// ============================================================================
+		// STATIC FACTORY METHODS - Explicit, unambiguous API
+		// ============================================================================
+		// Factory methods provide clear intent, especially for ContextWrapper<string>
+		// where the dangerous single-string constructor has been removed.
+		// ============================================================================
 
-	/// <summary>
-	/// Creates an error wrapper with a message (no payload)
-	/// Usage: return ContextWrapper<DocumentDTO>.Error("Document not found");
-	/// 
-	/// This is the REQUIRED way to create error wrappers without payload.
-	/// The old "new ContextWrapper(string)" constructor was removed due to
-	/// ambiguity when T=string.
-	/// </summary>
-	public static ContextWrapper<T> Error(string message)
-	{
-		return new ContextWrapper<T>
+		/// <summary>
+		/// Creates an error wrapper with a message (no payload)
+		/// Usage: return ContextWrapper<DocumentDTO>.Error("Document not found");
+		/// 
+		/// This is the REQUIRED way to create error wrappers without payload.
+		/// The old "new ContextWrapper(string)" constructor was removed due to
+		/// ambiguity when T=string.
+		/// </summary>
+		public static ContextWrapper<T> Error(string message)
 		{
-			dateTime = DateTime.UtcNow,
-			// length is now calculated automatically
-			payloadType = typeof(T).Name,
-			payload = new List<T>(),
-			hasError = true,
-			message = message
-		};
-	}
+			return new ContextWrapper<T>
+			{
+				dateTime = DateTime.UtcNow,
+				// length is now calculated automatically
+				payloadType = typeof(T).Name,
+				payload = new List<T>(),
+				hasError = true,
+				message = message
+			};
+		}
 
-	/// <summary>
-	/// Creates a successful wrapper with a single payload item
-	/// Usage: return ContextWrapper<DocumentDTO>.Ok(document);
-	/// 
-	/// Equivalent to: new ContextWrapper<T>(item)
-	/// </summary>
-	public static ContextWrapper<T> Ok(T item, string message = "")
-	{
-		return new ContextWrapper<T>(item)
+		/// <summary>
+		/// Creates a successful wrapper with a single payload item
+		/// Usage: return ContextWrapper<DocumentDTO>.Ok(document);
+		/// 
+		/// Equivalent to: new ContextWrapper<T>(item)
+		/// </summary>
+		public static ContextWrapper<T> Ok(T item, string message = "")
 		{
-			hasError = false,
-			message = message
-		};
-	}
+			return new ContextWrapper<T>(item)
+			{
+				hasError = false,
+				message = message
+			};
+		}
 
-	/// <summary>
-	/// Creates a successful wrapper with multiple payload items
-	/// Usage: return ContextWrapper<DocumentDTO>.Ok(documentList);
-	/// </summary>
-	public static ContextWrapper<T> Ok(IEnumerable<T> items, string message = "")
-	{
-		return new ContextWrapper<T>(items)
+		public static ContextWrapper<T> ObjectRequired(T? item, string message = "", string error = "Object not found")
 		{
-			hasError = false,
-			message = message
-		};
-	}
+			if (item == null)
+			{
+				return ContextWrapper<T>.Error(error);
+			}
+			else
+			{
+				return ContextWrapper<T>.Ok(item, message);
+			}
+		}
 
-	/// <summary>
-	/// Creates an empty successful wrapper (no payload, no error)
-	/// Usage: return ContextWrapper<DocumentDTO>.Empty();
-	/// </summary>
-	public static ContextWrapper<T> Empty(string message = "")
-	{
-		return new ContextWrapper<T>
+		/// <summary>
+		/// Creates a successful wrapper with multiple payload items
+		/// Usage: return ContextWrapper<DocumentDTO>.Ok(documentList);
+		/// </summary>
+		public static ContextWrapper<T> Ok(IEnumerable<T> items, string message = "")
 		{
-			hasError = false,
-			message = message
-		};
-	}
+			return new ContextWrapper<T>(items)
+			{
+				hasError = false,
+				message = message
+			};
+		}
 
-	/// <summary>
-	/// Creates a deprecated wrapper with a single item - used to mark code that needs migration
-	/// The wrapper works normally but signals that this code path should be updated
-	/// Usage: return ContextWrapper<DocumentDTO>.Deprecated(data, "Migrate to new Result<T> pattern");
-	/// </summary>
-	public static ContextWrapper<T> Deprecated(T item, string migrationMessage = "")
-	{
-		return new ContextWrapper<T>(item)
+		public static ContextWrapper<T> ObjectRequired(ICollection<T> items, string message = "", string error = "Object not found")
 		{
-			isDeprecated = true,
-			message = string.IsNullOrWhiteSpace(migrationMessage) 
-				? "[DEPRECATED]" 
-				: $"[DEPRECATED] {migrationMessage}"
-		};
-	}
+			if (items == null || items.Count == 0)
+			{
+				return ContextWrapper<T>.Error(error);
+			}
+			else
+			{
+				return ContextWrapper<T>.Ok(items, message);
+			}
+		}
 
-	/// <summary>
-	/// Creates a deprecated wrapper with a collection - used to mark code that needs migration
-	/// Usage: return ContextWrapper<DocumentDTO>.Deprecated(items, "Migrate to new Result<T> pattern");
-	/// </summary>
-	public static ContextWrapper<T> Deprecated(IEnumerable<T> items, string migrationMessage = "")
-	{
-		return new ContextWrapper<T>(items)
+		/// <summary>
+		/// Creates an empty successful wrapper (no payload, no error)
+		/// Usage: return ContextWrapper<DocumentDTO>.Empty();
+		/// </summary>
+		public static ContextWrapper<T> Empty(string message = "")
 		{
-			isDeprecated = true,
-			message = string.IsNullOrWhiteSpace(migrationMessage) 
-				? "[DEPRECATED]" 
-				: $"[DEPRECATED] {migrationMessage}"
-		};
-	}
+			return new ContextWrapper<T>
+			{
+				hasError = false,
+				message = message
+			};
+		}
 
-}}
+		/// <summary>
+		/// Creates a deprecated wrapper with a single item - used to mark code that needs migration
+		/// The wrapper works normally but signals that this code path should be updated
+		/// Usage: return ContextWrapper<DocumentDTO>.Deprecated(data, "Migrate to new Result<T> pattern");
+		/// </summary>
+		public static ContextWrapper<T> Deprecated(T item, string migrationMessage = "")
+		{
+			return new ContextWrapper<T>(item)
+			{
+				isDeprecated = true,
+				message = string.IsNullOrWhiteSpace(migrationMessage)
+					? "[DEPRECATED]"
+					: $"[DEPRECATED] {migrationMessage}"
+			};
+		}
+
+		/// <summary>
+		/// Creates a deprecated wrapper with a collection - used to mark code that needs migration
+		/// Usage: return ContextWrapper<DocumentDTO>.Deprecated(items, "Migrate to new Result<T> pattern");
+		/// </summary>
+		public static ContextWrapper<T> Deprecated(IEnumerable<T> items, string migrationMessage = "")
+		{
+			return new ContextWrapper<T>(items)
+			{
+				isDeprecated = true,
+				message = string.IsNullOrWhiteSpace(migrationMessage)
+					? "[DEPRECATED]"
+					: $"[DEPRECATED] {migrationMessage}"
+			};
+		}
+
+	}
+}

@@ -42,6 +42,17 @@ public static class StringExtensions
         return string.Equals(str1, str2, StringComparison.OrdinalIgnoreCase);
     }
 
+    public static bool Contains(this string str1, string str2)
+    {
+        if (str1 == null && str2 == null)
+            return true;
+        
+        if (str1 == null || str2 == null)
+            return false;
+        
+        return str1.IndexOf(str2, StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
 
 
     public static string CleanPartNumber(this string str1)
@@ -100,20 +111,13 @@ public static class StringExtensions
         return result;
     }
 
-     public static bool ContainsNoCase(this string str1, string str2)
-    {
-		if (str1.IsNullOrEmpty() && str2.IsNullOrEmpty()) return true;
-        var result = str1.ToLower().Contains(str2.ToLower());
-        return result;
-    }   
-
     public static bool ContainsAny(this string str1, List<string> collection)
     {
 		if (str1.IsNullOrEmpty() && collection.Count == 0) return true;
         if (str1.IsNullOrEmpty()) return false;
         foreach (var item in collection)
         {
-            var result = str1.ContainsNoCase(item);
+            var result = str1.Contains(item);
             if ( result ) return true;
         }
         return false;

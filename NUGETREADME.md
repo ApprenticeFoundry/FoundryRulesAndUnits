@@ -29,14 +29,14 @@ dotnet pack --configuration Release
 ## Package Information
 
 - **Package ID**: `ApprenticeFoundryRulesAndUnits`
-- **Current Version**: 10.3.0
+- **Current Version**: 10.4.0
 - **Target Framework**: .NET 9.0
 - **License**: MIT
 - **Repository**: https://github.com/SteveStrong/FoundryRulesAndUnits
 
 ## Package Location After Build
 The `.nupkg` file will be created at:
-`./bin/Release/ApprenticeFoundryRulesAndUnits.10.3.0.nupkg`
+`./bin/Release/ApprenticeFoundryRulesAndUnits.10.4.0.nupkg`
 
 ## NuGet.org Publishing Steps
 
