@@ -1,14 +1,6 @@
 # NuGet Publishing Guide - Personal Deployment Notes
 
-## Version 10.3.0 Deployment Checklist
 
-### Pre-Deployment Steps
-- [ ] Update FoundryRulesAndUnits.csproj version to 10.3.0
-- [ ] Update README.md version references
-- [ ] Update all markdown documentation 
-- [ ] Review CHANGELOG_10.3.0.md
-- [ ] Verify all unit tests pass
-- [ ] Check build warnings are acceptable
 
 ## Build and Pack Commands
 
