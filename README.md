@@ -4,7 +4,7 @@
 
 FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 24+ unit families and advanced features for engineering and scientific applications.
 
-**Current Version**: 10.4.1 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
+**Current Version**: 10.5.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
@@ -15,6 +15,21 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **24+ Unit Types**: Complete coverage from Length/Mass to specialized units like Frequency/Resistance
 - **Mathematical Operations**: Automatic type inference (Length × Length → Area, Mass × Acceleration → Force)
 - **Zero Ambiguity Parser**: Two-tier unit family system eliminates parser conflicts
+- **StatusBitArray**: High-performance 32-bit flag system with granular dirty tracking for 3D optimization
+
+### **StatusBitArray (v10.5.0)** ⭐ NEW!
+- **32-Bit Capacity**: Expanded from 24 to 32 bits with domain-grouped organization
+- **General-Purpose Dirty Flag**: `IsDirty` for broad usage across all domains (diagrams, evaluators, knowledge systems)
+- **Granular Dirty Tracking**: 5 specialized flags for 3D rendering optimization
+  - `IsTransformDirty`: Position/rotation/scale changes (10x-100x faster updates)
+  - `IsMaterialDirty`: Color/texture/shader changes (5x-10x faster updates)
+  - `IsGeometryDirty`: Mesh/vertex changes (full rebuild required)
+  - `IsStructureDirty`: Hierarchy/parent-child changes
+  - `IsDataDirty`: Custom data/metadata changes
+- **Lifecycle Tracking**: `IsNew` flag for newly created objects
+- **Domain Organization**: Flags grouped by purpose (Lifecycle, Dirty, Access, UI, Rendering)
+- **Inverted Naming**: Flags named as negatives (`Invisible`, `NotDirty`) so `SetAll(false)` = clean state
+- **Future-Proof**: 4 reserved bit positions (8, 19, 29-31) for expansion
 
 ### **Unit Systems Supported**
 - **SI** (International System of Units)
@@ -37,7 +52,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 
 ### NuGet Package
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.4.1" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.5.0" />
 ```
 
 ### Basic Setup
@@ -510,6 +525,11 @@ Debug.Assert(area.GetType() == typeof(Area));
 
 ```
 FoundryRulesAndUnits/
+├── Models/
+│   ├── StatusBitArray.cs             # ⭐ NEW v10.5.0: 32-bit flag system with granular dirty tracking
+│   ├── ContextWrapper.cs             # Generic API response wrapper with IContextWrapper interface
+│   ├── IContextWrapper.cs            # Non-generic interface for error handling
+│   └── [Other data models...]
 ├── UnitSystem/
 │   ├── MeasuredValue.cs              # Base class with UnitGroup injection
 │   ├── UnitSystem.cs                 # Complete IUnitSystem implementation  
@@ -531,13 +551,8 @@ FoundryRulesAndUnits/
 ├── Extensions/
 │   ├── BasicMath.cs                  # Mathematical utilities
 │   ├── JsonUtilities.cs              # System.Text.Json support
+│   ├── ContextWrapperExtensions.cs   # Helper methods (AsErrorFor, IsEmpty, HasData, etc.)
 │   └── [Other utility extensions...]
-└── Models/                           # Data models and wrappers
-    ├── ContextWrapper.cs             # Generic API response wrapper with IContextWrapper interface
-    ├── IContextWrapper.cs            # Non-generic interface for error handling
-    └── [Other data models...]
-├── Extensions/
-    └── ContextWrapperExtensions.cs   # Helper methods (AsErrorFor, IsEmpty, HasData, etc.)
 ```
 
 ## 🤝 Contributing
@@ -613,4 +628,4 @@ MIT License - See LICENSE file for details.
 - **FoundryMentorModeler**: Advanced modeling toolkit using this unit system
 - **TRISoC Dashboard**: Digital twin dashboard with unit system integration
 
-**Version**: 10.4.1 | **Target**: .NET 9.0 | **Updated**: November 2025
+**Version**: 10.5.0 | **Target**: .NET 9.0 | **Updated**: November 2025

@@ -12,32 +12,58 @@ namespace FoundryRulesAndUnits.Models
 
 		private enum StatusBit 
 		{
-			Invisible,
-			Private,
-			IsReadOnly,
-			Unselectable,
-			Selected,
-			UserSpecified,
-			Expanded,
-			Calculating,
-			Calculated,
-			ProtectFormula,
-			ProtectValue,
-			ForceEvaluation,
-			ValueIncorrect,
-			MetaKnowledge,
-			AllowSubshapes,
-			AllowConnections,
-			AllowAsParentShape,
-			ShouldNotRender,
-			ShowChildren,
-			Dirty,
-			ShouldDelete
+			// === OBJECT LIFECYCLE (0-2) ===
+			ShouldDelete = 0,
+			NotNew = 1,              // Inverted: false = new object
+			Dirty = 2,               // General-purpose dirty flag (backward compatible)
+			
+			// === GRANULAR DIRTY TRACKING - 3D OPTIMIZATION (3-7) ===
+			NotTransformDirty = 3,   // Inverted: false = transform dirty
+			NotMaterialDirty = 4,    // Inverted: false = material dirty
+			NotGeometryDirty = 5,    // Inverted: false = geometry dirty
+			NotStructureDirty = 6,   // Inverted: false = structure dirty
+			NotDataDirty = 7,        // Inverted: false = data dirty
+			// Reserved = 8,
+			
+			// === ACCESS CONTROL & PROTECTION (9-12) ===
+			IsReadOnly = 9,
+			Private = 10,
+			ProtectFormula = 11,
+			ProtectValue = 12,
+			
+			// === UI & SELECTION (13-16) ===
+			Invisible = 13,
+			Unselectable = 14,
+			Selected = 15,
+			Expanded = 16,
+			
+			// === RENDERING CONTROL (17-19) ===
+			ShouldNotRender = 17,
+			ShowChildren = 18,
+			// Reserved = 19,
+			
+			// === EXPRESSION EVALUATOR (20-23) ===
+			Calculating = 20,
+			Calculated = 21,
+			ForceEvaluation = 22,
+			ValueIncorrect = 23,
+			
+			// === DATA PROVENANCE & VALIDATION (24-25) ===
+			UserSpecified = 24,
+			MetaKnowledge = 25,
+			
+			// === SHAPE/DIAGRAM DOMAIN (26-28) ===
+			AllowSubshapes = 26,
+			AllowConnections = 27,
+			AllowAsParentShape = 28
+			
+			// === FUTURE EXPANSION (29-31) ===
+			// Reserved = 29-31
 		}
 
 		public StatusBitArray()
 		{
-			m_Status = new BitArray( 24 );
+			m_Status = new BitArray( 32 );
 			m_Status.SetAll(false);
 		}
 
@@ -264,14 +290,47 @@ namespace FoundryRulesAndUnits.Models
 		
 		public bool IsDirty
 		{
-			get
-			{
-				return m_Status[(int)StatusBit.Dirty];
-			}
-			set
-			{
-				m_Status[(int)StatusBit.Dirty] = value;
-			}
+			get { return m_Status[(int)StatusBit.Dirty]; }
+			set { m_Status[(int)StatusBit.Dirty] = value; }
+		}
+
+		// === GRANULAR DIRTY FLAGS (3D Optimization) ===
+		// These are independent from IsDirty and used for smart update routing
+		
+		public bool IsTransformDirty
+		{
+			get { return !m_Status[(int)StatusBit.NotTransformDirty]; }
+			set { m_Status[(int)StatusBit.NotTransformDirty] = !value; }
+		}
+
+		public bool IsMaterialDirty
+		{
+			get { return !m_Status[(int)StatusBit.NotMaterialDirty]; }
+			set { m_Status[(int)StatusBit.NotMaterialDirty] = !value; }
+		}
+
+		public bool IsGeometryDirty
+		{
+			get { return !m_Status[(int)StatusBit.NotGeometryDirty]; }
+			set { m_Status[(int)StatusBit.NotGeometryDirty] = !value; }
+		}
+
+		public bool IsStructureDirty
+		{
+			get { return !m_Status[(int)StatusBit.NotStructureDirty]; }
+			set { m_Status[(int)StatusBit.NotStructureDirty] = !value; }
+		}
+
+		public bool IsDataDirty
+		{
+			get { return !m_Status[(int)StatusBit.NotDataDirty]; }
+			set { m_Status[(int)StatusBit.NotDataDirty] = !value; }
+		}
+
+		public bool IsNew
+		{
+			get { return !m_Status[(int)StatusBit.NotNew]; }
+			set { m_Status[(int)StatusBit.NotNew] = !value; }
 		}
 
 		
