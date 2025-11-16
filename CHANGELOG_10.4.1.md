@@ -1,7 +1,7 @@
-# FoundryRulesAndUnits 10.4.1 Release Notes
+# FoundryRulesAndUnits 10.6.0 Release Notes
 
-**Release Date**: November 11, 2025  
-**Package**: `ApprenticeFoundryRulesAndUnits` version 10.4.1
+**Release Date**: November 16, 2025  
+**Package**: `ApprenticeFoundryRulesAndUnits` version 10.6.0
 
 ## 🎯 **Patch Release: String Extensions Enhancement**
 
@@ -56,11 +56,11 @@ public static bool Contains(this string str1, string str2)
 
 ## 🚀 **Upgrade Instructions**
 
-### From 10.4.0 or earlier versions:
+### From 10.5.0 or earlier versions:
 
 ```xml
 <!-- Update package reference -->
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.4.1" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.6.0" />
 ```
 
 ### Usage Examples:
@@ -138,7 +138,7 @@ This is a **patch release** with full backward compatibility:
 
 ---
 
-**Previous Version**: 10.4.0  
+**Previous Version**: 10.5.0  
 **Upgrade Recommended**: Yes - for improved string operation performance  
 **Breaking Changes**: None  
 **Migration Effort**: Zero (automatic performance improvements)

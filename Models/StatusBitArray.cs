@@ -17,12 +17,12 @@ namespace FoundryRulesAndUnits.Models
 			NotNew = 1,              // Inverted: false = new object
 			Dirty = 2,               // General-purpose dirty flag (backward compatible)
 			
-			// === GRANULAR DIRTY TRACKING - 3D OPTIMIZATION (3-7) ===
-			NotTransformDirty = 3,   // Inverted: false = transform dirty
-			NotMaterialDirty = 4,    // Inverted: false = material dirty
-			NotGeometryDirty = 5,    // Inverted: false = geometry dirty
-			NotStructureDirty = 6,   // Inverted: false = structure dirty
-			NotDataDirty = 7,        // Inverted: false = data dirty
+			// === GRANULAR STALE TRACKING - 3D GPU CACHE SYNC (3-7) ===
+			NotTransformStale = 3,   // Inverted: false = GPU transform cache is stale
+			NotMaterialStale = 4,    // Inverted: false = GPU material cache is stale
+			NotGeometryStale = 5,    // Inverted: false = GPU geometry cache is stale
+			NotStructureStale = 6,   // Inverted: false = GPU structure cache is stale
+			NotDataStale = 7,        // Inverted: false = GPU data cache is stale
 			// Reserved = 8,
 			
 			// === ACCESS CONTROL & PROTECTION (9-12) ===
@@ -294,37 +294,38 @@ namespace FoundryRulesAndUnits.Models
 			set { m_Status[(int)StatusBit.Dirty] = value; }
 		}
 
-		// === GRANULAR DIRTY FLAGS (3D Optimization) ===
-		// These are independent from IsDirty and used for smart update routing
+		// === GRANULAR STALE FLAGS (3D GPU Cache Sync) ===
+		// These track when GPU/JavaScript cached rendering data is stale (C# has fresh data)
+		// Independent from IsDirty (general-purpose flag) - used for optimized 3D rendering updates
 		
-		public bool IsTransformDirty
+		public bool IsTransformStale
 		{
-			get { return !m_Status[(int)StatusBit.NotTransformDirty]; }
-			set { m_Status[(int)StatusBit.NotTransformDirty] = !value; }
+			get { return !m_Status[(int)StatusBit.NotTransformStale]; }
+			set { m_Status[(int)StatusBit.NotTransformStale] = !value; }
 		}
 
-		public bool IsMaterialDirty
+		public bool IsMaterialStale
 		{
-			get { return !m_Status[(int)StatusBit.NotMaterialDirty]; }
-			set { m_Status[(int)StatusBit.NotMaterialDirty] = !value; }
+			get { return !m_Status[(int)StatusBit.NotMaterialStale]; }
+			set { m_Status[(int)StatusBit.NotMaterialStale] = !value; }
 		}
 
-		public bool IsGeometryDirty
+		public bool IsGeometryStale
 		{
-			get { return !m_Status[(int)StatusBit.NotGeometryDirty]; }
-			set { m_Status[(int)StatusBit.NotGeometryDirty] = !value; }
+			get { return !m_Status[(int)StatusBit.NotGeometryStale]; }
+			set { m_Status[(int)StatusBit.NotGeometryStale] = !value; }
 		}
 
-		public bool IsStructureDirty
+		public bool IsStructureStale
 		{
-			get { return !m_Status[(int)StatusBit.NotStructureDirty]; }
-			set { m_Status[(int)StatusBit.NotStructureDirty] = !value; }
+			get { return !m_Status[(int)StatusBit.NotStructureStale]; }
+			set { m_Status[(int)StatusBit.NotStructureStale] = !value; }
 		}
 
-		public bool IsDataDirty
+		public bool IsDataStale
 		{
-			get { return !m_Status[(int)StatusBit.NotDataDirty]; }
-			set { m_Status[(int)StatusBit.NotDataDirty] = !value; }
+			get { return !m_Status[(int)StatusBit.NotDataStale]; }
+			set { m_Status[(int)StatusBit.NotDataStale] = !value; }
 		}
 
 		public bool IsNew
