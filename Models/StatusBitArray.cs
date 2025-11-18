@@ -328,6 +328,70 @@ namespace FoundryRulesAndUnits.Models
 			set { m_Status[(int)StatusBit.NotDataStale] = !value; }
 		}
 
+		/// <summary>
+		/// Returns true if ANY stale flag is set.
+		/// </summary>
+		public bool IsStale
+		{
+			get
+			{
+				return IsTransformStale || IsMaterialStale || IsGeometryStale || 
+				       IsStructureStale || IsDataStale;
+			}
+		}
+
+		/// <summary>
+		/// Mark transform as stale (position, rotation, scale changed).
+		/// </summary>
+		public void SetTransformStale()
+		{
+			IsTransformStale = true;
+		}
+
+		/// <summary>
+		/// Mark material as stale (color, texture, opacity changed).
+		/// </summary>
+		public void SetMaterialStale()
+		{
+			IsMaterialStale = true;
+		}
+
+		/// <summary>
+		/// Mark geometry as stale (shape, vertices, mesh changed).
+		/// </summary>
+		public void SetGeometryStale()
+		{
+			IsGeometryStale = true;
+		}
+
+		/// <summary>
+		/// Mark structure as stale (children added/removed).
+		/// </summary>
+		public void SetStructureStale()
+		{
+			IsStructureStale = true;
+		}
+
+		/// <summary>
+		/// Mark data as stale (custom properties, labels changed).
+		/// </summary>
+		public void SetDataStale()
+		{
+			IsDataStale = true;
+		}
+
+		/// <summary>
+		/// Clear all stale flags after GPU/JavaScript synchronization.
+		/// </summary>
+		public void ClearAllStaleFlags()
+		{
+			IsTransformStale = false;
+			IsMaterialStale = false;
+			IsGeometryStale = false;
+			IsStructureStale = false;
+			IsDataStale = false;
+		}
+
 		public bool IsNew
 		{
 			get { return !m_Status[(int)StatusBit.NotNew]; }
