@@ -17,7 +17,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **Zero Ambiguity Parser**: Two-tier unit family system eliminates parser conflicts
 - **StatusBitArray**: High-performance 32-bit flag system with granular stale tracking for 3D GPU cache sync
 
-### **StatusBitArray (v10.5.0)** ⭐ NEW!
+### **StatusBitArray (v10.6.0)** ⭐ NEW!
 - **32-Bit Capacity**: Expanded from 24 to 32 bits with domain-grouped organization
 - **General-Purpose Dirty Flag**: `IsDirty` for broad usage across all domains (diagrams, evaluators, knowledge systems)
 - **Granular Stale Tracking**: 5 specialized flags for 3D GPU cache synchronization
