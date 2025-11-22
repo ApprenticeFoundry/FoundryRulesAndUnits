@@ -380,25 +380,101 @@ namespace FoundryRulesAndUnits.Models
 			IsDataStale = true;
 		}
 
-		/// <summary>
-		/// Clear all stale flags after GPU/JavaScript synchronization.
-		/// </summary>
-		public void ClearAllStaleFlags()
-		{
-			IsTransformStale = false;
-			IsMaterialStale = false;
-			IsGeometryStale = false;
-			IsStructureStale = false;
-			IsDataStale = false;
-		}
+	/// <summary>
+	/// Clear all stale flags after GPU/JavaScript synchronization.
+	/// </summary>
+	public void ClearAllStaleFlags()
+	{
+		IsTransformStale = false;
+		IsMaterialStale = false;
+		IsGeometryStale = false;
+		IsStructureStale = false;
+		IsDataStale = false;
+	}
 
-		public bool IsNew
+	// === EFFICIENT BITWISE STALE FLAG OPERATIONS ===
+	// Stale flags are bits 3-7 (inverted: false = stale, true = fresh)
+	// NotTransformStale=3, NotMaterialStale=4, NotGeometryStale=5, NotStructureStale=6, NotDataStale=7
+	
+	private const int STALE_MASK = 0b11111000; // Bits 3-7
+	private const int TRANSFORM_BIT = 1 << 3;
+	private const int MATERIAL_BIT = 1 << 4;
+	private const int GEOMETRY_BIT = 1 << 5;
+	private const int STRUCTURE_BIT = 1 << 6;
+	private const int DATA_BIT = 1 << 7;
+	
+	/// <summary>
+	/// Get raw stale bits as integer. Returns 0 if no stale flags.
+	/// Each bit position represents a stale flag (inverted - 0 means stale).
+	/// Use GetStaleCount() to count how many flags are set.
+	/// </summary>
+	public int GetStaleBits()
+	{
+		int result = 0;
+		for (int i = 3; i <= 7; i++)
 		{
-			get { return !m_Status[(int)StatusBit.NotNew]; }
-			set { m_Status[(int)StatusBit.NotNew] = !value; }
+			if (m_Status[i])
+				result |= (1 << i);
 		}
-
+		return result;
+	}
+	
+	/// <summary>
+	/// Count how many stale flags are set (0-5).
+	/// Ultra-fast bitwise operation.
+	/// </summary>
+	public int GetStaleCount()
+	{
+		int staleBits = GetStaleBits();
+		// Invert because stale flags are negative logic (0 = stale)
+		int staleFlags = (~staleBits) & STALE_MASK;
 		
+		// Brian Kernighan's algorithm - counts set bits
+		int count = 0;
+		while (staleFlags != 0)
+		{
+			staleFlags &= (staleFlags - 1);
+			count++;
+		}
+		return count;
+	}
+	
+	/// <summary>
+	/// Check if ONLY transform is stale (no other flags).
+	/// Ultra-fast single bitwise comparison.
+	/// </summary>
+	public bool IsOnlyTransformStale()
+	{
+		int staleBits = GetStaleBits();
+		int expected = STALE_MASK & ~TRANSFORM_BIT; // All fresh except transform
+		return staleBits == expected;
+	}
+	
+	/// <summary>
+	/// Check if ONLY material is stale (no other flags).
+	/// </summary>
+	public bool IsOnlyMaterialStale()
+	{
+		int staleBits = GetStaleBits();
+		int expected = STALE_MASK & ~MATERIAL_BIT;
+		return staleBits == expected;
+	}
+	
+	/// <summary>
+	/// Check if ONLY geometry is stale (no other flags).
+	/// </summary>
+	public bool IsOnlyGeometryStale()
+	{
+		int staleBits = GetStaleBits();
+		int expected = STALE_MASK & ~GEOMETRY_BIT;
+		return staleBits == expected;
+	}
+
+	public bool IsNew
+	{
+		get { return !m_Status[(int)StatusBit.NotNew]; }
+		set { m_Status[(int)StatusBit.NotNew] = !value; }
+	}		
 		public bool ShouldDelete
 		{
 			get
