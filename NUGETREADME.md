@@ -21,14 +21,14 @@ dotnet pack --configuration Release
 ## Package Information
 
 - **Package ID**: `ApprenticeFoundryRulesAndUnits`
-- **Current Version**: 10.6.0
+- **Current Version**: 10.7.0
 - **Target Framework**: .NET 9.0
 - **License**: MIT
 - **Repository**: https://github.com/SteveStrong/FoundryRulesAndUnits
 
 ## Package Location After Build
 The `.nupkg` file will be created at:
-`./bin/Release/ApprenticeFoundryRulesAndUnits.10.6.0.nupkg`
+`./bin/Release/ApprenticeFoundryRulesAndUnits.10.7.0.nupkg`
 
 ## NuGet.org Publishing Steps
 
@@ -39,18 +39,18 @@ The `.nupkg` file will be created at:
 
 2. **Upload Package**
    - Click "Upload" button in top navigation
-   - Click "Browse" and select: `./bin/Release/ApprenticeFoundryRulesAndUnits.10.6.0.nupkg`
+   - Click "Browse" and select: `./bin/Release/ApprenticeFoundryRulesAndUnits.10.7.0.nupkg`
    - Review package details (version, dependencies, etc.)
    - Add release notes if needed
    - Click "Submit"
 
 3. **Verify Upload**
-   - Package should appear at: https://www.nuget.org/packages/ApprenticeFoundryRulesAndUnits/10.6.0
+   - Package should appear at: https://www.nuget.org/packages/ApprenticeFoundryRulesAndUnits/10.7.0
    - May take a few minutes to be available for download
 
 ### Alternative: Command Line (if API key is set up)
 ```bash
-dotnet nuget push ./bin/Release/ApprenticeFoundryRulesAndUnits.10.6.0.nupkg --source https://api.nuget.org/v3/index.json
+dotnet nuget push ./bin/Release/ApprenticeFoundryRulesAndUnits.10.7.0.nupkg --source https://api.nuget.org/v3/index.json
 ```
 
 ## Package Links
@@ -63,17 +63,17 @@ dotnet nuget push ./bin/Release/ApprenticeFoundryRulesAndUnits.10.6.0.nupkg --so
 - [ ] Verify package appears on nuget.org
 - [ ] Test installation in a clean test project
 - [ ] Update any dependent projects to use new version
-- [ ] Tag the git repository with v10.6.0
+- [ ] Tag the git repository with v10.7.0
 
 ## Installation (for users)
 
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.6.0" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.7.0" />
 ```
 
 Or via Package Manager Console:
 ```powershell
-Install-Package ApprenticeFoundryRulesAndUnits -Version 10.6.0
+Install-Package ApprenticeFoundryRulesAndUnits -Version 10.7.0
 ```
 
 ## Quick Test Installation
@@ -82,7 +82,7 @@ Install-Package ApprenticeFoundryRulesAndUnits -Version 10.6.0
 mkdir nuget-test
 cd nuget-test
 dotnet new console
-dotnet add package ApprenticeFoundryRulesAndUnits --version 10.6.0
+dotnet add package ApprenticeFoundryRulesAndUnits --version 10.7.0
 # Add simple test code and run
 dotnet run
 ```
