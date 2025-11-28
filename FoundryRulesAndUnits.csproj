@@ -18,8 +18,8 @@
     <PackageId>ApprenticeFoundryRulesAndUnits</PackageId>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Copyright>Copyright © 2020</Copyright>
-    <Version>10.7.0</Version>
-    <AssemblyVersion>10.7.0</AssemblyVersion>
+    <Version>10.8.0</Version>
+    <AssemblyVersion>10.8.0</AssemblyVersion>
     <Authors>Stephen Strong</Authors>
     <Company>Stephen Strong</Company>
     <PackageProjectUrl>https://apprenticefoundry.github.io/</PackageProjectUrl>

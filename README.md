@@ -4,7 +4,7 @@
 
 FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 24+ unit families and advanced features for engineering and scientific applications.
 
-**Current Version**: 10.7.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
+**Current Version**: 10.8.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
@@ -26,8 +26,9 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **Eliminates Ambiguity**: Removed dangerous `new ContextWrapper<string>("text")` constructor
 - **Self-Documenting**: Intent is crystal clear - no guessing if something is error or data
 
-### **StatusBitArray (v10.6.0)**
-- **32-Bit Capacity**: Expanded from 24 to 32 bits with domain-grouped organization
+### **StatusBitArray (v10.8.0)** ⭐ SIMPLIFIED!
+- **32-Bit Serialization**: All 32 bits sent to JavaScript via `StatusBits` property (upgraded from 5-bit `StaleBits` in v10.6.0)
+- **Clean, Simple API**: Removed over-engineered `IsOnly*Stale()` methods - use natural if-else-if patterns instead
 - **General-Purpose Dirty Flag**: `IsDirty` for broad usage across all domains (diagrams, evaluators, knowledge systems)
 - **Granular Stale Tracking**: 5 specialized flags for 3D GPU cache synchronization
   - `IsTransformStale`: GPU transform cache is stale (C# has fresh position/rotation/scale data)
@@ -61,7 +62,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 
 ### NuGet Package
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.7.0" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.8.0" />
 ```
 
 ### Basic Setup
@@ -535,7 +536,7 @@ Debug.Assert(area.GetType() == typeof(Area));
 ```
 FoundryRulesAndUnits/
 ├── Models/
-│   ├── StatusBitArray.cs             # ⭐ NEW v10.5.0: 32-bit flag system with granular stale tracking
+│   ├── StatusBitArray.cs             # ⭐ v10.8.0: Simplified 32-bit flag system with clean API
 │   ├── ContextWrapper.cs             # Generic API response wrapper with IContextWrapper interface
 │   ├── IContextWrapper.cs            # Non-generic interface for error handling
 │   └── [Other data models...]
