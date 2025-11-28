@@ -33,7 +33,7 @@ public class StatusBitArray
 		NotGeometryStale = 5,    // Inverted: false = GPU geometry cache is stale
 		NotStructureStale = 6,   // Inverted: false = GPU structure cache is stale
 		NotDataStale = 7,        // Inverted: false = GPU data cache is stale
-								 // Reserved = 8,
+		RecomputeBoundary = 8,   // Request JavaScript to compute world position
 
 		// === ACCESS CONTROL & PROTECTION (9-12) ===
 		IsReadOnly = 9,
@@ -358,6 +358,23 @@ public class StatusBitArray
 	}
 
 	/// <summary>
+	/// Request JavaScript to compute world position (bounding box center).
+	/// Set when transform changes or _hitBoundary cache is cleared.
+	/// Cleared after JavaScript returns boundary in ProcessHitBoundaries callback.
+	/// </summary>
+	public bool RecomputeBoundary
+	{
+		get { return m_Status[(int)StatusBit.RecomputeBoundary]; }
+		set { m_Status[(int)StatusBit.RecomputeBoundary] = value; }
+	}
+
+	/// <summary>
+	/// Check if JavaScript world position calculation is needed.
+	/// Used by collector to add shape to BoundaryNeeded bucket.
+	/// </summary>
+	public bool IsRecomputeBoundaryNeeded => m_Status[(int)StatusBit.RecomputeBoundary];
+
+	/// <summary>
 	/// Returns true if ANY stale flag is set.
 	/// </summary>
 	public bool IsStale
@@ -410,7 +427,17 @@ public class StatusBitArray
 	}
 
 	/// <summary>
+	/// Request JavaScript to compute world position.
+	/// Called when transform changes or when _hitBoundary cache is invalidated.
+	/// </summary>
+	public void SetRecomputeBoundary()
+	{
+		RecomputeBoundary = true;
+	}
+
+	/// <summary>
 	/// Clear all stale flags after GPU/JavaScript synchronization.
+	/// Also clears RecomputeBoundary flag after boundary is received.
 	/// </summary>
 	public void ClearAllStaleFlags()
 	{
@@ -419,6 +446,7 @@ public class StatusBitArray
 		IsGeometryStale = false;
 		IsStructureStale = false;
 		IsDataStale = false;
+		RecomputeBoundary = false;  // Clear after JavaScript returns boundary
 	}
 
 	/// <summary>
