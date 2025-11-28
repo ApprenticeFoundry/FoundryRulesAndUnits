@@ -437,7 +437,7 @@ public class StatusBitArray
 
 	/// <summary>
 	/// Clear all stale flags after GPU/JavaScript synchronization.
-	/// Also clears RecomputeBoundary flag after boundary is received.
+	/// Note: RecomputeBoundary is NOT cleared - once opted in, stay opted in.
 	/// </summary>
 	public void ClearAllStaleFlags()
 	{
@@ -446,7 +446,7 @@ public class StatusBitArray
 		IsGeometryStale = false;
 		IsStructureStale = false;
 		IsDataStale = false;
-		RecomputeBoundary = false;  // Clear after JavaScript returns boundary
+		// RecomputeBoundary is NOT cleared - it's a persistent opt-in flag
 	}
 
 	/// <summary>

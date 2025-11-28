@@ -4,7 +4,7 @@
 
 FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 24+ unit families and advanced features for engineering and scientific applications.
 
-**Current Version**: 10.8.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
+**Current Version**: 10.8.1 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
@@ -26,10 +26,11 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **Eliminates Ambiguity**: Removed dangerous `new ContextWrapper<string>("text")` constructor
 - **Self-Documenting**: Intent is crystal clear - no guessing if something is error or data
 
-### **StatusBitArray (v10.8.0)** ⭐ SIMPLIFIED!
+### **StatusBitArray (v10.8.1)** ⭐ BUG FIX!
 - **32-Bit Serialization**: All 32 bits sent to JavaScript via `StatusBits` property (upgraded from 5-bit `StaleBits` in v10.6.0)
 - **Clean, Simple API**: Removed over-engineered `IsOnly*Stale()` methods - use natural if-else-if patterns instead
 - **General-Purpose Dirty Flag**: `IsDirty` for broad usage across all domains (diagrams, evaluators, knowledge systems)
+- **Persistent RecomputeBoundary**: Fixed `ClearAllStaleFlags()` to preserve `RecomputeBoundary` flag (v10.8.1)
 - **Granular Stale Tracking**: 5 specialized flags for 3D GPU cache synchronization
   - `IsTransformStale`: GPU transform cache is stale (C# has fresh position/rotation/scale data)
   - `IsMaterialStale`: GPU material cache is stale (C# has fresh color/texture/shader data)
