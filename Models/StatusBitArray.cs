@@ -1,6 +1,7 @@
 
 using System.Text;
 using System.Collections;
+using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Models
 {
@@ -9,6 +10,21 @@ namespace FoundryRulesAndUnits.Models
 	{
 
 		private BitArray m_Status;
+		
+		/// <summary>
+		/// Serialize stale bits as integer for efficient JavaScript routing.
+		/// JavaScript receives this value and uses bitwise operations to determine operation type.
+		/// </summary>
+		[JsonInclude]
+		[JsonPropertyName("staleBits")]
+		public int StaleBits => GetStaleBits();
+		
+		/// <summary>
+		/// Serialize ShouldDelete flag for JavaScript.
+		/// </summary>
+		[JsonInclude]
+		[JsonPropertyName("shouldDelete")]
+		public bool ShouldDeleteFlag => ShouldDelete;
 
 		private enum StatusBit 
 		{
