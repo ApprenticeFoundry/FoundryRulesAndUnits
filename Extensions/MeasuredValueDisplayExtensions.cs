@@ -96,8 +96,10 @@ namespace FoundryRulesAndUnits.Extensions
             if (measuredValue == null)
                 return "null";
 
-            var displayValue = measuredValue.Value();
             var displayUnits = measuredValue.DisplayUnits() ?? measuredValue.BaseUnits();
+            // CRITICAL FIX: Convert internal value to display units using As() method
+            // Previously used Value() which returns V (internal/base value), causing "1 mm" instead of "1000 mm"
+            var displayValue = measuredValue.As(displayUnits);
             
             // Convert ASCII units to Unicode
             var prettyUnits = ConvertToUnicodeUnits(displayUnits);
@@ -119,8 +121,9 @@ namespace FoundryRulesAndUnits.Extensions
             if (measuredValue == null)
                 return "null";
 
-            var displayValue = measuredValue.Value();
             var displayUnits = measuredValue.DisplayUnits() ?? measuredValue.BaseUnits();
+            // CRITICAL FIX: Convert internal value to display units using As() method
+            var displayValue = measuredValue.As(displayUnits);
             
             // Convert ASCII units to Unicode
             var prettyUnits = ConvertToUnicodeUnits(displayUnits);
