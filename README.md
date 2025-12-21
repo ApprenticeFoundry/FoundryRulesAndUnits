@@ -2,9 +2,9 @@
 
 ## Overview
 
-FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 24+ unit families and advanced features for engineering and scientific applications.
+FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 27 unit families including currency and cost tracking, plus advanced features for engineering and scientific applications.
 
-**Current Version**: 10.8.2 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
+**Current Version**: 10.9.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
@@ -12,7 +12,8 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **Unified IUnitSystem Interface**: Clean, dependency-injection friendly design
 - **UnitGroup Injection**: Each MeasuredValue receives proper conversion logic via constructor
 - **Type-Safe Creation**: Strongly-typed unit creation with compile-time safety
-- **24+ Unit Types**: Complete coverage from Length/Mass to specialized units like Frequency/Resistance
+- **27 Unit Types**: Complete coverage from Length/Mass to specialized units like Frequency/Resistance, plus Currency & Cost tracking
+- **Currency & Cost Tracking (v10.9.0)**: Multi-currency support with 14 international currencies, plus CostPerQuantity and CostPerTime ⭐ NEW!
 - **Mathematical Operations**: Automatic type inference (Length × Length → Area, Mass × Acceleration → Force)
 - **Zero Ambiguity Parser**: Two-tier unit family system eliminates parser conflicts
 - **ContextWrapper Factory Methods**: Crystal-clear API for creating success/error responses (v10.7.0)
@@ -50,11 +51,12 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **IPS** (Inch-Pound-Second)
 - **mmNs** (Millimeter-Newton-Second)
 
-### **24+ Unit Families**
+### **27 Unit Families**
 - **Mechanical**: Length, Mass, Force, Speed, Power, Area, Volume
 - **Thermal**: Temperature, Pressure  
 - **Electrical**: Voltage, Current, Resistance, Capacitance
 - **Digital**: DataStorage, DataFlow
+- **Financial**: Currency, CostPerQuantity, CostPerTime ⭐ NEW in v10.9.0!
 - **Scientific**: Frequency, Time, Duration, Angle
 - **Specialized**: Quantity, QuantityFlow, Percent, Dimensionless
 - **Two-Tier Families**: Distance (function-only), Bearing (function-only), Time (function-only)
@@ -63,7 +65,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 
 ### NuGet Package
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.8.2" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.9.0" />
 ```
 
 ### Basic Setup
@@ -91,6 +93,11 @@ Temperature temp = unitSystem.CreateTemperature(25.0, "°C");
 Force force = unitSystem.CreateForce(100.0, "N");
 Mass mass = unitSystem.CreateMass(50.0, "kg");
 Speed speed = unitSystem.CreateSpeed(60.0, "mph");
+
+// Currency and cost tracking (v10.9.0) ⭐ NEW!
+Currency usd = unitSystem.CreateUnit<Currency>(100.0, "USD");
+CostPerQuantity price = unitSystem.CreateUnit<CostPerQuantity>(5.50, "USD/ea");
+CostPerTime laborRate = unitSystem.CreateUnit<CostPerTime>(85.00, "USD/hr");
 
 // Generic creation (for parsers)
 MeasuredValue parsed = unitSystem.CreateMeasuredValue(UnitFamilyName.Length, 5.0, "m");
@@ -140,6 +147,42 @@ if (length1 > length2) {
 }
 ```
 
+### **Currency and Cost Operations (v10.9.0)** ⭐ NEW!
+```csharp
+var unitSystem = IUnitSystem.MKS();
+var currencyGroup = unitSystem.GetUnitGroup(UnitFamilyName.Currency);
+
+// Multi-currency support with 14 international currencies
+var usd = unitSystem.CreateUnit<Currency>(100, "USD");
+var eur = unitSystem.CreateUnit<Currency>(92, "EUR");
+var gbp = unitSystem.CreateUnit<Currency>(78, "GBP");
+
+// Convert between currencies (hub-and-spoke via USD)
+var usdValue = eur.As("USD");  // Returns 100.00
+Console.WriteLine(usd.FormatCurrency());  // "$100.00"
+Console.WriteLine(eur.FormatCurrency());  // "€92.00"
+
+// Cost per quantity - discrete item pricing
+var screwPrice = unitSystem.CreateUnit<CostPerQuantity>(0.15, "USD/ea");
+var totalCost = screwPrice.CalculateCost(250, currencyGroup);
+Console.WriteLine($"250 screws: {totalCost.FormatCurrency()}");  // "$37.50"
+
+// Volume discounts
+var bulkPrice = screwPrice.ApplyVolumeDiscount(15);  // 15% off
+Console.WriteLine($"Bulk: {bulkPrice.FormatCost()}");  // "$0.13/ea"
+
+// Cost per time - labor and service rates
+var laborRate = unitSystem.CreateUnit<CostPerTime>(75.00, "USD/hr");
+var laborCost = laborRate.CalculateCost(40, currencyGroup);  // 40 hours
+Console.WriteLine($"Weekly labor: {laborCost.FormatCurrency()}");  // "$3,000.00"
+
+// Rate adjustments (markup/discount)
+var contractRate = laborRate.ApplyAdjustment(25);  // 25% markup
+Console.WriteLine($"Contract: {contractRate.FormatCost()}");  // "$93.75/hr"
+
+// Supported currencies: USD, EUR, GBP, JPY, CNY, CAD, AUD, CHF, INR, MXN, BRL, KRW, SGD, HKD, cent
+```
+
 ### **Two-Tier Family System (Zero Ambiguity)**
 ```csharp
 var unitSystem = IUnitSystem.MKS();
@@ -185,6 +228,9 @@ Time time = unitSystem.CreateTime(30, "s");                 // Time family
 
 **✅ Digital & Computing Units:**
 - `DataStorage`, `DataFlow`
+
+**✅ Financial Units (v10.9.0):** ⭐ NEW!
+- `Currency`, `CostPerQuantity`, `CostPerTime`
 
 **✅ Specialized Units:**
 - `Quantity`, `QuantityFlow`, `Percent`, `Dimensionless`
@@ -639,4 +685,4 @@ MIT License - See LICENSE file for details.
 - **FoundryMentorModeler**: Advanced modeling toolkit using this unit system
 - **TRISoC Dashboard**: Digital twin dashboard with unit system integration
 
-**Version**: 10.6.0 | **Target**: .NET 9.0 | **Updated**: November 2025
+**Version**: 10.9.0 | **Target**: .NET 9.0 | **Updated**: December 2025

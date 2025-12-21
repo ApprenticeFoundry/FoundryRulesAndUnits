@@ -53,4 +53,9 @@ public enum UnitFamilyName
     MagneticFlux,
     MagneticFluxDensity,
     Radioactivity,
+
+    // Currency and cost-per-unit families (Phase 1 - System-Independent)
+    Currency,
+    CostPerQuantity,
+    CostPerTime,
 }
