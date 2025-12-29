@@ -28,6 +28,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Length, 100.0),             // 1 m = 100 cm
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 2.54),             // 1 in = 2.54 cm
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 30.48),              // 1 ft = 30.48 cm
+            UnitDefinition.LinearUnit("RU", "rack-units", UnitFamilyName.Length, 4.445),         // 1 RU = 4.445 cm (1.75 in)
             UnitDefinition.LinearUnit("Å", "angstroms", UnitFamilyName.Length, 0.00000001),     // 1 Å = 1e-8 cm
 
             // Mass units (grams as base) - using enhanced approach with UnitFamilyName enum!

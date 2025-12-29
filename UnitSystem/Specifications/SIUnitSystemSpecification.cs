@@ -31,6 +31,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("Å", "angstroms", UnitFamilyName.Length, 0.0000000001),   // 1 Å = 1e-10 m
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),           // 1 in = 0.0254 m
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),             // 1 ft = 0.3048 m
+            UnitDefinition.LinearUnit("RU", "rack-units", UnitFamilyName.Length, 0.04445),       // 1 RU = 0.04445 m (1.75 in)
             UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),            // 1 yd = 0.9144 m
             UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 1000.0),       // 1 km = 1000 m
             UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Length, 1609.344),          // 1 mi = 1609.344 m

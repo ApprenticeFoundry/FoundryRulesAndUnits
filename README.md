@@ -4,7 +4,7 @@
 
 FoundryRulesAndUnits is a comprehensive, modernized unit system library providing type-safe unit conversions, measurement operations, and mathematical operations with automatic type inference. This library supports 6 complete unit systems (SI, MKS, CGS, FPS, IPS, mmNs) with 27 unit families including currency and cost tracking, plus advanced features for engineering and scientific applications.
 
-**Current Version**: 10.9.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
+**Current Version**: 10.10.0 | **Target**: .NET 9.0 | **Architecture**: UnitGroup injection with IUnitSystem interface
 
 ## 🚀 Key Features
 
@@ -13,7 +13,8 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 - **UnitGroup Injection**: Each MeasuredValue receives proper conversion logic via constructor
 - **Type-Safe Creation**: Strongly-typed unit creation with compile-time safety
 - **27 Unit Types**: Complete coverage from Length/Mass to specialized units like Frequency/Resistance, plus Currency & Cost tracking
-- **Currency & Cost Tracking (v10.9.0)**: Multi-currency support with 14 international currencies, plus CostPerQuantity and CostPerTime ⭐ NEW!
+- **Rack Units (v10.10.0)**: Native support for server rack measurements (RU) in Length family ⭐ NEW!
+- **Currency & Cost Tracking (v10.9.0)**: Multi-currency support with 14 international currencies, plus CostPerQuantity and CostPerTime
 - **Mathematical Operations**: Automatic type inference (Length × Length → Area, Mass × Acceleration → Force)
 - **Zero Ambiguity Parser**: Two-tier unit family system eliminates parser conflicts
 - **ContextWrapper Factory Methods**: Crystal-clear API for creating success/error responses (v10.7.0)
@@ -65,7 +66,7 @@ FoundryRulesAndUnits is a comprehensive, modernized unit system library providin
 
 ### NuGet Package
 ```xml
-<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.9.0" />
+<PackageReference Include="ApprenticeFoundryRulesAndUnits" Version="10.10.0" />
 ```
 
 ### Basic Setup
@@ -111,6 +112,11 @@ var length = unitSystem.CreateLength(5.0, "m");
 double feet = length.As("ft");        // Convert to feet
 double inches = length.As("in");      // Convert to inches
 string display = length.AsString("cm"); // "500 cm"
+
+// Rack units for data center applications (v10.10.0) ⭐ NEW!
+var serverHeight = unitSystem.CreateLength(2, "RU");  // 2U server
+double heightInches = serverHeight.As("in");  // 3.5 inches
+double heightMM = serverHeight.As("mm");      // 88.9 mm
 
 // Direct system conversion
 double converted = unitSystem.Convert(100, "cm", "in"); // 39.37 inches
@@ -685,4 +691,4 @@ MIT License - See LICENSE file for details.
 - **FoundryMentorModeler**: Advanced modeling toolkit using this unit system
 - **TRISoC Dashboard**: Digital twin dashboard with unit system integration
 
-**Version**: 10.9.0 | **Target**: .NET 9.0 | **Updated**: December 2025
+**Version**: 10.10.0 | **Target**: .NET 9.0 | **Updated**: December 2025

@@ -23,6 +23,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             // Length units (inches as base) - Small-scale measurements
             UnitDefinition.BaseUnit("in", "inches", UnitFamilyName.Length),
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 12.0),               // 1 ft = 12 in
+            UnitDefinition.LinearUnit("RU", "rack-units", UnitFamilyName.Length, 1.75),          // 1 RU = 1.75 in
             UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 36.0),              // 1 yd = 36 in
             UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Length, 0.001),             // 1 mil = 0.001 in
             UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Length, 39.3700787402),     // 1 m = 39.3701 in

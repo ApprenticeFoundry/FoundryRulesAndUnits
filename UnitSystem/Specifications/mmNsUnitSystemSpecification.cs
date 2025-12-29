@@ -28,6 +28,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Length, 1000.0),            // 1 m = 1000 mm
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 25.4),             // 1 in = 25.4 mm
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 304.8),              // 1 ft = 304.8 mm
+            UnitDefinition.LinearUnit("RU", "rack-units", UnitFamilyName.Length, 44.45),         // 1 RU = 44.45 mm (1.75 in)
             UnitDefinition.LinearUnit("mil", "mils", UnitFamilyName.Length, 0.0254),            // 1 mil = 0.0254 mm
 
             // Mass units (grams as base) - using enhanced approach with UnitFamilyName enum!
