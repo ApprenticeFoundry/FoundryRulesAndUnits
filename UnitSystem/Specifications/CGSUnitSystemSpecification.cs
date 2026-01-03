@@ -61,7 +61,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
             // Angle units (radians as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("rad", "radians", UnitFamilyName.Angle),
-            UnitDefinition.LinearUnit("deg", "degrees", UnitFamilyName.Angle, Math.PI / 180.0),  // 1 deg = π/180 rad
+        UnitDefinition.LinearUnit("deg", "degrees", UnitFamilyName.Angle, Math.PI / 180.0, "°"),  // ASCII: deg, Unicode: °
             UnitDefinition.LinearUnit("mrad", "milliradians", UnitFamilyName.Angle, 0.001),     // 1 mrad = 0.001 rad
 
             // Time units (seconds as base) - using enhanced approach with UnitFamilyName enum!
@@ -74,22 +74,20 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Time, 3600.0),              // 1 hr = 3600 s
 
             // Area units (square centimeters as base) - using enhanced approach with UnitFamilyName enum!
-            UnitDefinition.BaseUnit("cm2", "square centimeters", UnitFamilyName.Area),
-            UnitDefinition.LinearUnit("mm2", "square millimeters", UnitFamilyName.Area, 0.01),  // 1 mm² = 0.01 cm²
-            UnitDefinition.LinearUnit("μm2", "square micrometers", UnitFamilyName.Area, 0.00000001), // 1 μm² = 1e-8 cm²
-            UnitDefinition.LinearUnit("m2", "square meters", UnitFamilyName.Area, 10000.0),     // 1 m² = 10,000 cm²
-            UnitDefinition.LinearUnit("in2", "square inches", UnitFamilyName.Area, 6.4516),     // 1 in² = 6.4516 cm²
-            UnitDefinition.LinearUnit("ft2", "square feet", UnitFamilyName.Area, 929.0304),     // 1 ft² = 929.0304 cm²
-
+        UnitDefinition.BaseUnit("cm2", "square centimeters", UnitFamilyName.Area, "cm²"),
+        UnitDefinition.LinearUnit("mm2", "square millimeters", UnitFamilyName.Area, 0.01, "mm²"),  // ASCII: mm2, Unicode: mm²
+        UnitDefinition.LinearUnit("μm2", "square micrometers", UnitFamilyName.Area, 0.00000001, "μm²"), // ASCII: μm2, Unicode: μm²
+        UnitDefinition.LinearUnit("m2", "square meters", UnitFamilyName.Area, 10000.0, "m²"),     // ASCII: m2, Unicode: m²
+        UnitDefinition.LinearUnit("in2", "square inches", UnitFamilyName.Area, 6.4516, "in²"),     // ASCII: in2, Unicode: in²
+        UnitDefinition.LinearUnit("ft2", "square feet", UnitFamilyName.Area, 929.0304, "ft²"),     // ASCII: ft2, Unicode: ft²
             // Volume units (cubic centimeters as base) - using enhanced approach with UnitFamilyName enum!
-            UnitDefinition.BaseUnit("cm3", "cubic centimeters", UnitFamilyName.Volume),
-            UnitDefinition.LinearUnit("mL", "milliliters", UnitFamilyName.Volume, 1.0),         // 1 mL = 1 cm³
-            UnitDefinition.LinearUnit("mm3", "cubic millimeters", UnitFamilyName.Volume, 0.001), // 1 mm³ = 0.001 cm³
-            UnitDefinition.LinearUnit("L", "liters", UnitFamilyName.Volume, 1000.0),            // 1 L = 1000 cm³
-            UnitDefinition.LinearUnit("m3", "cubic meters", UnitFamilyName.Volume, 1000000.0),  // 1 m³ = 1,000,000 cm³
-            UnitDefinition.LinearUnit("in3", "cubic inches", UnitFamilyName.Volume, 16.3871),   // 1 in³ = 16.3871 cm³
-            UnitDefinition.LinearUnit("ft3", "cubic feet", UnitFamilyName.Volume, 28316.8),     // 1 ft³ = 28,316.8 cm³
-
+        UnitDefinition.BaseUnit("cm3", "cubic centimeters", UnitFamilyName.Volume, "cm³"),
+        UnitDefinition.LinearUnit("mL", "milliliters", UnitFamilyName.Volume, 1.0),         // 1 mL = 1 cm³
+        UnitDefinition.LinearUnit("mm3", "cubic millimeters", UnitFamilyName.Volume, 0.001, "mm³"), // ASCII: mm3, Unicode: mm³
+        UnitDefinition.LinearUnit("L", "liters", UnitFamilyName.Volume, 1000.0),            // 1 L = 1000 cm³
+        UnitDefinition.LinearUnit("m3", "cubic meters", UnitFamilyName.Volume, 1000000.0, "m³"),  // ASCII: m3, Unicode: m³
+        UnitDefinition.LinearUnit("in3", "cubic inches", UnitFamilyName.Volume, 16.3871, "in³"),   // ASCII: in3, Unicode: in³
+        UnitDefinition.LinearUnit("ft3", "cubic feet", UnitFamilyName.Volume, 28316.8, "ft³"),     // ASCII: ft3, Unicode: ft³
             // Speed units (centimeters per second as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("cm/s", "centimeters per second", UnitFamilyName.Speed),
             UnitDefinition.LinearUnit("mm/s", "millimeters per second", UnitFamilyName.Speed, 0.1), // 1 mm/s = 0.1 cm/s
@@ -160,22 +158,22 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("pA", "picoamperes", UnitFamilyName.Current, 0.000000000001), // 1 pA = 1e-12 A
 
             // Currency units (USD as base) - System-independent, identical in all unit systems
-            // Exchange rates as of December 2025 (approximate, should be updated periodically)
-            UnitDefinition.BaseUnit("USD", "US Dollars", UnitFamilyName.Currency),
-            UnitDefinition.LinearUnit("EUR", "Euros", UnitFamilyName.Currency, 0.92),           // 1 EUR = 0.92 USD
-            UnitDefinition.LinearUnit("GBP", "British Pounds", UnitFamilyName.Currency, 0.79),  // 1 GBP = 0.79 USD
-            UnitDefinition.LinearUnit("JPY", "Japanese Yen", UnitFamilyName.Currency, 145.0),   // 1 JPY = 145 USD
-            UnitDefinition.LinearUnit("CNY", "Chinese Yuan", UnitFamilyName.Currency, 7.2),     // 1 CNY = 7.2 USD
-            UnitDefinition.LinearUnit("CAD", "Canadian Dollars", UnitFamilyName.Currency, 1.36), // 1 CAD = 1.36 USD
-            UnitDefinition.LinearUnit("AUD", "Australian Dollars", UnitFamilyName.Currency, 1.55), // 1 AUD = 1.55 USD
-            UnitDefinition.LinearUnit("CHF", "Swiss Francs", UnitFamilyName.Currency, 0.88),    // 1 CHF = 0.88 USD
-            UnitDefinition.LinearUnit("INR", "Indian Rupees", UnitFamilyName.Currency, 83.0),   // 1 INR = 83 USD
-            UnitDefinition.LinearUnit("MXN", "Mexican Pesos", UnitFamilyName.Currency, 17.0),   // 1 MXN = 17 USD
-            UnitDefinition.LinearUnit("BRL", "Brazilian Reais", UnitFamilyName.Currency, 5.0),  // 1 BRL = 5 USD
-            UnitDefinition.LinearUnit("KRW", "South Korean Won", UnitFamilyName.Currency, 1320.0), // 1 KRW = 1320 USD
-            UnitDefinition.LinearUnit("SGD", "Singapore Dollars", UnitFamilyName.Currency, 1.34), // 1 SGD = 1.34 USD
-            UnitDefinition.LinearUnit("HKD", "Hong Kong Dollars", UnitFamilyName.Currency, 7.8), // 1 HKD = 7.8 USD
-            UnitDefinition.LinearUnit("cent", "cents", UnitFamilyName.Currency, 0.01),          // 1 cent = 0.01 USD
+            // Exchange rates as of January 2026 (approximate, should be updated periodically)
+            UnitDefinition.BaseUnit("USD", "US Dollars", UnitFamilyName.Currency, "$"),
+            UnitDefinition.LinearUnit("EUR", "Euros", UnitFamilyName.Currency, 0.92, "€"),           // 1 EUR = 0.92 USD
+            UnitDefinition.LinearUnit("GBP", "British Pounds", UnitFamilyName.Currency, 0.79, "£"),  // 1 GBP = 0.79 USD
+            UnitDefinition.LinearUnit("JPY", "Japanese Yen", UnitFamilyName.Currency, 145.0, "¥"),   // 1 JPY = 145 USD
+            UnitDefinition.LinearUnit("CNY", "Chinese Yuan", UnitFamilyName.Currency, 7.2, "¥"),     // 1 CNY = 7.2 USD
+            UnitDefinition.LinearUnit("CAD", "Canadian Dollars", UnitFamilyName.Currency, 1.36, "C$"), // 1 CAD = 1.36 USD
+            UnitDefinition.LinearUnit("AUD", "Australian Dollars", UnitFamilyName.Currency, 1.55, "A$"), // 1 AUD = 1.55 USD
+            UnitDefinition.LinearUnit("CHF", "Swiss Francs", UnitFamilyName.Currency, 0.88, "₣"),    // 1 CHF = 0.88 USD
+            UnitDefinition.LinearUnit("INR", "Indian Rupees", UnitFamilyName.Currency, 83.0, "₹"),   // 1 INR = 83 USD
+            UnitDefinition.LinearUnit("MXN", "Mexican Pesos", UnitFamilyName.Currency, 17.0, "$"),   // 1 MXN = 17 USD
+            UnitDefinition.LinearUnit("BRL", "Brazilian Reais", UnitFamilyName.Currency, 5.0, "R$"),  // 1 BRL = 5 USD
+            UnitDefinition.LinearUnit("KRW", "South Korean Won", UnitFamilyName.Currency, 1320.0, "₩"), // 1 KRW = 1320 USD
+            UnitDefinition.LinearUnit("SGD", "Singapore Dollars", UnitFamilyName.Currency, 1.34, "S$"), // 1 SGD = 1.34 USD
+            UnitDefinition.LinearUnit("HKD", "Hong Kong Dollars", UnitFamilyName.Currency, 7.8, "HK$"), // 1 HKD = 7.8 USD
+            UnitDefinition.LinearUnit("cent", "cents", UnitFamilyName.Currency, 0.01, "¢"),          // 1 cent = 0.01 USD
 
             // Cost per quantity units (USD/unit as base) - System-independent pricing
             UnitDefinition.BaseUnit("USD/unit", "US Dollars per unit", UnitFamilyName.CostPerQuantity),
@@ -204,7 +202,41 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("GBP/hr", "British Pounds per hour", UnitFamilyName.CostPerTime, 0.79),   // 1 GBP/hr = 0.79 USD/hr
             UnitDefinition.LinearUnit("JPY/hr", "Japanese Yen per hour", UnitFamilyName.CostPerTime, 145.0),    // 1 JPY/hr = 145 USD/hr
             UnitDefinition.LinearUnit("CAD/hr", "Canadian Dollars per hour", UnitFamilyName.CostPerTime, 1.36), // 1 CAD/hr = 1.36 USD/hr
-            UnitDefinition.LinearUnit("cent/hr", "cents per hour", UnitFamilyName.CostPerTime, 0.01)           // 1 cent/hr = 0.01 USD/hr
+            UnitDefinition.LinearUnit("cent/hr", "cents per hour", UnitFamilyName.CostPerTime, 0.01),           // 1 cent/hr = 0.01 USD/hr
+
+            // Torque units (dyne-centimeters as base)
+            UnitDefinition.BaseUnit("dyne*cm", "dyne centimeters", UnitFamilyName.Torque, "dyne⋅cm"),
+            UnitDefinition.LinearUnit("N*m", "newton meters", UnitFamilyName.Torque, 10000000.0, "N⋅m"),
+            UnitDefinition.LinearUnit("mN*m", "millinewton meters", UnitFamilyName.Torque, 10000.0, "mN⋅m"),
+            UnitDefinition.LinearUnit("kN*m", "kilonewton meters", UnitFamilyName.Torque, 10000000000.0, "kN⋅m"),
+            UnitDefinition.LinearUnit("lb*ft", "pound feet", UnitFamilyName.Torque, 13558179.0, "lb⋅ft"),
+            UnitDefinition.LinearUnit("lb*in", "pound inches", UnitFamilyName.Torque, 1129848.0, "lb⋅in"),
+
+            // Inertia units (g·cm² as base)
+            UnitDefinition.BaseUnit("g*cm2", "gram square centimeters", UnitFamilyName.Inertia, "g⋅cm²"),
+            UnitDefinition.LinearUnit("kg*m2", "kilogram square meters", UnitFamilyName.Inertia, 10000000.0, "kg⋅m²"),
+            UnitDefinition.LinearUnit("kg*cm2", "kilogram square centimeters", UnitFamilyName.Inertia, 1000.0, "kg⋅cm²"),
+            UnitDefinition.LinearUnit("slug*ft2", "slug square feet", UnitFamilyName.Inertia, 13558179.0, "slug⋅ft²"),
+            UnitDefinition.LinearUnit("lb*ft2", "pound square feet", UnitFamilyName.Inertia, 421401.0, "lb⋅ft²"),
+
+            // Angular velocity units (rad/s as base)
+            UnitDefinition.BaseUnit("rad/s", "radians per second", UnitFamilyName.AngularVelocity),
+            UnitDefinition.LinearUnit("deg/s", "degrees per second", UnitFamilyName.AngularVelocity, 0.0174533, "°/s"),
+            UnitDefinition.LinearUnit("rpm", "revolutions per minute", UnitFamilyName.AngularVelocity, 0.10472),
+            UnitDefinition.LinearUnit("rps", "revolutions per second", UnitFamilyName.AngularVelocity, 6.28319),
+            UnitDefinition.LinearUnit("rev/min", "revolutions per minute", UnitFamilyName.AngularVelocity, 0.10472),
+
+            // Angular acceleration units (rad/s² as base)
+            UnitDefinition.BaseUnit("rad/s2", "radians per second squared", UnitFamilyName.AngularAcceleration, "rad/s²"),
+            UnitDefinition.LinearUnit("deg/s2", "degrees per second squared", UnitFamilyName.AngularAcceleration, 0.0174533, "°/s²"),
+            UnitDefinition.LinearUnit("rpm/s", "rpm per second", UnitFamilyName.AngularAcceleration, 0.10472),
+            UnitDefinition.LinearUnit("rev/s2", "revolutions per second squared", UnitFamilyName.AngularAcceleration, 6.28319, "rev/s²"),
+
+            // Inductance units (Henry as base)
+            UnitDefinition.BaseUnit("H", "henries", UnitFamilyName.Inductance),
+            UnitDefinition.LinearUnit("mH", "millihenries", UnitFamilyName.Inductance, 0.001),
+            UnitDefinition.LinearUnit("uH", "microhenries", UnitFamilyName.Inductance, 0.000001, "μH"),
+            UnitDefinition.LinearUnit("nH", "nanohenries", UnitFamilyName.Inductance, 0.000000001)
         };
     }
 }

@@ -59,7 +59,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
             // Angle units (radians as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("rad", "radians", UnitFamilyName.Angle),
-            UnitDefinition.LinearUnit("deg", "degrees", UnitFamilyName.Angle, Math.PI / 180.0),  // 1 deg = π/180 rad
+        UnitDefinition.LinearUnit("deg", "degrees", UnitFamilyName.Angle, Math.PI / 180.0, "°"),  // ASCII: deg, Unicode: °
             UnitDefinition.LinearUnit("mrad", "milliradians", UnitFamilyName.Angle, 0.001),     // 1 mrad = 0.001 rad
 
             // Time units (seconds as base) - using enhanced approach with UnitFamilyName enum!
@@ -71,21 +71,19 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("hr", "hours", UnitFamilyName.Time, 3600.0),              // 1 hr = 3600 s
 
             // Area units (square millimeters as base) - using enhanced approach with UnitFamilyName enum!
-            UnitDefinition.BaseUnit("mm2", "square millimeters", UnitFamilyName.Area),
-            UnitDefinition.LinearUnit("μm2", "square micrometers", UnitFamilyName.Area, 0.000001), // 1 μm² = 0.000001 mm²
-            UnitDefinition.LinearUnit("cm2", "square centimeters", UnitFamilyName.Area, 100.0), // 1 cm² = 100 mm²
-            UnitDefinition.LinearUnit("m2", "square meters", UnitFamilyName.Area, 1000000.0),   // 1 m² = 1,000,000 mm²
-            UnitDefinition.LinearUnit("in2", "square inches", UnitFamilyName.Area, 645.16),     // 1 in² = 645.16 mm²
-
+        UnitDefinition.BaseUnit("mm2", "square millimeters", UnitFamilyName.Area, "mm²"),
+        UnitDefinition.LinearUnit("μm2", "square micrometers", UnitFamilyName.Area, 0.000001, "μm²"), // ASCII: μm2, Unicode: μm²
+        UnitDefinition.LinearUnit("cm2", "square centimeters", UnitFamilyName.Area, 100.0, "cm²"), // ASCII: cm2, Unicode: cm²
+        UnitDefinition.LinearUnit("m2", "square meters", UnitFamilyName.Area, 1000000.0, "m²"),   // ASCII: m2, Unicode: m²
+        UnitDefinition.LinearUnit("in2", "square inches", UnitFamilyName.Area, 645.16, "in²"),     // ASCII: in2, Unicode: in²
             // Volume units (cubic millimeters as base) - using enhanced approach with UnitFamilyName enum!
-            UnitDefinition.BaseUnit("mm3", "cubic millimeters", UnitFamilyName.Volume),
-            UnitDefinition.LinearUnit("μm3", "cubic micrometers", UnitFamilyName.Volume, 0.000000001), // 1 μm³ = 1e-9 mm³
-            UnitDefinition.LinearUnit("cm3", "cubic centimeters", UnitFamilyName.Volume, 1000.0), // 1 cm³ = 1000 mm³
-            UnitDefinition.LinearUnit("mL", "milliliters", UnitFamilyName.Volume, 1000.0),      // 1 mL = 1000 mm³
-            UnitDefinition.LinearUnit("L", "liters", UnitFamilyName.Volume, 1000000.0),         // 1 L = 1,000,000 mm³
-            UnitDefinition.LinearUnit("m3", "cubic meters", UnitFamilyName.Volume, 1000000000.0), // 1 m³ = 1e9 mm³
-            UnitDefinition.LinearUnit("in3", "cubic inches", UnitFamilyName.Volume, 16387.1),   // 1 in³ = 16387.1 mm³
-
+        UnitDefinition.BaseUnit("mm3", "cubic millimeters", UnitFamilyName.Volume, "mm³"),
+        UnitDefinition.LinearUnit("μm3", "cubic micrometers", UnitFamilyName.Volume, 0.000000001, "μm³"), // ASCII: μm3, Unicode: μm³
+        UnitDefinition.LinearUnit("cm3", "cubic centimeters", UnitFamilyName.Volume, 1000.0, "cm³"), // ASCII: cm3, Unicode: cm³
+        UnitDefinition.LinearUnit("mL", "milliliters", UnitFamilyName.Volume, 1000.0),      // 1 mL = 1000 mm³
+        UnitDefinition.LinearUnit("L", "liters", UnitFamilyName.Volume, 1000000.0),         // 1 L = 1,000,000 mm³
+        UnitDefinition.LinearUnit("m3", "cubic meters", UnitFamilyName.Volume, 1000000000.0, "m³"), // ASCII: m3, Unicode: m³
+        UnitDefinition.LinearUnit("in3", "cubic inches", UnitFamilyName.Volume, 16387.1, "in³"),   // ASCII: in3, Unicode: in³
             // Speed units (millimeters per second as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("mm/s", "millimeters per second", UnitFamilyName.Speed),
             UnitDefinition.LinearUnit("μm/s", "micrometers per second", UnitFamilyName.Speed, 0.001), // 1 μm/s = 0.001 mm/s
@@ -157,22 +155,22 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("kA", "kiloamperes", UnitFamilyName.Current, 1000.0),     // 1 kA = 1000 A
 
             // Currency units (USD as base) - System-independent, identical in all unit systems
-            // Exchange rates as of December 2025 (approximate, should be updated periodically)
-            UnitDefinition.BaseUnit("USD", "US Dollars", UnitFamilyName.Currency),
-            UnitDefinition.LinearUnit("EUR", "Euros", UnitFamilyName.Currency, 0.92),           // 1 EUR = 0.92 USD
-            UnitDefinition.LinearUnit("GBP", "British Pounds", UnitFamilyName.Currency, 0.79),  // 1 GBP = 0.79 USD
-            UnitDefinition.LinearUnit("JPY", "Japanese Yen", UnitFamilyName.Currency, 145.0),   // 1 JPY = 145 USD
-            UnitDefinition.LinearUnit("CNY", "Chinese Yuan", UnitFamilyName.Currency, 7.2),     // 1 CNY = 7.2 USD
-            UnitDefinition.LinearUnit("CAD", "Canadian Dollars", UnitFamilyName.Currency, 1.36), // 1 CAD = 1.36 USD
-            UnitDefinition.LinearUnit("AUD", "Australian Dollars", UnitFamilyName.Currency, 1.55), // 1 AUD = 1.55 USD
-            UnitDefinition.LinearUnit("CHF", "Swiss Francs", UnitFamilyName.Currency, 0.88),    // 1 CHF = 0.88 USD
-            UnitDefinition.LinearUnit("INR", "Indian Rupees", UnitFamilyName.Currency, 83.0),   // 1 INR = 83 USD
-            UnitDefinition.LinearUnit("MXN", "Mexican Pesos", UnitFamilyName.Currency, 17.0),   // 1 MXN = 17 USD
-            UnitDefinition.LinearUnit("BRL", "Brazilian Reais", UnitFamilyName.Currency, 5.0),  // 1 BRL = 5 USD
-            UnitDefinition.LinearUnit("KRW", "South Korean Won", UnitFamilyName.Currency, 1320.0), // 1 KRW = 1320 USD
-            UnitDefinition.LinearUnit("SGD", "Singapore Dollars", UnitFamilyName.Currency, 1.34), // 1 SGD = 1.34 USD
-            UnitDefinition.LinearUnit("HKD", "Hong Kong Dollars", UnitFamilyName.Currency, 7.8), // 1 HKD = 7.8 USD
-            UnitDefinition.LinearUnit("cent", "cents", UnitFamilyName.Currency, 0.01),          // 1 cent = 0.01 USD
+            // Exchange rates as of January 2026 (approximate, should be updated periodically)
+            UnitDefinition.BaseUnit("USD", "US Dollars", UnitFamilyName.Currency, "$"),
+            UnitDefinition.LinearUnit("EUR", "Euros", UnitFamilyName.Currency, 0.92, "€"),           // 1 EUR = 0.92 USD
+            UnitDefinition.LinearUnit("GBP", "British Pounds", UnitFamilyName.Currency, 0.79, "£"),  // 1 GBP = 0.79 USD
+            UnitDefinition.LinearUnit("JPY", "Japanese Yen", UnitFamilyName.Currency, 145.0, "¥"),   // 1 JPY = 145 USD
+            UnitDefinition.LinearUnit("CNY", "Chinese Yuan", UnitFamilyName.Currency, 7.2, "¥"),     // 1 CNY = 7.2 USD
+            UnitDefinition.LinearUnit("CAD", "Canadian Dollars", UnitFamilyName.Currency, 1.36, "C$"), // 1 CAD = 1.36 USD
+            UnitDefinition.LinearUnit("AUD", "Australian Dollars", UnitFamilyName.Currency, 1.55, "A$"), // 1 AUD = 1.55 USD
+            UnitDefinition.LinearUnit("CHF", "Swiss Francs", UnitFamilyName.Currency, 0.88, "₣"),    // 1 CHF = 0.88 USD
+            UnitDefinition.LinearUnit("INR", "Indian Rupees", UnitFamilyName.Currency, 83.0, "₹"),   // 1 INR = 83 USD
+            UnitDefinition.LinearUnit("MXN", "Mexican Pesos", UnitFamilyName.Currency, 17.0, "$"),   // 1 MXN = 17 USD
+            UnitDefinition.LinearUnit("BRL", "Brazilian Reais", UnitFamilyName.Currency, 5.0, "R$"),  // 1 BRL = 5 USD
+            UnitDefinition.LinearUnit("KRW", "South Korean Won", UnitFamilyName.Currency, 1320.0, "₩"), // 1 KRW = 1320 USD
+            UnitDefinition.LinearUnit("SGD", "Singapore Dollars", UnitFamilyName.Currency, 1.34, "S$"), // 1 SGD = 1.34 USD
+            UnitDefinition.LinearUnit("HKD", "Hong Kong Dollars", UnitFamilyName.Currency, 7.8, "HK$"), // 1 HKD = 7.8 USD
+            UnitDefinition.LinearUnit("cent", "cents", UnitFamilyName.Currency, 0.01, "¢"),          // 1 cent = 0.01 USD
 
             // Cost per quantity units (USD/unit as base) - System-independent pricing
             UnitDefinition.BaseUnit("USD/unit", "US Dollars per unit", UnitFamilyName.CostPerQuantity),

@@ -101,11 +101,21 @@ public class UnitSystem : IUnitSystem
                     Func<double, MeasuredValue> createFunc = (value) => 
                         CreateTypedMeasuredValue(unitDef.Family, value, unitDef.Symbol);
                     
-                    lookup[unitDef.Symbol] = new UnitLookupInfo(
+                    var lookupInfo = new UnitLookupInfo(
                         unitDef.Family,
                         unitDef,
                         createFunc
                     );
+                    
+                    // PHASE 2: Dual-key lookup for Unicode support
+                    // Add ASCII Symbol (always present)
+                    lookup[unitDef.Symbol] = lookupInfo;
+                    
+                    // Add Unicode Symbol if available (points to SAME object)
+                    if (!string.IsNullOrEmpty(unitDef.UnicodeSymbol))
+                    {
+                        lookup[unitDef.UnicodeSymbol] = lookupInfo;
+                    }
                 }
                 
                 // Also add the base unit if it's not already included
@@ -114,11 +124,21 @@ public class UnitSystem : IUnitSystem
                     Func<double, MeasuredValue> createFunc = (value) => 
                         CreateTypedMeasuredValue(unitGroup.BaseUnit.Family, value, unitGroup.BaseUnit.Symbol);
                     
-                    lookup[unitGroup.BaseUnit.Symbol] = new UnitLookupInfo(
+                    var lookupInfo = new UnitLookupInfo(
                         unitGroup.BaseUnit.Family,
                         unitGroup.BaseUnit,
                         createFunc
                     );
+                    
+                    // PHASE 2: Dual-key lookup for Unicode support
+                    // Add ASCII Symbol (always present)
+                    lookup[unitGroup.BaseUnit.Symbol] = lookupInfo;
+                    
+                    // Add Unicode Symbol if available (points to SAME object)
+                    if (!string.IsNullOrEmpty(unitGroup.BaseUnit.UnicodeSymbol))
+                    {
+                        lookup[unitGroup.BaseUnit.UnicodeSymbol] = lookupInfo;
+                    }
                 }
             }
             // Function-only families are excluded from parser cache

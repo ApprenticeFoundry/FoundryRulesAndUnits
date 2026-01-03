@@ -57,6 +57,11 @@ public interface IMeasuredValue
 [JsonDerivedType(typeof(Energy))]
 [JsonDerivedType(typeof(Voltage))]
 [JsonDerivedType(typeof(Volume))]
+[JsonDerivedType(typeof(Torque))]
+[JsonDerivedType(typeof(Inertia))]
+[JsonDerivedType(typeof(AngularVelocity))]
+[JsonDerivedType(typeof(AngularAcceleration))]
+[JsonDerivedType(typeof(Inductance))]
 [System.Serializable]
 public class MeasuredValue : IMeasuredValue
 {

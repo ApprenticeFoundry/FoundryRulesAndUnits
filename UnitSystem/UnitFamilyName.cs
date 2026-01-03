@@ -58,4 +58,10 @@ public enum UnitFamilyName
     Currency,
     CostPerQuantity,
     CostPerTime,
+    
+    // Mechanical engineering families (Phase 4 - Unicode Support)
+    Torque,
+    Inertia,
+    AngularVelocity,
+    AngularAcceleration,
 }
