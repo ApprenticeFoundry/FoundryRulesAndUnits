@@ -2,12 +2,10 @@
 
 namespace FoundryRulesAndUnits.Models;
 
-
 [System.Serializable]
 public class ControlParameters
 {
 	public Dictionary<string, object>? Lookup = null;
-
 
 	public ControlParameters() : base()
 	{
@@ -39,5 +37,4 @@ public class ControlParameters
 
 		return this;
 	}
-
 }

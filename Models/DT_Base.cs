@@ -2,7 +2,6 @@ using System;
 
 namespace FoundryRulesAndUnits.Models;
 
-
 public interface ITags
 {
 	List<string> GetTags();
@@ -23,7 +22,6 @@ public class DT_Base
 
 	protected ControlParameters? metadata;
 
-
 	public DT_Base()
 	{
 		this.initialize();
@@ -33,6 +31,7 @@ public class DT_Base
 		this.Name = name;
 		this.initialize();
 	}
+	
 	public virtual T Merge<T>(T obj) where T : DT_Base
 	{
 		if (this.TimeStamp?.CompareTo(obj.TimeStamp) < 0)
@@ -102,7 +101,6 @@ public class DT_Base
 		metadata ??= new ControlParameters();
 		return metadata;
 	}
-
 
 	public bool HasMetaData()
 	{

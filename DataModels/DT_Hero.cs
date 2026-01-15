@@ -4,7 +4,6 @@ using FoundryRulesAndUnits.Extensions;
 
 namespace FoundryRulesAndUnits.Models;
 
-
 [System.Serializable]
 public class DT_Hero : DT_Title
 {

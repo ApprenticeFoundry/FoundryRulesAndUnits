@@ -5,10 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace FoundryRulesAndUnits.Models;
 
-
 public class StatusBitArray
 {
-
 	private BitArray m_Status;
 
 	/// <summary>

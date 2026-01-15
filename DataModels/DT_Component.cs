@@ -7,8 +7,6 @@ using FoundryRulesAndUnits.Models;
 
 namespace FoundryRulesAndUnits.Models;
 
-
-
 [System.Serializable]
 public class DT_Component : DT_Ingredient
 {
@@ -21,6 +19,7 @@ public class DT_Component : DT_Ingredient
     public DT_Component() : base()
     {
     }
+    
     public override List<DT_Hero> Children()
     {
         if (members == null) return base.Children();
@@ -31,6 +30,7 @@ public class DT_Component : DT_Ingredient
     {
         members = null;
     }
+    
     public List<DT_Component> GetMembers()
     {
         members ??= new List<DT_Component>();
@@ -44,6 +44,7 @@ public class DT_Component : DT_Ingredient
         members.Add(child);
         return child;
     }
+    
     public override DT_Component ShallowCopy()
     {
         var result = (DT_Component)this.MemberwiseClone();
@@ -58,6 +59,4 @@ public class DT_Component : DT_Ingredient
         var result = members?.Select(obj => obj.ShallowCopy()).ToList();
         return result ?? new List<DT_Component>();
     }
-
-
 }

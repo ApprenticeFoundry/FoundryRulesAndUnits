@@ -4,8 +4,6 @@ using FoundryRulesAndUnits.Extensions;
 
 namespace FoundryRulesAndUnits.Models;
 
-
-
 //[JsonDerivedType(typeof(DT_Geometry))]
 [JsonDerivedType(typeof(DT_Component))]
 [JsonDerivedType(typeof(DT_Sensor))]
