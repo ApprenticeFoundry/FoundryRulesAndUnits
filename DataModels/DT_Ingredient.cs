@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using FoundryMicroCore.Core.Extensions;
 using FoundryRulesAndUnits.Models;
 using FoundryRulesAndUnits.Extensions;
 

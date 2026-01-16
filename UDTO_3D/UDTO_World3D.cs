@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using FoundryMicroCore.Core.Extensions;
 using FoundryRulesAndUnits.Extensions;
 using FoundryRulesAndUnits.Models;
 

@@ -1,5 +1,6 @@
 using System;
 using FoundryMicroCore.Core;
+using FoundryMicroCore.Core.Extensions;
 using FoundryRulesAndUnits.Extensions;
 using FoundryRulesAndUnits.Models;
 

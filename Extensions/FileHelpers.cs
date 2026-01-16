@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using FoundryMicroCore.Core.Extensions;
 using FoundryRulesAndUnits.Models;
 
 namespace FoundryRulesAndUnits.Extensions;
@@ -86,7 +87,7 @@ public static class FileHelpers
             string filePath = FullPath(directory, filename);
 
             string text = File.ReadAllText(filePath);
-            var result = CodingExtensions.HydrateList<T>(text, true);
+            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.HydrateList<T>(text, true);
 
             return result;
         }
@@ -103,7 +104,7 @@ public static class FileHelpers
         {
             string filePath = FullPath(directory, filename);
 
-            var result = CodingExtensions.DehydrateList<T>(data, true);
+            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.DehydrateList<T>(data, true);
             File.WriteAllText(filePath, result);
 
             return data;
@@ -122,7 +123,7 @@ public static class FileHelpers
             string filePath = FullPath(directory, filename);
 
             string text = File.ReadAllText(filePath);
-            var result = CodingExtensions.Hydrate<T>(text, true);
+            var result = text.Hydrate<T>(true);
 
             return result;
         }
@@ -142,7 +143,7 @@ public static class FileHelpers
         {
             string filePath = FullPath("config", filename);
 
-            var result = CodingExtensions.Dehydrate<T>(value, false);
+            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.Dehydrate<T>(value, false);
             File.WriteAllText(filePath, result);
         }
         catch (Exception ex)
