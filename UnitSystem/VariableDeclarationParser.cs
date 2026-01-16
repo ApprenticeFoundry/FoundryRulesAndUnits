@@ -127,25 +127,9 @@ namespace FoundryRulesAndUnits.Units
         /// </summary>
         private static UnitFamilyName ParseFamilyName(string familyName)
         {
-            return familyName.ToLower() switch
-            {
-                "length" => UnitFamilyName.Length,
-                "distance" => UnitFamilyName.Distance,
-                "time" => UnitFamilyName.Time,
-                "duration" => UnitFamilyName.Duration,
-                "angle" => UnitFamilyName.Angle,
-                "bearing" => UnitFamilyName.Bearing,
-                "mass" => UnitFamilyName.Mass,
-                "speed" => UnitFamilyName.Speed,
-                "area" => UnitFamilyName.Area,
-                "volume" => UnitFamilyName.Volume,
-                "force" => UnitFamilyName.Force,
-                "power" => UnitFamilyName.Power,
-                "voltage" => UnitFamilyName.Voltage,
-                "current" => UnitFamilyName.Current,
-                "temperature" => UnitFamilyName.Temperature,
-                _ => UnitFamilyName.None
-            };
+            if (Enum.TryParse<UnitFamilyName>(familyName, ignoreCase: true, out var result))
+                return result;
+            return UnitFamilyName.None;
         }
 
         /// <summary>
