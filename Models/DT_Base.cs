@@ -1,4 +1,5 @@
 using System;
+using FoundryMicroCore.Core;
 
 namespace FoundryRulesAndUnits.Models;
 
@@ -21,6 +22,41 @@ public class DT_Base
 	public string? TimeStamp;
 
 	protected ControlParameters? metadata;
+	protected StatusBitArray statusBits = new();
+
+	// === STATUS BIT METHODS ===
+	
+	/// <summary>
+	/// Check if a status bit is set
+	/// </summary>
+	public bool IsSet(int bitIndex)
+	{
+		return statusBits.GetBitByIndex(bitIndex);
+	}
+
+	/// <summary>
+	/// Set a status bit to true
+	/// </summary>
+	public void Set(int bitIndex)
+	{
+		statusBits.SetBitByIndex(bitIndex, true);
+	}
+
+	/// <summary>
+	/// Clear a status bit (set to false)
+	/// </summary>
+	public void Clear(int bitIndex)
+	{
+		statusBits.SetBitByIndex(bitIndex, false);
+	}
+
+	/// <summary>
+	/// Clear all status bits
+	/// </summary>
+	public void Clear()
+	{
+		statusBits.Clear();
+	}
 
 	public DT_Base()
 	{
@@ -141,6 +177,14 @@ public class DT_Base
 	{
 		MetaData().Establish(key, value);
 		return metadata!;
+	}
+
+	/// <summary>
+	/// Add key-value pair to metadata (alias for AddMetaData)
+	/// </summary>
+	public void AddKeyValue(string key, object value)
+	{
+		MetaData().Establish(key, value);
 	}
 
 	public object GetMetaData(string key)

@@ -1,102 +1,197 @@
 # Simplified FoundryRulesAndUnits Modernization Plan
-## Data Container Focused Approach
+## Dependency Consolidation & Legacy Management
 
-**Date**: January 15, 2026  
-**Purpose**: Modernize data containers for spreadsheet/JSON workflows without architectural complexity  
-**Duration**: 2 weeks (10 working days)
-
----
-
-## **Core Understanding: DT Components as Data Containers**
-
-**Primary Use Cases:**
-- Import/export from spreadsheets 
-- JSON serialization/deserialization
-- Flexible data transport via ControlParameters
-- Simple property-based data mapping
-
-**What We DON'T Need:**
-- Complex collection management
-- Editor patterns with mutation tokens
-- Composition architectures  
-- Behavioral component patterns
-
-**What We DO Need:**
-- Better identity management (GlobalId vs manual Guid)
-- Efficient metadata (MxObject.Metadata vs nullable ControlParameters)
-- Memory efficiency (4-byte StatusBits)
-- Clean JSON serialization
+**Date**: January 16, 2026  
+**Purpose**: Eliminate duplicate infrastructure and focus on core units system value  
+**Duration**: 1 week (5 working days)
 
 ---
 
-## **PHASE 0: Revert Previous Changes (Day 1)**
+## **Core Understanding: Architectural Clarity**
 
-### **Task 0.1: Clean Slate - Remove Earlier Modifications**
+**Legacy Data Containers (Don't Modify):**
+- **DT_* Classes**: Excel-to-data serialization containers - remain unchanged, may deprecate
+- **UDTO_* Objects**: Legacy data structures - remain unchanged, may deprecate
+- **Purpose**: These were designed to be highly serializable data transfer objects
 
-#### **Revert DT_Base.cs**
-- Remove MxObject inheritance that was added earlier
-- Restore original DT_Base class structure:
-```csharp
-public class DT_Base
-{
-    public string? Guid { get; set; }
-    public string? ParentGuid { get; set; }
-    public string? Name { get; set; }
-    public string? Type { get; set; }
-    public string? Url { get; set; }
-    public List<string> Tags { get; set; } = new List<string>();
-    public string? TimeStamp;
-    protected ControlParameters? metadata;
-}
+**Modern Infrastructure:**
+- **FoundryMicroCore**: Canonical implementation of shared functionality  
+- **Units System**: The actual core value of FoundryRulesAndUnits library
+
+**What We DON'T Do:**
+- Modify DT_* or UDTO_* classes (they're legacy, potentially obsolete)
+- Use inheritance-based integration (MxObject → DT_Component)
+- Build complex migration paths for deprecated functionality
+
+**What We DO:**
+- Remove duplicate infrastructure classes from FoundryRulesAndUnits
+- Reference FoundryMicroCore for shared functionality  
+- Focus testing and development on the Units/Measurements system
+
+---
+
+## **PHASE 1: Remove Duplicate Infrastructure (Days 1-2)**
+
+### **Task 1.1: Eliminate Duplicate Classes**
+
+#### **Delete Redundant Infrastructure from FoundryRulesAndUnits:**
+- Delete `Models/ITreeNode.cs` → Use FoundryMicroCore version
+- Delete `Models/StatusBitArray.cs` → Use FoundryMicroCore version  
+- Delete `Models/ControlParameters.cs` → Use FoundryMicroCore version
+- Update imports/using statements to reference FoundryMicroCore equivalents
+
+#### **Update Project Dependencies**
+```xml
+<!-- FoundryRulesAndUnits.csproj -->
+<ProjectReference Include="..\FoundryMicroCore\FoundryMicroCore.Library\FoundryMicroCore.csproj" />
 ```
 
-#### **Revert DT_Component.cs** 
-- Remove MxComponent composition approach that was added
-- Restore original DT_Component inheritance: `DT_Component : DT_Ingredient`
-- Restore original collection management:
+#### **Fix Import Statements**
 ```csharp
-public class DT_Component : DT_Ingredient
-{
-    public string? Text { get; set; } = null;
-    public HighResPosition? Position { get; set; } = null;
-    public BoundingBox? BoundingBox { get; set; } = null;
-    protected List<DT_Component>? members;
-    
-    // Original methods restored
-    public List<DT_Component> GetMembers() { ... }
-    public DT_Component AddMember(DT_Component child) { ... }
-}
+// BEFORE (local duplicates)
+using FoundryRulesAndUnits.Models; // For ITreeNode, StatusBitArray, ControlParameters
+
+// AFTER (canonical implementations)  
+using FoundryMicroCore.Core;        // For ITreeNode, StatusBits, MxObject
 ```
 
-#### **Revert StatusBitArray.cs**
-- Remove FoundryMicroCore inheritance that was added
-- Restore original BitArray-based implementation
-- Remove using FoundryMicroCore.Core statement
+### **Task 1.2: Validate Compilation**
 
-#### **Revert ControlParameters.cs**
-- Restore nullable Lookup pattern: `public Dictionary<string, object>? Lookup = null;`
-- Restore original null-checking logic in all methods
-- Remove non-nullable simplifications that were added
-
-#### **Remove Project Reference**
-- Remove FoundryMicroCore project reference from FoundryRulesAndUnits.csproj
-- Ensure project compiles with original structure
+#### **Build Verification**
+- Ensure FoundryRulesAndUnits project builds with FoundryMicroCore references
+- Verify no missing dependencies
+- Update any broken references to point to FoundryMicroCore types
 
 ---
 
-## **PHASE 1: Foundation Simplification (Days 2-4)**
+## **PHASE 2: Focus on Core Value - Units System (Days 3-4)**
 
-### **Task 1.1: Re-add Project Reference and Dependencies**
+### **Task 2.1: Validate Units System Integrity**
 
-#### **Add FoundryMicroCore Reference Back**
-- Add FoundryMicroCore project reference to FoundryRulesAndUnits.csproj (properly this time)
-- Verify project builds with reference in place
-- Test that FoundryMicroCore types are accessible
+#### **Core Units Functionality Testing**
+- Unit creation across all 34+ types (Length, Mass, Temperature, Currency, etc.)
+- Unit conversions between systems (SI, MKS, CGS, FPS, IPS, mmNs)
+- Unit arithmetic operations (addition, multiplication, derived units)
+- Multi-currency support with exchange rates
 
-#### **Retire StatusBitArray.cs entirely**
-- ✅ **Already using FoundryMicroCore StatusBitArray** via inheritance
-- Delete `c:\Users\admin\workspace\Core\FoundryRulesAndUnits\Models\StatusBitArray.cs`
-- Update any direct references to use inherited StatusBits from MxObject
+#### **API Validation**
+```csharp
+// Core functionality that must work
+var unitSystem = new UnitSystem(UnitSystemType.SI);
+var length = unitSystem.CreateLength(5.0, "m");
+var converted = length.AsString("ft");
+var mass = unitSystem.CreateMass(2.0, "kg");
+var area = unitSystem.CreateArea(25.0, "m²");
+```
+
+### **Task 2.2: Clean Up Test Infrastructure**
+
+#### **Remove Legacy-Focused Tests**
+- Remove or simplify test pages focused on DT_* component testing
+- Remove infrastructure tests for deprecated functionality
+- Keep only the TestUnits.razor page focused on actual library value
+
+#### **Focus Test Coverage**
+- Unit conversions and arithmetic
+- All unit systems and families  
+- Currency and cost calculations
+- Error handling and validation
+- Performance of unit operations
+
+---
+
+## **PHASE 3: Legacy Management Strategy (Day 5)**
+
+### **Task 3.1: Document Legacy Status**
+
+#### **Clear Documentation**
+```markdown
+## Legacy Components Status
+
+**DT_* Classes (DataModels folder)**
+- Purpose: Serializable containers for Excel-to-data workflows
+- Status: Legacy - do not modify, potential future deprecation
+- Usage: Maintain for backward compatibility only
+
+**UDTO_* Objects (UDTO_3D folder)**  
+- Purpose: [Historical data transfer objects]
+- Status: Legacy - do not modify, potential future deprecation
+- Usage: Maintain for backward compatibility only
+
+**Modern Architecture**
+- Core Value: Units/Measurements system (UnitSystem, Length, Mass, etc.)
+- Shared Infrastructure: Reference FoundryMicroCore for common functionality
+```
+
+### **Task 3.2: Cleanup Build Errors**
+
+#### **Fix Remaining Compilation Issues**
+- Remove test code that assumes deprecated API methods exist
+- Fix any remaining references to deleted duplicate classes
+- Ensure clean builds across all projects
+
+---
+
+## **BENEFITS OF CONSOLIDATION APPROACH**
+
+### **✅ Architectural Clarity**
+- **Single Source of Truth**: FoundryMicroCore provides canonical implementations
+- **Dependency Direction**: Clear hierarchy (FoundryRulesAndUnits → FoundryMicroCore)
+- **No Duplication**: Eliminate maintenance burden of duplicate classes
+- **Legacy Isolation**: DT_*/UDTO_* remain untouched as stable data containers
+
+### **✅ Focus on Core Value**  
+- **Units System**: All development energy on measurement/conversion functionality
+- **Domain Expertise**: Library's actual purpose (not data container management)
+- **Performance**: Optimize what matters (unit operations, not deprecated containers)
+
+### **✅ Future Flexibility**
+- **Deprecation Path**: Legacy components can be removed when ready
+- **Clean Architecture**: Modern code uses modern infrastructure
+- **No Technical Debt**: Inheritance-based integration avoided
+
+---
+
+## **WHAT GETS RETIRED**
+
+### **Files to Delete:**
+- `Models/ITreeNode.cs` (use FoundryMicroCore version)
+- `Models/StatusBitArray.cs` (use FoundryMicroCore version)  
+- `Models/ControlParameters.cs` (use FoundryMicroCore version)
+
+### **Test Pages to Simplify:**
+- Remove DT_* component testing that assumes API modifications
+- Focus test infrastructure on Units/Measurements functionality
+- Remove infrastructure tests for deprecated functionality
+
+### **Approaches to Avoid:**
+- Modifying DT_* or UDTO_* classes (they're legacy containers)
+- Inheritance-based integration (DT_Component → MxComponent)
+- Complex migration paths for potentially obsolete functionality
+
+---
+
+## **SUCCESS CRITERIA**
+
+### **Architectural Success**
+- [ ] No duplicate infrastructure classes in FoundryRulesAndUnits
+- [ ] Clean dependency on FoundryMicroCore for shared functionality
+- [ ] DT_*/UDTO_* classes remain unchanged (legacy preservation)
+- [ ] Project builds cleanly with consolidated dependencies
+
+### **Core Value Success**  
+- [ ] Units system fully functional and tested
+- [ ] All 34+ unit types working correctly
+- [ ] All 6 unit systems operational
+- [ ] Currency and conversion functionality verified
+
+### **Maintenance Success**
+- [ ] Reduced codebase complexity (eliminated duplicates)
+- [ ] Clear separation between legacy and modern components
+- [ ] Test coverage focused on library's actual purpose
+- [ ] Clean build process across all projects
+
+**This approach eliminates architectural duplication while preserving legacy compatibility and focusing on the library's core measurement/units functionality.**
 
 #### **Consolidate ControlParameters**
 - Keep ControlParameters.cs as compatibility wrapper around MxObject.Metadata
