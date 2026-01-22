@@ -88,7 +88,7 @@ public class DT_Target : DT_NetworkItem
     }
     public DT_Part CopyFrom(DT_Part source)
     {
-        source.CopyNonNullFields(this.Part);
+        //source.CopyNonNullFields(this.Part);
         return this.Part;
     }
 

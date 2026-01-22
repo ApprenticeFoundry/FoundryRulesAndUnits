@@ -34,9 +34,9 @@
       <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
   
-  <ItemGroup>
+  <!-- <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
-  </ItemGroup>
+  </ItemGroup> -->
 
   <ItemGroup>
     <ProjectReference Include="..\FoundryMicroCore\FoundryMicroCore.Library\FoundryMicroCore.csproj" />
