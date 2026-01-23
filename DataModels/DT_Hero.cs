@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using FoundryRulesAndUnits.Extensions;
+using FoundryMicroCore.Core.Extensions;
 
 namespace FoundryRulesAndUnits.Models;
 
