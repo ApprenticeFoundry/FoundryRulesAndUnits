@@ -40,11 +40,6 @@ namespace FoundryRulesAndUnits.Models
 			this.Box(width, height, depth, units);
 		}
 
-		public UDTO_BoundingBox AsUDTO()
-		{
-			return new UDTO_BoundingBox(this);
-		}
-
 		public BoundingBox copyFrom(BoundingBox pos)
 		{
 			this.width.Assign(pos.width);

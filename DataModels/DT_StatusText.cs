@@ -1,3 +1,0 @@
-namespace FoundryRulesAndUnits.Models;
-
-

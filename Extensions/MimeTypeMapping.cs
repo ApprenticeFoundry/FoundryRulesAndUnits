@@ -4,7 +4,11 @@ using System.Text;
 
 namespace FoundryRulesAndUnits.Extensions;
 
-public static class FileExtensionHelpers
+/// <summary>
+/// MIME type mapping for file extensions.
+/// Provides content type identification for 3D models, documents, media files, and other assets.
+/// </summary>
+public static class MimeTypeMapping
 {
     // private static FileExtensionContentTypeProvider _provider;
     // public static FileExtensionContentTypeProvider MIMETypeProvider()

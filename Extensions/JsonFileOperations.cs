@@ -6,7 +6,11 @@ using FoundryRulesAndUnits.Models;
 
 namespace FoundryRulesAndUnits.Extensions;
 
-public static class FileHelpers
+/// <summary>
+/// File I/O operations combined with JSON serialization.
+/// Handles reading/writing JSON data to/from files with proper error handling and stream management.
+/// </summary>
+public static class JsonFileOperations
 {
     public static Stream GenerateStream(this string s)
     {
@@ -87,7 +91,7 @@ public static class FileHelpers
             string filePath = FullPath(directory, filename);
 
             string text = File.ReadAllText(filePath);
-            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.HydrateList<T>(text, true);
+            var result = FoundryMicroCore.Core.Extensions.SerializationExtensions.HydrateList<T>(text, true);
 
             return result;
         }
@@ -104,7 +108,7 @@ public static class FileHelpers
         {
             string filePath = FullPath(directory, filename);
 
-            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.DehydrateList<T>(data, true);
+            var result = FoundryMicroCore.Core.Extensions.SerializationExtensions.DehydrateList<T>(data, true);
             File.WriteAllText(filePath, result);
 
             return data;
@@ -143,7 +147,7 @@ public static class FileHelpers
         {
             string filePath = FullPath("config", filename);
 
-            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.Dehydrate<T>(value, false);
+            var result = FoundryMicroCore.Core.Extensions.SerializationExtensions.Dehydrate<T>(value, false);
             File.WriteAllText(filePath, result);
         }
         catch (Exception ex)

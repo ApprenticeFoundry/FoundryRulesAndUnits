@@ -5,7 +5,11 @@ using FoundryMicroCore.Core.Extensions;
 
 namespace FoundryRulesAndUnits.Extensions;
 
-public static class StorageHelpers
+/// <summary>
+/// Type-aware JSON storage operations with automatic type registration and lookup.
+/// Provides versioned file storage, JSON serialization with type metadata, and directory management.
+/// </summary>
+public static class TypeAwareJsonStorage
 {
     private static readonly Dictionary<string, Type> typeLookup = new();
 
@@ -23,7 +27,7 @@ public static class StorageHelpers
     {
         
         if ( typeLookup.TryGetValue(payloadType, out Type? type) == false ) {
-            var source = assembly ?? typeof(StorageHelpers).Assembly;
+            var source = assembly ?? typeof(TypeAwareJsonStorage).Assembly;
             type = source.DefinedTypes.FirstOrDefault(item => item.Name == payloadType);
             if ( type != null)
                 typeLookup.Add(payloadType, type);
@@ -112,7 +116,7 @@ public static class StorageHelpers
             string filePath = FullPath(directory, filename);
 
             string text = File.ReadAllText(filePath);
-            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.HydrateList<T>(text, true);
+            var result = FoundryMicroCore.Core.Extensions.SerializationExtensions.HydrateList<T>(text, true);
 
             return result;
         }
@@ -129,7 +133,7 @@ public static class StorageHelpers
         {
             string filePath = FullPath(directory, filename);
 
-            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.DehydrateList<T>(data, true);
+            var result = FoundryMicroCore.Core.Extensions.SerializationExtensions.DehydrateList<T>(data, true);
             File.WriteAllText(filePath, result);
 
             return data;
@@ -168,7 +172,7 @@ public static class StorageHelpers
         {
             string filePath = FullPath("config", filename);
 
-            var result = FoundryMicroCore.Core.Extensions.CodingExtensions.Dehydrate<T>(value, false);
+            var result = FoundryMicroCore.Core.Extensions.SerializationExtensions.Dehydrate<T>(value, false);
             File.WriteAllText(filePath, result);
         }
         catch (Exception ex)
