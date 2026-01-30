@@ -9,7 +9,7 @@ namespace FoundryRulesAndUnits.Extensions;
 /// Type-aware JSON storage operations with automatic type registration and lookup.
 /// Provides versioned file storage, JSON serialization with type metadata, and directory management.
 /// </summary>
-public static class TypeAwareJsonStorage
+public static class FileStorageHelpers
 {
     private static readonly Dictionary<string, Type> typeLookup = new();
 
@@ -27,7 +27,7 @@ public static class TypeAwareJsonStorage
     {
         
         if ( typeLookup.TryGetValue(payloadType, out Type? type) == false ) {
-            var source = assembly ?? typeof(TypeAwareJsonStorage).Assembly;
+            var source = assembly ?? typeof(FileStorageHelpers).Assembly;
             type = source.DefinedTypes.FirstOrDefault(item => item.Name == payloadType);
             if ( type != null)
                 typeLookup.Add(payloadType, type);
