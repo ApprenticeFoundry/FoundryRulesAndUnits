@@ -675,7 +675,25 @@ public MyUnit CreateMyUnit(double value = 0, string? units = null)
 }
 ```
 
-## 📄 License
+## � Documentation Structure
+
+This repository uses an organized documentation structure for easy navigation:
+
+### **🔗 Quick Access** (Root Level)
+- **[API Reference](FOUNDRY_RULES_AND_UNITS_API_REFERENCE.md)** - Complete API documentation
+- **[Changelog](CHANGELOG.md)** - Version history and changes
+- **[NuGet Guide](NUGETREADME.md)** - Package installation and usage
+
+### **📁 Organized Documentation** (`docs/` folder)
+- **[Specifications](docs/specifications/)** - Technical specifications (Currency, Unicode support)
+- **[Developer Guides](docs/guides/)** - Implementation guides, factory methods, usage patterns  
+- **[Architecture](docs/architecture/)** - System architecture, design patterns, unit type standards
+- **[Development](docs/development/)** - Implementation plans, migration guides, project requirements
+- **[Version History](docs/changelogs/)** - Detailed changelogs for all versions
+- **[Templates](docs/templates/)** - ADR and service contract templates
+- **[Roadmap](docs/FUTURE_ENHANCEMENTS.md)** - Planned features and enhancements
+
+## �📄 License
 
 MIT License - See LICENSE file for details.
 
