@@ -1,7 +1,7 @@
-# FoundryRulesAndUnits API Reference
+# FoundryRulesAndUnits API Reference v11_0_0
 
-**Version:** 11.1.0  
-**Date:** January 26, 2026  
+**Version:** 11.0.0  
+**Date:** February 11, 2026  
 **Purpose:** LLM Reference Guide - Prevent API Hallucination & Enforce Correct Patterns
 
 > 🎯 **For LLMs:** This document defines the EXACT APIs available in FoundryRulesAndUnits. Do not assume methods exist that are not listed here. Always use the patterns shown in the examples.
@@ -552,10 +552,9 @@ catch (ArgumentException ex)
 
 ## Version History
 
-- **v11.1.0** (Jan 26, 2026) - Added comprehensive API documentation, extension method modernization
-- **v11.0.0** - Major API stabilization, UnitGroup injection pattern
-- **v10.11.0** - Enhanced unit system specifications
-- **v10.10.0** - Unicode display support, improved parsing
+- **v11_0_0** (Feb 11, 2026) - Current version - Major API stabilization, comprehensive documentation
+- **v10_11_0** - Enhanced unit system specifications
+- **v10_10_0** - Unicode display support, improved parsing
 
 ---
 
