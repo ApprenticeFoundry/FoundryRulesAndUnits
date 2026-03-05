@@ -105,6 +105,8 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("qt", "quarts", UnitFamilyName.Volume, 0.000946353),          // 1 qt = 0.000946353 m³
         UnitDefinition.LinearUnit("pt", "pints", UnitFamilyName.Volume, 0.000473176),           // 1 pt = 0.000473176 m³
         UnitDefinition.LinearUnit("cup", "cups", UnitFamilyName.Volume, 0.000236588),           // 1 cup = 0.000236588 m³
+        UnitDefinition.LinearUnit("tbsp", "tablespoons", UnitFamilyName.Volume, 0.0000147868),   // 1 tbsp = 1.47868e-5 m³
+        UnitDefinition.LinearUnit("tsp", "teaspoons", UnitFamilyName.Volume, 0.00000492892),     // 1 tsp = 4.92892e-6 m³
         UnitDefinition.LinearUnit("fl oz", "fluid ounces", UnitFamilyName.Volume, 0.0000295735), // 1 fl oz = 2.95735e-5 m³
 
         // Speed units (meters per second as base) - using enhanced approach with UnitFamilyName enum!
@@ -317,6 +319,51 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("JPY/hr", "Japanese Yen per hour", UnitFamilyName.CostPerTime, 145.0),    // 1 JPY/hr = 145 USD/hr
         UnitDefinition.LinearUnit("CAD/hr", "Canadian Dollars per hour", UnitFamilyName.CostPerTime, 1.36), // 1 CAD/hr = 1.36 USD/hr
         UnitDefinition.LinearUnit("cent/hr", "cents per hour", UnitFamilyName.CostPerTime, 0.01),           // 1 cent/hr = 0.01 USD/hr
+
+        // CostPerMass units (USD/kg as base) - USD only, convert currency at runtime
+        UnitDefinition.BaseUnit("USD/kg", "US Dollars per kilogram", UnitFamilyName.CostPerMass),
+        UnitDefinition.LinearUnit("USD/lb", "US Dollars per pound", UnitFamilyName.CostPerMass, 2.20462),      // 1 USD/lb = 2.20462 USD/kg (1 kg = 2.20462 lb)
+        UnitDefinition.LinearUnit("USD/g", "US Dollars per gram", UnitFamilyName.CostPerMass, 0.001),         // 1 USD/g = 0.001 USD/kg
+        UnitDefinition.LinearUnit("USD/oz", "US Dollars per ounce", UnitFamilyName.CostPerMass, 35.274),      // 1 USD/oz = 35.274 USD/kg (1 kg = 35.274 oz)
+        UnitDefinition.LinearUnit("USD/ton", "US Dollars per ton", UnitFamilyName.CostPerMass, 907.185),      // 1 USD/ton = 907.185 USD/kg (1 short ton = 907.185 kg)
+        UnitDefinition.LinearUnit("USD/tonne", "US Dollars per tonne", UnitFamilyName.CostPerMass, 1000.0),   // 1 USD/tonne = 1000 USD/kg
+
+        // CostPerLength units (USD/m as base) - USD only, convert currency at runtime
+        UnitDefinition.BaseUnit("USD/m", "US Dollars per meter", UnitFamilyName.CostPerLength),
+        UnitDefinition.LinearUnit("USD/ft", "US Dollars per foot", UnitFamilyName.CostPerLength, 0.3048),     // 1 USD/ft = 0.3048 USD/m (1 ft = 0.3048 m)
+        UnitDefinition.LinearUnit("USD/in", "US Dollars per inch", UnitFamilyName.CostPerLength, 0.0254),     // 1 USD/in = 0.0254 USD/m
+        UnitDefinition.LinearUnit("USD/cm", "US Dollars per centimeter", UnitFamilyName.CostPerLength, 0.01), // 1 USD/cm = 0.01 USD/m
+        UnitDefinition.LinearUnit("USD/mm", "US Dollars per millimeter", UnitFamilyName.CostPerLength, 0.001),// 1 USD/mm = 0.001 USD/m
+        UnitDefinition.LinearUnit("USD/km", "US Dollars per kilometer", UnitFamilyName.CostPerLength, 1000.0),// 1 USD/km = 1000 USD/m
+        UnitDefinition.LinearUnit("USD/mi", "US Dollars per mile", UnitFamilyName.CostPerLength, 1609.34),    // 1 USD/mi = 1609.34 USD/m
+        UnitDefinition.LinearUnit("USD/yd", "US Dollars per yard", UnitFamilyName.CostPerLength, 0.9144),     // 1 USD/yd = 0.9144 USD/m
+
+        // CostPerArea units (USD/m2 as base) - USD only, convert currency at runtime
+        UnitDefinition.BaseUnit("USD/m2", "US Dollars per square meter", UnitFamilyName.CostPerArea, "USD/m²"),
+        UnitDefinition.LinearUnit("USD/ft2", "US Dollars per square foot", UnitFamilyName.CostPerArea, 0.092903, "USD/ft²"),  // 1 ft² = 0.092903 m²
+        UnitDefinition.LinearUnit("USD/in2", "US Dollars per square inch", UnitFamilyName.CostPerArea, 0.00064516, "USD/in²"), // 1 in² = 0.00064516 m²
+        UnitDefinition.LinearUnit("USD/cm2", "US Dollars per square centimeter", UnitFamilyName.CostPerArea, 0.0001, "USD/cm²"),
+        UnitDefinition.LinearUnit("USD/km2", "US Dollars per square kilometer", UnitFamilyName.CostPerArea, 1000000.0, "USD/km²"),
+        UnitDefinition.LinearUnit("USD/ha", "US Dollars per hectare", UnitFamilyName.CostPerArea, 10000.0),    // 1 ha = 10000 m²
+        UnitDefinition.LinearUnit("USD/acre", "US Dollars per acre", UnitFamilyName.CostPerArea, 4046.86),     // 1 acre = 4046.86 m²
+        UnitDefinition.LinearUnit("USD/sqyd", "US Dollars per square yard", UnitFamilyName.CostPerArea, 0.836127, "USD/yd²"), // 1 yd² = 0.836127 m²
+
+        // CostPerVolume units (USD/L as base) - USD only, convert currency at runtime
+        UnitDefinition.BaseUnit("USD/L", "US Dollars per liter", UnitFamilyName.CostPerVolume),
+        UnitDefinition.LinearUnit("USD/mL", "US Dollars per milliliter", UnitFamilyName.CostPerVolume, 0.001), // 1 mL = 0.001 L
+        UnitDefinition.LinearUnit("USD/gal", "US Dollars per gallon", UnitFamilyName.CostPerVolume, 3.78541),  // 1 gal = 3.78541 L
+        UnitDefinition.LinearUnit("USD/cup", "US Dollars per cup", UnitFamilyName.CostPerVolume, 0.236588),    // 1 cup = 0.236588 L
+        UnitDefinition.LinearUnit("USD/qt", "US Dollars per quart", UnitFamilyName.CostPerVolume, 0.946353),   // 1 qt = 0.946353 L
+        UnitDefinition.LinearUnit("USD/pt", "US Dollars per pint", UnitFamilyName.CostPerVolume, 0.473176),    // 1 pt = 0.473176 L
+        UnitDefinition.LinearUnit("USD/m3", "US Dollars per cubic meter", UnitFamilyName.CostPerVolume, 1000.0, "USD/m³"), // 1 m³ = 1000 L
+        UnitDefinition.LinearUnit("USD/fl oz", "US Dollars per fluid ounce", UnitFamilyName.CostPerVolume, 0.0295735), // 1 fl oz = 0.0295735 L
+
+        // CostPerEnergy units (USD/kWh as base) - USD only, convert currency at runtime
+        UnitDefinition.BaseUnit("USD/kWh", "US Dollars per kilowatt-hour", UnitFamilyName.CostPerEnergy),
+        UnitDefinition.LinearUnit("USD/J", "US Dollars per joule", UnitFamilyName.CostPerEnergy, 1.0/3600000.0),   // 1 J = 1/3600000 kWh
+        UnitDefinition.LinearUnit("USD/MJ", "US Dollars per megajoule", UnitFamilyName.CostPerEnergy, 1.0/3.6),    // 1 MJ = 1/3.6 kWh
+        UnitDefinition.LinearUnit("USD/BTU", "US Dollars per BTU", UnitFamilyName.CostPerEnergy, 1.0/3412.14),     // 1 BTU = 1/3412.14 kWh
+        UnitDefinition.LinearUnit("USD/therm", "US Dollars per therm", UnitFamilyName.CostPerEnergy, 29.3001),     // 1 therm = 29.3001 kWh
 
         // Torque units (N⋅m as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("N*m", "newton-meters", UnitFamilyName.Torque, "N⋅m"),               // ASCII: N*m, Unicode: N⋅m
