@@ -311,7 +311,7 @@ BenchmarkDotNet comparative tests:
 1. Catalog all breaking changes introduced
 2. Create migration guide for consuming code
 3. Validate that benefits justify breaking changes
-4. Provide before/after examples for each change
+4. Provide before|after examples for each change
 
 #### **Task 4.2.2: Compatibility Matrix**
 ```
