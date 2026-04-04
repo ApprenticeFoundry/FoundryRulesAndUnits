@@ -69,4 +69,5 @@ public enum UnitFamilyName
     Inertia,
     AngularVelocity,
     AngularAcceleration,
+    Acceleration,
 }
