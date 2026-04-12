@@ -86,6 +86,7 @@ public class Length : MeasuredValue
 	{
 		var result = new Length(left._unitGroup);
 		result.Init(left.Value() + right.Value(), left.Internal());
+		result.U = left.U;  // preserve display unit (e.g. ft, cm)
 		return result;
 	}
 
@@ -93,6 +94,7 @@ public class Length : MeasuredValue
 	{
 		var result = new Length(left._unitGroup);
 		result.Init(left.Value() - right.Value(), left.Internal());
+		result.U = left.U;  // preserve display unit
 		return result;
 	}
 
@@ -101,6 +103,7 @@ public class Length : MeasuredValue
 	{
 		var result = new Length(right._unitGroup);
 		result.Init(left * right.Value(), right.Internal());
+		result.U = right.U;  // preserve display unit
 		return result;
 	}
 
@@ -108,6 +111,7 @@ public class Length : MeasuredValue
 	{
 		var result = new Length(left._unitGroup);
 		result.Init(left.Value() * right, left.Internal());
+		result.U = left.U;  // preserve display unit
 		return result;
 	}
 
@@ -115,6 +119,7 @@ public class Length : MeasuredValue
 	{
 		var result = new Length(left._unitGroup);
 		result.Init(left.Value() / right, left.Internal());
+		result.U = left.U;  // preserve display unit
 		return result;
 	}
 

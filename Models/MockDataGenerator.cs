@@ -1,5 +1,4 @@
 
-
 namespace FoundryRulesAndUnits.Models
 {
 
@@ -48,97 +47,81 @@ namespace FoundryRulesAndUnits.Models
 			"#006400", // DarkGreen
 			"#8B0000", // DarkRed
 			"#4B0082", // Indigo
-			"#556B2F", // DarkOliveGreen 
-			"#000000", // Black
+			"#8B008B", // DarkMagenta
+			"#FF8C00", // DarkOrange
+			"#9932CC", // DarkOrchid
+			"#8B0000", // DarkRed
+			"#E9967A", // DarkSalmon
+			"#8FBC8F", // DarkSeaGreen
+			"#483D8B", // DarkSlateBlue
+			"#2F4F4F", // DarkSlateGray
+			"#00CED1", // DarkTurquoise
+			"#9400D3", // DarkViolet
+			"#FF1493", // DeepPink
+			"#00BFFF", // DeepSkyBlue
 			"#696969", // DimGray
-			"#A9A9A9"  // DarkGray
-		};
-
-		// Light colors array
-		readonly List<string> lightColors = new List<string>() {
-			"#FFFFFF", // White
-			"#DCDCDC", // Gainsboro
-			"#F5F5F5", // WhiteSmoke
-			"#D3D3D3", // LightGrey
-			"#90EE90", // LightGreen
-			"#FFB6C1", // LightPink
-			"#FFA07A", // LightSalmon
-			"#20B2AA", // LightSeaGreen
-			"#87CEFA", // LightSkyBlue
-			"#778899", // LightSlateGray 
-			"#B0C4DE"  // LightSteelBlue
+			"#1E90FF", // DodgerBlue
+			"#B22222", // FireBrick
+			"#228B22", // ForestGreen
+			"#FF00FF", // Fuchsia
+			"#FFD700", // Gold
+			"#DAA520", // Goldenrod
+			"#808080", // Gray
+			"#008000", // Green
+			"#ADFF2F", // GreenYellow
+			"#FF69B4"  // HotPink
 		};
 
 		public MockDataGenerator()
 		{
-			this.rand = new Random();
-			var list = new NameList();
+			rand = new Random();
+			firstNames = new List<string>();
+			lastnames = new List<string>();
+			symbols = new List<string>();
+			words = new List<string>();
+			colors = new List<string>();
 
-			firstNames = new List<string>(list.first);
-			lastnames = new List<string>(list.last);
-			symbols = new List<string>(list.symbols);
-			colors = new List<string>(list.colors);
+			var names = new NameList();
+			firstNames.AddRange(names.first);
+			lastnames.AddRange(names.last);
+			symbols.AddRange(names.symbols);
+			colors.AddRange(names.colors);
 
-			var data = "tortor risus dapibus augue vel accumsan tellus nisi eu orci mauris lacinia sapien quis libero nullam sit amet turpis elementum ligula vehicula consequat morbi a ipsum integer a nibh in quis justo maecenas rhoncus aliquam lacus morbi quis tortor id nulla ultrices aliquet maecenas leo odio condimentum id luctus nec molestie sed justo pellentesque viverra pede ac diam cras pellentesque volutpat dui maecenas tristique est et tempus semper est quam pharetra magna ac consequat metus sapien ut nunc vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae mauris viverra diam vitae quam suspendisse potenti nullam".Split(" ");
-			words = new List<string>(data);
+			words.AddRange(firstNames);
+			words.AddRange(lastnames);
+			words.AddRange(colors);
 		}
 
-		public string GenerateName()
-		{
-			string first = firstNames[rand.Next(firstNames.Count)];
-			string last = lastnames[rand.Next(lastnames.Count)];
+		public string RandomFirstName() => firstNames[rand.Next(firstNames.Count)];
+		public string RandomLastName() => lastnames[rand.Next(lastnames.Count)];
+		public string RandomFullName() => $"{RandomFirstName()} {RandomLastName()}";
+		public string RandomSymbol() => symbols[rand.Next(symbols.Count)];
+		public string RandomColor() => colors[rand.Next(colors.Count)];
+		public string RandomDarkColor() => darkColors[rand.Next(darkColors.Count)];
+		public string RandomWord() => words[rand.Next(words.Count)];
 
-			return $"{first}_{last}";
-		}
-
-		public string GenerateText()
+		public string RandomSentence(int wordCount = 5)
 		{
-			var list = new List<string>();
-			for (int i = 0; i < GenerateInt(5, 12); i++)
+			var sentence = new List<string>();
+			for (int i = 0; i < wordCount; i++)
 			{
-				string word = words[rand.Next(words.Count)];
-				list.Add(word);
+				sentence.Add(RandomWord());
 			}
-
-			return string.Join(" ", list);
+			return string.Join(" ", sentence);
 		}
 
-		public string GenerateWord()
+		public int RandomInt(int min = 0, int max = 100) => rand.Next(min, max + 1);
+		public double RandomDouble(double min = 0.0, double max = 100.0) => rand.NextDouble() * (max - min) + min;
+		
+		public string RandomGuid() => Guid.NewGuid().ToString();
+		
+		public DateTime RandomDateTime(DateTime? start = null, DateTime? end = null)
 		{
-			string word = words[rand.Next(words.Count)];
-			return word;
-		}
-
-		public string GenerateSymbol()
-		{
-			string symbol = symbols[rand.Next(symbols.Count)];
-			return symbol;
-		}
-
-		public double GenerateDouble(double min = 0.0, double max = 1.0)
-		{
-			return min + (max - min) * rand.NextDouble();
-		}
-
-		public int GenerateInt(int min = 0, int max = 1)
-		{
-			return rand.Next(min, max);
-		}
-
-		public string GenerateColor()
-		{
-			var color = colors[rand.Next(colors.Count)];
-			return color;
-		}
-		public string GenerateLightColor()
-		{
-			var color = lightColors[rand.Next(lightColors.Count)];
-			return color;
-		}
-		public string GenerateDarkColor()
-		{
-			var color = darkColors[rand.Next(darkColors.Count)];
-			return color;
+			var startDate = start ?? DateTime.Now.AddYears(-1);
+			var endDate = end ?? DateTime.Now;
+			var range = endDate - startDate;
+			var randomTime = new TimeSpan((long)(rand.NextDouble() * range.Ticks));
+			return startDate + randomTime;
 		}
 	}
 }

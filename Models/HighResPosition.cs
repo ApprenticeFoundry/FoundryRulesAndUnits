@@ -38,11 +38,6 @@ namespace FoundryRulesAndUnits.Models
 			this.Loc(xLoc, yLoc, zLoc, units);
 		}
 
-		public UDTO_HighResPosition AsUDTO()
-		{
-			return new UDTO_HighResPosition(this);
-		}
-
 		// public double distanceXZ()
 		// {
 		// 	return Math.Sqrt(this.xLoc.V * this.xLoc.V + this.zLoc.V * this.zLoc.V);

@@ -1,3 +1,5 @@
+using FoundryRulesAndUnits.Models;
+
 using FoundryRulesAndUnits.Units;
 
 namespace FoundryRulesAndUnits.Models
