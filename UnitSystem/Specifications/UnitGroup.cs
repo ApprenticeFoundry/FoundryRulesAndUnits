@@ -45,6 +45,8 @@ public class UnitGroup
     /// </summary>
     public double Convert(double value, string fromUnit, string toUnit)
     {
+        fromUnit = UnitSystem.NormalizeUnit(fromUnit);
+        toUnit   = UnitSystem.NormalizeUnit(toUnit);
         if (fromUnit == toUnit) return value;
 
         var fromDef = Members.FirstOrDefault(u => u.Symbol == fromUnit) ?? 

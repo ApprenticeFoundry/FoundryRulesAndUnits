@@ -225,6 +225,9 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         // Currency units (USD as base) - System-independent, identical in all unit systems
         // Exchange rates as of January 2026 (approximate, should be updated periodically)
         UnitDefinition.BaseUnit("USD", "US Dollars", UnitFamilyName.Currency, "$"),
+        UnitDefinition.LinearUnit("usd", "US Dollars (LLM alias)", UnitFamilyName.Currency, 1.0), // lowercase LLM alias
+        UnitDefinition.LinearUnit("eur", "Euros (LLM alias)",       UnitFamilyName.Currency, 0.92),
+        UnitDefinition.LinearUnit("gbp", "British Pounds (LLM alias)", UnitFamilyName.Currency, 0.79),
         UnitDefinition.LinearUnit("EUR", "Euros", UnitFamilyName.Currency, 0.92, "€"),           // 1 EUR = 0.92 USD
         UnitDefinition.LinearUnit("GBP", "British Pounds", UnitFamilyName.Currency, 0.79, "£"),  // 1 GBP = 0.79 USD
         UnitDefinition.LinearUnit("JPY", "Japanese Yen", UnitFamilyName.Currency, 145.0, "¥"),   // 1 JPY = 145 USD

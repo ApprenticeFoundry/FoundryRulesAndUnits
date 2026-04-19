@@ -165,6 +165,8 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public double Convert(double value, string fromUnit, string toUnit)
     {
+        fromUnit = NormalizeUnit(fromUnit);
+        toUnit   = NormalizeUnit(toUnit);
         var fromDef = _currentSystem.UnitDefinitions.FirstOrDefault(u => u.Symbol == fromUnit);
         var toDef = _currentSystem.UnitDefinitions.FirstOrDefault(u => u.Symbol == toUnit);
 
