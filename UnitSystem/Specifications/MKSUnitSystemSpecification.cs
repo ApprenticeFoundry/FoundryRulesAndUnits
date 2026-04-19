@@ -251,6 +251,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.BaseUnit("J", "joules", UnitFamilyName.Energy),
         UnitDefinition.LinearUnit("kJ", "kilojoules", UnitFamilyName.Energy, 1000.0),         // 1 kJ = 1000 J
         UnitDefinition.LinearUnit("MJ", "megajoules", UnitFamilyName.Energy, 1000000.0),      // 1 MJ = 1,000,000 J
+        UnitDefinition.LinearUnit("Wh",  "watt-hours",      UnitFamilyName.Energy, 3600.0),    // 1 Wh  = 3,600 J
         UnitDefinition.LinearUnit("kWh", "kilowatt-hours", UnitFamilyName.Energy, 3600000.0), // 1 kWh = 3,600,000 J
         UnitDefinition.LinearUnit("cal", "calories", UnitFamilyName.Energy, 4.184),           // 1 cal = 4.184 J
         UnitDefinition.LinearUnit("kcal", "kilocalories", UnitFamilyName.Energy, 4184.0),     // 1 kcal = 4184 J
@@ -368,6 +369,8 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         // Torque units (N⋅m as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("N*m", "newton-meters", UnitFamilyName.Torque, "N⋅m"),               // ASCII: N*m, Unicode: N⋅m
         UnitDefinition.LinearUnit("Nm", "newton-meters", UnitFamilyName.Torque, 1.0),                // Alternative ASCII
+        UnitDefinition.LinearUnit("N*mm", "newton-millimeters", UnitFamilyName.Torque, 0.001, "N⋅mm"),  // ASCII: N*mm, Unicode: N⋅mm  1 N*mm = 0.001 N*m
+        UnitDefinition.LinearUnit("N_mm", "newton-millimeters", UnitFamilyName.Torque, 0.001),         // LLM alias for N*mm
         UnitDefinition.LinearUnit("mN*m", "millinewton-meters", UnitFamilyName.Torque, 0.001, "mN⋅m"), // ASCII: mN*m, Unicode: mN⋅m
         UnitDefinition.LinearUnit("kN*m", "kilonewton-meters", UnitFamilyName.Torque, 1000.0, "kN⋅m"), // ASCII: kN*m, Unicode: kN⋅m
         UnitDefinition.LinearUnit("lb*ft", "pound-feet", UnitFamilyName.Torque, 1.35582, "lb⋅ft"),   // ASCII: lb*ft, Unicode: lb⋅ft

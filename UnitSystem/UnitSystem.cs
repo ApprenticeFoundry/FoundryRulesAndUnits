@@ -178,9 +178,35 @@ public class UnitSystem : IUnitSystem
     }
 
     /// <summary>
+    /// Normalize a unit symbol before lookup.
+    /// Converts Unicode superscript digits and common Greek letters to their ASCII
+    /// registry equivalents so that LLM-generated notation (e.g. cm², m³, μF)
+    /// resolves without requiring duplicate registrations.
+    ///
+    /// The substitution set is a finite, closed Unicode block — it will never grow
+    /// into a combinatorial explosion because every registered unit stays ASCII-only;
+    /// only the boundary accepts Unicode input.
+    /// </summary>
+    public static string NormalizeUnit(string unit)
+    {
+        if (string.IsNullOrEmpty(unit)) return unit;
+        // Superscript digits (U+00B2, U+00B3, U+2074–U+2079)
+        return unit
+            .Replace('\u00B2', '2')   // ²
+            .Replace('\u00B3', '3')   // ³
+            .Replace('\u2074', '4')   // ⁴
+            .Replace('\u2075', '5')   // ⁵
+            .Replace('\u2076', '6')   // ⁶
+            .Replace('\u2077', '7')   // ⁷
+            .Replace('\u2078', '8')   // ⁸
+            .Replace('\u2079', '9')   // ⁹
+            .Replace('\u03BC', 'u');  // μ → u  (micro prefix)
+    }
+
+    /// <summary>
     /// Check if a unit is valid in the current system (O(1) lookup)
     /// </summary>
-    public bool IsValidUnit(string unit) => GetUnitLookup().ContainsKey(unit);
+    public bool IsValidUnit(string unit) => GetUnitLookup().ContainsKey(NormalizeUnit(unit));
 
     /// <summary>
     /// Check if a unit belongs to the specified family (O(1) lookup)
@@ -195,7 +221,7 @@ public class UnitSystem : IUnitSystem
             return false;
         }
         
-        return unitsInFamily.Any(u => u.Symbol == unit);
+        return unitsInFamily.Any(u => u.Symbol == NormalizeUnit(unit));
     }
 
     /// <summary>
@@ -205,7 +231,8 @@ public class UnitSystem : IUnitSystem
     public UnitFamilyName GetUnitFamily(string unit)
     {
         var lookup = GetUnitLookup();
-        return lookup.ContainsKey(unit) ? lookup[unit].Family : UnitFamilyName.None;
+        var key = NormalizeUnit(unit);
+        return lookup.ContainsKey(key) ? lookup[key].Family : UnitFamilyName.None;
     }
 
     /// <summary>
@@ -215,7 +242,7 @@ public class UnitSystem : IUnitSystem
     public bool TryGetUnitInfo(string unit, out UnitLookupInfo? unitInfo)
     {
         var lookup = GetUnitLookup();
-        return lookup.TryGetValue(unit, out unitInfo);
+        return lookup.TryGetValue(NormalizeUnit(unit), out unitInfo);
     }
 
     /// <summary>
@@ -226,6 +253,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public MeasuredValue CreateMeasuredValueFromParsableUnit(string unit, double value)
     {
+        unit = NormalizeUnit(unit);
         // Step 1: Determine family from unit symbol (centralized lookup)
         var family = DetermineUnitFamilyFromUnit(unit);
         
@@ -240,7 +268,7 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public UnitFamilyName DetermineUnitFamilyFromUnit(string unit)
     {
-        var family = GetUnitFamily(unit);
+        var family = GetUnitFamily(NormalizeUnit(unit));
         if (family == UnitFamilyName.None)
         {
             throw new ArgumentException($"Invalid unit symbol: {unit}");
