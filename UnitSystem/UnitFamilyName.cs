@@ -70,4 +70,7 @@ public enum UnitFamilyName
     AngularVelocity,
     AngularAcceleration,
     Acceleration,
+
+    // Three-valued logic - system-independent verdict scale (-1 False, 0 Undecided, 1 True)
+    Verdict,
 }

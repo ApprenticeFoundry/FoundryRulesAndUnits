@@ -279,6 +279,10 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("ppm", "parts per million", UnitFamilyName.Percent, 0.0001), // 1 ppm = 0.0001 %
         UnitDefinition.LinearUnit("ppb", "parts per billion", UnitFamilyName.Percent, 0.0000001), // 1 ppb = 0.0000001 %
 
+        // Verdict units - three-valued logic scale: -1 (false), 0 (undecided), 1 (true)
+        // System-independent: no unit conversion, the value IS the verdict
+        UnitDefinition.BaseUnit("verdict", "verdict", UnitFamilyName.Verdict),
+
         // Frequency units (hertz as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("Hz", "hertz", UnitFamilyName.Frequency),
         UnitDefinition.LinearUnit("kHz", "kilohertz", UnitFamilyName.Frequency, 1000.0),      // 1 kHz = 1000 Hz

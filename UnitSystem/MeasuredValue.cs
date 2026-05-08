@@ -46,6 +46,7 @@ public interface IMeasuredValue
 [JsonDerivedType(typeof(Length))]
 [JsonDerivedType(typeof(Mass))]
 [JsonDerivedType(typeof(Percent))]
+[JsonDerivedType(typeof(Verdict))]
 [JsonDerivedType(typeof(Power))]
 [JsonDerivedType(typeof(Quantity))]
 [JsonDerivedType(typeof(QuantityFlow))]
