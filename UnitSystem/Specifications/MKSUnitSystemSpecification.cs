@@ -117,6 +117,14 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 0.3048),           // 1 ft/s = 0.3048 m/s
         UnitDefinition.LinearUnit("knot", "knots", UnitFamilyName.Speed, 0.514444),                    // 1 knot = 0.514444 m/s
 
+        // Acceleration units (meters per second squared as base) - ASCII canonical with Unicode display
+        UnitDefinition.BaseUnit("m/s2", "meters per second squared", UnitFamilyName.Acceleration, "m/s²"),
+        UnitDefinition.LinearUnit("cm/s2", "centimeters per second squared", UnitFamilyName.Acceleration, 0.01, "cm/s²"),   // 1 cm/s² = 0.01 m/s²
+        UnitDefinition.LinearUnit("mm/s2", "millimeters per second squared", UnitFamilyName.Acceleration, 0.001, "mm/s²"), // 1 mm/s² = 0.001 m/s²
+        UnitDefinition.LinearUnit("ft/s2", "feet per second squared", UnitFamilyName.Acceleration, 0.3048, "ft/s²"),       // 1 ft/s² = 0.3048 m/s²
+        UnitDefinition.LinearUnit("in/s2", "inches per second squared", UnitFamilyName.Acceleration, 0.0254, "in/s²"),     // 1 in/s² = 0.0254 m/s²
+        UnitDefinition.LinearUnit("gee", "standard gravity", UnitFamilyName.Acceleration, 9.80665),                        // 1 gee = 9.80665 m/s² ("g" collides with grams)
+
         // Distance units (kilometers as base) - Large-scale measurements with dual family support
         UnitDefinition.BaseUnit("km", "kilometers", UnitFamilyName.Distance),
         // Dual family support: Accept all Length units but convert to km base
@@ -174,6 +182,15 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("ea/min", "each per minute", UnitFamilyName.QuantityFlow, 1.0 / 60.0),     // 1 ea/min = 1/60 ea/s
         UnitDefinition.LinearUnit("ea/hr", "each per hour", UnitFamilyName.QuantityFlow, 1.0 / 3600.0),      // 1 ea/hr = 1/3600 ea/s
         UnitDefinition.LinearUnit("ea/day", "each per day", UnitFamilyName.QuantityFlow, 1.0 / 86400.0),     // 1 ea/day = 1/86400 ea/s
+
+        // Stiffness units (newtons per meter as base) — spring constants, Force ÷ Length (bug 30/31)
+        UnitDefinition.BaseUnit("N/m", "newtons per meter", UnitFamilyName.Stiffness),
+        UnitDefinition.LinearUnit("kN/m", "kilonewtons per meter", UnitFamilyName.Stiffness, 1000.0),  // 1 kN/m = 1000 N/m
+        UnitDefinition.LinearUnit("N/mm", "newtons per millimeter", UnitFamilyName.Stiffness, 1000.0), // 1 N/mm = 1000 N/m
+
+        // Damping units (newton-seconds per meter as base) — damping coefficients, Force ÷ Speed (bug 30/31)
+        UnitDefinition.BaseUnit("Ns/m", "newton-seconds per meter", UnitFamilyName.Damping),
+        UnitDefinition.LinearUnit("kNs/m", "kilonewton-seconds per meter", UnitFamilyName.Damping, 1000.0), // 1 kNs/m = 1000 Ns/m
 
         // Pressure units (pascals as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("Pa", "pascals", UnitFamilyName.Pressure),

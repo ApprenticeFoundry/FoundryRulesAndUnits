@@ -13,7 +13,8 @@ namespace FoundryRulesAndUnits.Units;
 public class UnitSystem : IUnitSystem
 {
     private IUnitSystemSpecification _currentSystem = null!;
-    private Dictionary<string, UnitLookupInfo>? _cachedUnitLookup = null;
+    private volatile Dictionary<string, UnitLookupInfo>? _cachedUnitLookup = null;
+    private readonly object _lookupBuildLock = new();
 
     /// <summary>
     /// Current active unit system specification
@@ -153,11 +154,15 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     private Dictionary<string, UnitLookupInfo> GetUnitLookup()
     {
-        if (_cachedUnitLookup == null)
+        // Thread-safety (bug 032): build once under a lock and publish the complete
+        // dictionary. The hot path stays lock-free via the volatile read.
+        var lookup = _cachedUnitLookup;
+        if (lookup != null) return lookup;
+
+        lock (_lookupBuildLock)
         {
-            _cachedUnitLookup = BuildUnitLookupCache();
+            return _cachedUnitLookup ??= BuildUnitLookupCache();
         }
-        return _cachedUnitLookup;
     }
 
     /// <summary>
@@ -192,6 +197,19 @@ public class UnitSystem : IUnitSystem
     public static string NormalizeUnit(string unit)
     {
         if (string.IsNullOrEmpty(unit)) return unit;
+
+        // Degree-sign temperature forms (°F, °C, °K) → registered ASCII symbols.
+        // Exact-token replaces only: a bare '°' is itself a registered symbol
+        // (Bearing/Angle) and must pass through untouched. (Bug 032: LLM authors
+        // write 'Temperature|°F' constantly; it used to be stored as poison.)
+        unit = unit switch
+        {
+            "°F" => "F",
+            "°C" => "C",
+            "°K" => "K",
+            _ => unit
+        };
+
         // Superscript digits (U+00B2, U+00B3, U+2074–U+2079)
         return unit
             .Replace('\u00B2', '2')   // ²

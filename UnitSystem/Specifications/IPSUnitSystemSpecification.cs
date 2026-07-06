@@ -90,6 +90,13 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("m/s", "meters per second", UnitFamilyName.Speed, 39.3701), // 1 m/s = 39.37 in/s
             UnitDefinition.LinearUnit("km/h", "kilometers per hour", UnitFamilyName.Speed, 10.936), // 1 km/h = 10.936 in/s
 
+            // Acceleration units (inches per second squared as base) - ASCII canonical with Unicode display
+            UnitDefinition.BaseUnit("in/s2", "inches per second squared", UnitFamilyName.Acceleration, "in/s²"),
+            UnitDefinition.LinearUnit("ft/s2", "feet per second squared", UnitFamilyName.Acceleration, 12.0, "ft/s²"),       // 1 ft/s² = 12 in/s²
+            UnitDefinition.LinearUnit("m/s2", "meters per second squared", UnitFamilyName.Acceleration, 1.0/0.0254, "m/s²"), // 1 m/s² = 39.3701 in/s²
+            UnitDefinition.LinearUnit("mm/s2", "millimeters per second squared", UnitFamilyName.Acceleration, 0.001/0.0254, "mm/s²"), // 1 mm/s² = 0.0393701 in/s²
+            UnitDefinition.LinearUnit("gee", "standard gravity", UnitFamilyName.Acceleration, 9.80665/0.0254),               // 1 gee = 386.089 in/s² ("g" collides with grams)
+
             // Distance units (miles as base) - Large-scale measurements with dual family support
             UnitDefinition.BaseUnit("mi", "miles", UnitFamilyName.Distance),
             // Dual family support: Accept all Length units but convert to mi base
@@ -104,6 +111,15 @@ namespace FoundryRulesAndUnits.Units.Specifications
             // Traditional distance units
             UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Distance, 0.621371),    // 1 km = 0.6214 mi
             UnitDefinition.LinearUnit("nmi", "nautical miles", UnitFamilyName.Distance, 1.15078), // 1 nmi = 1.15078 mi
+
+            // Stiffness units (newtons per meter as base) — spring constants, Force ÷ Length (bug 30/31)
+            UnitDefinition.BaseUnit("N/m", "newtons per meter", UnitFamilyName.Stiffness),
+            UnitDefinition.LinearUnit("kN/m", "kilonewtons per meter", UnitFamilyName.Stiffness, 1000.0),  // 1 kN/m = 1000 N/m
+            UnitDefinition.LinearUnit("N/mm", "newtons per millimeter", UnitFamilyName.Stiffness, 1000.0), // 1 N/mm = 1000 N/m
+
+            // Damping units (newton-seconds per meter as base) — damping coefficients, Force ÷ Speed (bug 30/31)
+            UnitDefinition.BaseUnit("Ns/m", "newton-seconds per meter", UnitFamilyName.Damping),
+            UnitDefinition.LinearUnit("kNs/m", "kilonewton-seconds per meter", UnitFamilyName.Damping, 1000.0), // 1 kNs/m = 1000 Ns/m
 
             // Pressure units (pounds per square inch as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("psi", "pounds per square inch", UnitFamilyName.Pressure),

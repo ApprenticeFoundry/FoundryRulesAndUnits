@@ -27,6 +27,8 @@ public enum UnitFamilyName
     Temperature,
     Pressure,
     Force,
+    Stiffness,   // N/m — spring constants (Force ÷ Length)
+    Damping,     // Ns/m — damping coefficients (Force ÷ Speed)
     DataStorage,
     DataFlow,
     WorkTime,

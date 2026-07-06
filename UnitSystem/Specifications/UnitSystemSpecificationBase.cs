@@ -24,74 +24,93 @@ namespace FoundryRulesAndUnits.Units.Specifications
         private Dictionary<UnitFamilyName, UnitDefinition>? _cachedBaseUnitsByFamily = null;
         private Dictionary<UnitFamilyName, List<UnitDefinition>>? _cachedUnitsByFamily = null;
         private Dictionary<string, UnitFamilyName>? _cachedSymbolToFamily = null;
-        private bool _allCachesBuilt = false;
+        private volatile bool _allCachesBuilt = false;
+        private readonly object _cacheBuildLock = new();
 
         /// <summary>
         /// Ensures all caches are built in a single pass over UnitDefinitions for optimal performance.
         /// This replaces 6 separate loops with one O(n) operation.
+        ///
+        /// Thread-safety (bug 032): this instance is shared by every consumer of the
+        /// process-wide unit service, including concurrent agents. The caches are built
+        /// into locals and published only when complete, under a lock — concurrent first
+        /// readers used to see a half-built dictionary and report valid units
+        /// ("Unknown unit: m") as unknown.
         /// </summary>
         private void EnsureAllCachesBuilt()
         {
             if (_allCachesBuilt) return;
 
-            // Initialize all caches
-            _cachedUnitSymbols = new List<string>();
-            _cachedBaseUnits = new List<UnitDefinition>();
-            _cachedBaseUnitsByFamily = new Dictionary<UnitFamilyName, UnitDefinition>();
-            _cachedUnitsByFamily = new Dictionary<UnitFamilyName, List<UnitDefinition>>();
-            _cachedSymbolToFamily = new Dictionary<string, UnitFamilyName>();
-
-            // Single loop to build all caches simultaneously
-            foreach (var unit in UnitDefinitions)
+            lock (_cacheBuildLock)
             {
-                // Build symbol cache
-                _cachedUnitSymbols.Add(unit.Symbol);
+                if (_allCachesBuilt) return;
 
-                // Build base units cache
-                if (unit.IsBaseUnit)
+                var unitSymbols       = new List<string>();
+                var baseUnits         = new List<UnitDefinition>();
+                var baseUnitsByFamily = new Dictionary<UnitFamilyName, UnitDefinition>();
+                var unitsByFamily     = new Dictionary<UnitFamilyName, List<UnitDefinition>>();
+                var symbolToFamily    = new Dictionary<string, UnitFamilyName>();
+
+                // Single loop to build all caches simultaneously
+                foreach (var unit in UnitDefinitions)
                 {
-                    _cachedBaseUnits.Add(unit);
-                    _cachedBaseUnitsByFamily[unit.Family] = unit;
-                }
+                    // Build symbol cache
+                    unitSymbols.Add(unit.Symbol);
 
-                // Build units by family cache
-                if (!_cachedUnitsByFamily.ContainsKey(unit.Family))
-                {
-                    _cachedUnitsByFamily[unit.Family] = new List<UnitDefinition>();
-                }
-                _cachedUnitsByFamily[unit.Family].Add(unit);
-
-                // Build symbol to family mapping cache
-                _cachedSymbolToFamily[unit.Symbol] = unit.Family;
-            }
-
-            // Build unit groups cache using the already-built caches
-            _cachedUnitGroups = new Dictionary<UnitFamilyName, UnitGroup>();
-            foreach (var family in _cachedUnitsByFamily.Keys)
-            {
-                if (_cachedBaseUnitsByFamily.TryGetValue(family, out var baseUnit))
-                {
-                    var members = _cachedUnitsByFamily[family];
-                    
-                    // Parser accessibility and alternative family rules:
-                    // Parser-accessible families can be used directly (e.g., "5m")
-                    // Non-parser-accessible families require functions (e.g., ASDISTANCE())
-                    // Alternative families are bidirectional relationships for compatible operations
-                    var (isParserAccessible, alternativeFamily) = family switch
+                    // Build base units cache
+                    if (unit.IsBaseUnit)
                     {
-                        UnitFamilyName.Length => (true, UnitFamilyName.Distance),   // Length ↔ Distance
-                        UnitFamilyName.Distance => (false, UnitFamilyName.Length), // Distance ↔ Length
-                        UnitFamilyName.Angle => (true, UnitFamilyName.Bearing),    // Angle ↔ Bearing  
-                        UnitFamilyName.Bearing => (false, UnitFamilyName.Angle),   // Bearing ↔ Angle
-                        UnitFamilyName.Time => (false, (UnitFamilyName?)null),     // Function-only, no alternative
-                        _ => (true, (UnitFamilyName?)null)                          // Most families are parser-accessible
-                    };
-                    
-                    _cachedUnitGroups[family] = new UnitGroup(family, SystemType, baseUnit, members, isParserAccessible, alternativeFamily);
-                }
-            }
+                        baseUnits.Add(unit);
+                        baseUnitsByFamily[unit.Family] = unit;
+                    }
 
-            _allCachesBuilt = true;
+                    // Build units by family cache
+                    if (!unitsByFamily.ContainsKey(unit.Family))
+                    {
+                        unitsByFamily[unit.Family] = new List<UnitDefinition>();
+                    }
+                    unitsByFamily[unit.Family].Add(unit);
+
+                    // Build symbol to family mapping cache
+                    symbolToFamily[unit.Symbol] = unit.Family;
+                }
+
+                // Build unit groups cache using the already-built caches
+                var unitGroups = new Dictionary<UnitFamilyName, UnitGroup>();
+                foreach (var family in unitsByFamily.Keys)
+                {
+                    if (baseUnitsByFamily.TryGetValue(family, out var baseUnit))
+                    {
+                        var members = unitsByFamily[family];
+
+                        // Parser accessibility and alternative family rules:
+                        // Parser-accessible families can be used directly (e.g., "5m")
+                        // Non-parser-accessible families require functions (e.g., ASDISTANCE())
+                        // Alternative families are bidirectional relationships for compatible operations
+                        var (isParserAccessible, alternativeFamily) = family switch
+                        {
+                            UnitFamilyName.Length => (true, UnitFamilyName.Distance),   // Length ↔ Distance
+                            UnitFamilyName.Distance => (false, UnitFamilyName.Length), // Distance ↔ Length
+                            UnitFamilyName.Angle => (true, UnitFamilyName.Bearing),    // Angle ↔ Bearing
+                            UnitFamilyName.Bearing => (false, UnitFamilyName.Angle),   // Bearing ↔ Angle
+                            UnitFamilyName.Time => (false, (UnitFamilyName?)null),     // Function-only, no alternative
+                            _ => (true, (UnitFamilyName?)null)                          // Most families are parser-accessible
+                        };
+
+                        unitGroups[family] = new UnitGroup(family, SystemType, baseUnit, members, isParserAccessible, alternativeFamily);
+                    }
+                }
+
+                // Publish complete caches only — no reader ever sees a partial build.
+                _cachedUnitSymbols       = unitSymbols;
+                _cachedBaseUnits         = baseUnits;
+                _cachedBaseUnitsByFamily = baseUnitsByFamily;
+                _cachedUnitsByFamily     = unitsByFamily;
+                _cachedSymbolToFamily    = symbolToFamily;
+                _cachedUnitGroups        = unitGroups;
+
+                _allCachesBuilt = true;   // volatile write last — release-publishes the caches
+            }
         }
 
         /// <summary>
@@ -155,13 +174,16 @@ namespace FoundryRulesAndUnits.Units.Specifications
         /// </summary>
         protected virtual void ClearCache()
         {
-            _cachedUnitGroups = null;
-            _cachedUnitSymbols = null;
-            _cachedBaseUnits = null;
-            _cachedBaseUnitsByFamily = null;
-            _cachedUnitsByFamily = null;
-            _cachedSymbolToFamily = null;
-            _allCachesBuilt = false;
+            lock (_cacheBuildLock)
+            {
+                _allCachesBuilt = false;
+                _cachedUnitGroups = null;
+                _cachedUnitSymbols = null;
+                _cachedBaseUnits = null;
+                _cachedBaseUnitsByFamily = null;
+                _cachedUnitsByFamily = null;
+                _cachedSymbolToFamily = null;
+            }
         }
     }
 }

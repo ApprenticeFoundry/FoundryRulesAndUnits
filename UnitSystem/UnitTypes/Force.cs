@@ -103,6 +103,28 @@ public class Force : MeasuredValue
 		var pressureValue = left.BaseValue() / right.BaseValue(); // N ÷ m² = Pa
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Pressure, pressureValue, "Pa");
 	}
+
+	/// <summary>
+	/// Force ÷ Length → Stiffness (spring constant k = F ÷ x)
+	/// Example: 50N ÷ 1m = 50 N/m
+	/// </summary>
+	public static MeasuredValue operator /(Force left, Length right)
+	{
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var stiffnessValue = left.BaseValue() / right.BaseValue(); // N ÷ m = N/m
+		return unitSystem.CreateMeasuredValue(UnitFamilyName.Stiffness, stiffnessValue, "N/m");
+	}
+
+	/// <summary>
+	/// Force ÷ Speed → Damping (damping coefficient c, where F = c·v)
+	/// Example: 10N ÷ 2(m/s) = 5 Ns/m
+	/// </summary>
+	public static MeasuredValue operator /(Force left, Speed right)
+	{
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var dampingValue = left.BaseValue() / right.BaseValue(); // N ÷ (m/s) = Ns/m
+		return unitSystem.CreateMeasuredValue(UnitFamilyName.Damping, dampingValue, "Ns/m");
+	}
 }
 
 

@@ -86,7 +86,10 @@ public class MeasuredValue : IMeasuredValue
 		get
 		{
 			var attribute = UnitTypeRegistry.GetAttributeForType(this.GetType());
-			return attribute?.Family ?? UnitFamilyName.None;
+			// Families without a dedicated subclass (e.g. Stiffness, Damping — bug 031)
+			// are base MeasuredValue instances: their family lives in the injected
+			// UnitGroup (captured in F), not in a type attribute.
+			return attribute?.Family ?? F;
 		}
 	}
 
