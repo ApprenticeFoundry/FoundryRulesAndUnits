@@ -125,6 +125,17 @@ public class Force : MeasuredValue
 		var dampingValue = left.BaseValue() / right.BaseValue(); // N ÷ (m/s) = Ns/m
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Damping, dampingValue, "Ns/m");
 	}
+
+	/// <summary>
+	/// Force ÷ Mass → Acceleration (Newton's second law, a = F/m)
+	/// Example: 50N ÷ 1kg = 50 m/s² — bugs 034/035, found live by Herald+Forge 2026-07-06.
+	/// </summary>
+	public static Acceleration operator /(Force left, Mass right)
+	{
+		var accelValue = left.BaseValue() / right.BaseValue(); // N ÷ kg = m/s²
+		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		return (Acceleration)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Acceleration, accelValue, "m/s2");
+	}
 }
 
 
