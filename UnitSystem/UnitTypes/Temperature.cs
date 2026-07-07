@@ -29,10 +29,16 @@ namespace FoundryRulesAndUnits.Units
 			return result;
 		}
 		
-		public static Temperature operator -(Temperature left, Temperature right) 
+		public static Temperature operator -(Temperature left, Temperature right)
 		{
+			// A difference of temperatures is a DELTA, well-defined only on the absolute scale.
+			// The old path subtracted in the base unit and then re-applied the scale offset on
+			// display: 100°C − 0°C showed −173.15°C (bug 045, bench shift 2). Deltas now come
+			// back in Kelvin — 100°C − 0°C = 100 K, 212°F − 32°F = 100 K — which is also the
+			// number every physics formula (Q = m·c·ΔT …) actually wants. A first-class
+			// DeltaTemperature family is a design question, deliberately not invented here.
 			var result = new Temperature(left.UnitGroup);
-			result.Init(left.Value() - right.Value(), left.Internal());
+			result.Init(left.As("K") - right.As("K"), "K");
 			return result;
 		}
 		
