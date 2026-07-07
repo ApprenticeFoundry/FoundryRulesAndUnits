@@ -389,6 +389,22 @@ public class MeasuredValue : IMeasuredValue
 	// Note: Operator overloads moved to individual unit classes (Length.cs, Force.cs, etc.)
 	// This provides better encapsulation and IntelliSense discoverability.
 
+	/// <summary>
+	/// Unary negation, on the base because it is family-preserving for every family:
+	/// -x never changes the dimensional signature, only the sign. The result is created
+	/// through the type registry so a negated Force stays a Force and downstream
+	/// cross-family operators (F ÷ Mass → Acceleration, …) keep working.
+	/// Bug 047: `F2|N: -F1` had no operator to find, errored silently, and poisoned
+	/// MotionLab's whole integration chain with NaN.
+	/// </summary>
+	public static MeasuredValue operator -(MeasuredValue operand)
+	{
+		var unitSystem = new UnitSystem(operand.UnitGroup.SystemType);
+		var negated = unitSystem.CreateTypedMeasuredValue(operand.UnitFamily, -operand.V, operand.I);
+		negated.SetDisplayUnits(operand.U);
+		return negated;
+	}
+
 }
 
 
