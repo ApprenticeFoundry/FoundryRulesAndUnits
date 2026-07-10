@@ -38,6 +38,8 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         // Mass units (kilograms as base) - All-scale measurements
         UnitDefinition.BaseUnit("kg", "kilograms", UnitFamilyName.Mass),
         UnitDefinition.LinearUnit("t", "metric tons", UnitFamilyName.Mass, 1000.0),          // 1 t = 1000 kg
+        UnitDefinition.LinearUnit("tonne", "tonnes", UnitFamilyName.Mass, 1000.0),           // word alias for t (1000 kg)
+        UnitDefinition.LinearUnit("ton", "tons", UnitFamilyName.Mass, 1000.0),               // metric ton in MKS = 1000 kg (NB: imperial IPS/FPS "ton" = 2000 lb ≈ 907 kg)
         UnitDefinition.LinearUnit("g", "grams", UnitFamilyName.Mass, 0.001),                  // 1 g = 0.001 kg
         UnitDefinition.LinearUnit("mg", "milligrams", UnitFamilyName.Mass, 0.000001),        // 1 mg = 0.000001 kg
         UnitDefinition.LinearUnit("lb", "pounds", UnitFamilyName.Mass, 0.453592),            // 1 lb = 0.453592 kg
