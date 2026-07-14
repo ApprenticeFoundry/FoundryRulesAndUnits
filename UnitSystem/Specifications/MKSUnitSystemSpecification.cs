@@ -65,6 +65,14 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.DerivedUnit("F", "Fahrenheit", UnitFamilyName.Temperature,
             f => (f - 32.0) * 5.0 / 9.0 + 273.15,    // F to K: (F-32)*5/9 + 273.15
             k => (k - 273.15) * 9.0 / 5.0 + 32.0),   // K to F: (K-273.15)*9/5 + 32
+        // Unambiguous aliases — "C"/"F" collide with Coulombs/Farads (last-registered wins,
+        // no collision detection in UnitSystem.cs's BuildUnitLookupCache).
+        UnitDefinition.DerivedUnit("degC", "Celsius (unambiguous)", UnitFamilyName.Temperature,
+            c => c + 273.15,
+            k => k - 273.15),
+        UnitDefinition.DerivedUnit("degF", "Fahrenheit (unambiguous)", UnitFamilyName.Temperature,
+            f => (f - 32.0) * 5.0 / 9.0 + 273.15,
+            k => (k - 273.15) * 9.0 / 5.0 + 32.0),
 
         // Angle units (radians as base) - All-scale measurements
         UnitDefinition.BaseUnit("rad", "radians", UnitFamilyName.Angle),
