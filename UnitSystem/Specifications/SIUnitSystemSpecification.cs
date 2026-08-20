@@ -32,6 +32,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),           // 1 in = 0.0254 m
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),             // 1 ft = 0.3048 m
             UnitDefinition.LinearUnit("RU", "rack-units", UnitFamilyName.Length, 0.04445),       // 1 RU = 0.04445 m (1.75 in)
+            UnitDefinition.LinearUnit("U", "rack-units", UnitFamilyName.Length, 0.04445),        // 1 U = 0.04445 m (data-center rack unit; alias of RU)
             UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),            // 1 yd = 0.9144 m
             UnitDefinition.LinearUnit("km", "kilometers", UnitFamilyName.Length, 1000.0),       // 1 km = 1000 m
             UnitDefinition.LinearUnit("mi", "miles", UnitFamilyName.Length, 1609.344),          // 1 mi = 1609.344 m
@@ -303,6 +304,8 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("nC", "nanocoulombs", UnitFamilyName.ElectricCharge, 0.000000001), // 1 nC = 1e-9 C
             UnitDefinition.LinearUnit("pC", "picocoulombs", UnitFamilyName.ElectricCharge, 0.000000000001), // 1 pC = 1e-12 C
             UnitDefinition.LinearUnit("e", "elementary charges", UnitFamilyName.ElectricCharge, 1.602176634e-19), // 1 e in C
+            UnitDefinition.LinearUnit("Ah", "amp-hours", UnitFamilyName.ElectricCharge, 3600.0),      // 1 Ah = 3600 C (battery capacity)
+            UnitDefinition.LinearUnit("mAh", "milliamp-hours", UnitFamilyName.ElectricCharge, 3.6),   // 1 mAh = 3.6 C
 
             // Radioactivity units (becquerels as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("Bq", "becquerels", UnitFamilyName.Radioactivity),

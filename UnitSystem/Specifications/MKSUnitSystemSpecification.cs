@@ -32,6 +32,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),            // 1 in = 0.0254 m
         UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),              // 1 ft = 0.3048 m
         UnitDefinition.LinearUnit("RU", "rack-units", UnitFamilyName.Length, 0.04445),         // 1 RU = 0.04445 m (1.75 in)
+        UnitDefinition.LinearUnit("U", "rack-units", UnitFamilyName.Length, 0.04445),          // 1 U = 0.04445 m (data-center rack unit; alias of RU)
         UnitDefinition.LinearUnit("yd", "yards", UnitFamilyName.Length, 0.9144),             // 1 yd = 0.9144 m
         UnitDefinition.LinearUnit("px", "pixels", UnitFamilyName.Length, 1.0 / 96.0 * 0.0254), // 96 DPI
 
@@ -248,6 +249,11 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("mA", "milliamperes", UnitFamilyName.Current, 0.001),       // 1 mA = 0.001 A
         UnitDefinition.LinearUnit("uA", "microamperes", UnitFamilyName.Current, 0.000001, "μA"),    // ASCII: uA, Unicode: μA
         UnitDefinition.LinearUnit("kA", "kiloamperes", UnitFamilyName.Current, 1000.0),       // 1 kA = 1000 A
+
+        // Electric charge — base "Coul" (not "C", which is Celsius here; Ah/mAh are what get used)
+        UnitDefinition.BaseUnit("Coul", "coulombs", UnitFamilyName.ElectricCharge),
+        UnitDefinition.LinearUnit("Ah", "amp-hours", UnitFamilyName.ElectricCharge, 3600.0),  // 1 Ah = 3600 C (battery capacity)
+        UnitDefinition.LinearUnit("mAh", "milliamp-hours", UnitFamilyName.ElectricCharge, 3.6), // 1 mAh = 3.6 C
 
         // Currency units (USD as base) - System-independent, identical in all unit systems
         // Exchange rates as of January 2026 (approximate, should be updated periodically)
