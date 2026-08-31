@@ -73,6 +73,10 @@ public enum UnitFamilyName
     AngularAcceleration,
     Acceleration,
 
+    // Material properties — added 2026-08-30 (FoundryFrameworkLab, the unit-honest hydraulic
+    // cylinder: steel at 7.85 g/cm³, part volume × density → mass). Coherent: M·L⁻³.
+    Density,
+
     // Three-valued logic - system-independent verdict scale (-1 False, 0 Undecided, 1 True)
     Verdict,
 }

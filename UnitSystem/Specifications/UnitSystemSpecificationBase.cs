@@ -94,6 +94,13 @@ namespace FoundryRulesAndUnits.Units.Specifications
                             UnitFamilyName.Angle => (true, UnitFamilyName.Bearing),    // Angle ↔ Bearing
                             UnitFamilyName.Bearing => (false, UnitFamilyName.Angle),   // Bearing ↔ Angle
                             UnitFamilyName.Time => (false, (UnitFamilyName?)null),     // Function-only, no alternative
+                            // WorkTime (a business day = 8 hr) is nominal — it has no dimensional
+                            // signature and never composes. While it was parser-accessible it also
+                            // CLAIMED the bare symbol `hr` (last group registered wins), so every
+                            // `|hr` parameter became WorkTime and hr × EUR/hr could not compose.
+                            // Function-only since 2026-08-30: a bare `hr` is Duration (coherent,
+                            // seconds-based); a work-week model asks for WorkTime explicitly.
+                            UnitFamilyName.WorkTime => (false, (UnitFamilyName?)null),
                             _ => (true, (UnitFamilyName?)null)                          // Most families are parser-accessible
                         };
 

@@ -213,6 +213,16 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("torr", "torr", UnitFamilyName.Pressure, 133.322),          // 1 torr = 133.322 Pa
         UnitDefinition.LinearUnit("mmHg", "millimeters of mercury", UnitFamilyName.Pressure, 133.322), // 1 mmHg = 133.322 Pa
 
+        // Density units (kilograms per cubic meter as base) — added 2026-08-30 for
+        // FoundryFrameworkLab's unit-honest HydraulicCylinderConfigurator (steel 7.85 g/cm³;
+        // part volume × density → mass through the dimensional pedigree). Coherent with m³ and kg.
+        UnitDefinition.BaseUnit("kg/m3", "kilograms per cubic meter", UnitFamilyName.Density, "kg/m³"),
+        UnitDefinition.LinearUnit("g/cm3", "grams per cubic centimeter", UnitFamilyName.Density, 1000.0, "g/cm³"),  // 1 g/cm³ = 1000 kg/m³
+        UnitDefinition.LinearUnit("g/mL", "grams per milliliter", UnitFamilyName.Density, 1000.0),                   // 1 g/mL = 1000 kg/m³
+        UnitDefinition.LinearUnit("kg/L", "kilograms per liter", UnitFamilyName.Density, 1000.0),                    // 1 kg/L = 1000 kg/m³
+        UnitDefinition.LinearUnit("lb/ft3", "pounds per cubic foot", UnitFamilyName.Density, 16.0185, "lb/ft³"),     // 1 lb/ft³ = 16.0185 kg/m³
+        UnitDefinition.LinearUnit("lb/in3", "pounds per cubic inch", UnitFamilyName.Density, 27679.9, "lb/in³"),     // 1 lb/in³ = 27679.9 kg/m³
+
         // DataStorage units (bytes as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("B", "bytes", UnitFamilyName.DataStorage),
         UnitDefinition.LinearUnit("KB", "kilobytes", UnitFamilyName.DataStorage, 1024.0),     // 1 KB = 1024 B
@@ -368,6 +378,10 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("USD/oz", "US Dollars per ounce", UnitFamilyName.CostPerMass, 35.274),      // 1 USD/oz = 35.274 USD/kg (1 kg = 35.274 oz)
         UnitDefinition.LinearUnit("USD/ton", "US Dollars per ton", UnitFamilyName.CostPerMass, 907.185),      // 1 USD/ton = 907.185 USD/kg (1 short ton = 907.185 kg)
         UnitDefinition.LinearUnit("USD/tonne", "US Dollars per tonne", UnitFamilyName.CostPerMass, 1000.0),   // 1 USD/tonne = 1000 USD/kg
+        // EUR/kg — the same 0.92 EUR→USD factor the Currency and CostPerTime families already carry
+        // (EUR/hr). Added 2026-08-30 for FoundryFrameworkLab's unit-honest HydraulicCylinderConfigurator
+        // (material rates in EUR/kg); see Drafts/DESIGN-datatable-and-carrier-functions.md Q6.
+        UnitDefinition.LinearUnit("EUR/kg", "Euros per kilogram", UnitFamilyName.CostPerMass, 0.92),         // 1 EUR/kg = 0.92 USD/kg
 
         // CostPerLength units (USD/m as base) - USD only, convert currency at runtime
         UnitDefinition.BaseUnit("USD/m", "US Dollars per meter", UnitFamilyName.CostPerLength),

@@ -48,6 +48,7 @@ public static class FamilySignatures
         [UnitFamilyName.Momentum]     = DimensionalSignature.Of(length: 1, mass: 1, time: -1),
         [UnitFamilyName.Inertia]      = DimensionalSignature.Of(length: 2, mass: 1),
         [UnitFamilyName.Frequency]    = DimensionalSignature.Of(time: -1),
+        [UnitFamilyName.Density]      = DimensionalSignature.Of(length: -3, mass: 1),           // kg/m³ — 2026-08-30
 
         // ── electrical ───────────────────────────────────────────────────────
         [UnitFamilyName.Current]              = DimensionalSignature.Of(current: 1),

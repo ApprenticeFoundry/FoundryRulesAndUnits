@@ -45,6 +45,16 @@ public readonly struct Pedigree : IEquatable<Pedigree>
             ? new Pedigree(signature, 1.0)
             : Untracked;
 
+    /// <summary>
+    /// The scale-aware form (phase 3 begins, 2026-08-30): the pedigree of a value stored in the
+    /// family's base unit under the given unit system, with <see cref="CanonicalScale"/> supplying
+    /// the base→canonical multiplier (1.0 for every coherent MKS family; 1/3600 for USD/hr, …).
+    /// </summary>
+    public static Pedigree ForFamily(UnitFamilyName family, UnitSystemType system)
+        => FamilySignatures.TryGet(family, out var signature)
+            ? new Pedigree(signature, Units.CanonicalScale.Of(family, system))   // the static table, not this struct's property
+            : Untracked;
+
     /// <summary>a × b — signatures add, scales multiply. Untracked is absorbing.</summary>
     public Pedigree Multiply(Pedigree other)
         => IsTracked && other.IsTracked
