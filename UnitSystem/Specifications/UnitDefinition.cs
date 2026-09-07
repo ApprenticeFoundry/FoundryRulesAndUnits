@@ -71,7 +71,56 @@ public record UnitDefinition(
 
     public double ConvertFromBase(double value)
     {
-        return FromBaseUnit?.Invoke(value) ?? throw new InvalidOperationException($"No FromBaseUnit function for {Symbol}");
+        if (FromBaseUnit == null) throw new InvalidOperationException($"No FromBaseUnit function for {Symbol}");
+
+        // Only a read-out in a NON-base unit has completed a round trip worth cleaning. Storing
+        // INTO the base unit must stay exact, because everything else is computed from it:
+        // snapping there truncated 9 deg to 0.157079632679 rad, which reads back 8.99999999997.
+        var converted = FromBaseUnit.Invoke(value);
+        return IsBaseUnit ? converted : SnapConversionResidue(converted);
+    }
+
+    /// <summary>
+    /// Significant digits a converted value is trusted to. A double carries ~15.95 decimal
+    /// digits, so 12 leaves three orders of magnitude of headroom for residue accumulated by a
+    /// SUM before the conversion, while still being finer than any physical measurement this
+    /// framework carries (12 digits is picometres on a kilometre).
+    /// </summary>
+    private const int ConversionSignificantDigits = 12;
+
+    /// <summary>
+    /// Erase the floating-point residue a hub-and-spoke conversion leaves behind.
+    ///
+    /// Every non-base unit reaches its sibling through the family base — value x factor, then
+    /// / factor — and exact values do not survive two IEEE 754 operations. `6 U` stored as
+    /// 6 * 0.04445 m reads back as 6.000000000000001 U; `3 in` reads back as 2.9999999999999996 in.
+    ///
+    /// The residue is ~1e-16 relative, far below any measurement, but it is NOT harmless,
+    /// because the rounding family amplifies it into whole units. Measured 2026-09-07 in the
+    /// Foundry Framework Lab: a 42 U rack holding seven 6 U chassis - exactly full - summed to
+    /// 42.000000000000014 U, and `ceiling` reported 43 U used, so the rack failed its own
+    /// height constraint. `floor` fails the same way downward, reporting 5 U for a 6 U load.
+    /// No formula-level function can fix that, because the residue is already in the operands
+    /// before the function is called. It has to be gone by the time a value is read in a unit.
+    ///
+    /// Snapping the ANSWER is honest: two values that differ only past the 12th significant
+    /// digit were never distinguishable as measurements, and the conversion is what introduced
+    /// the difference. Base-unit arithmetic is untouched - this is the boundary where a value
+    /// is read back out in a named unit, nothing else.
+    /// </summary>
+    public static double SnapConversionResidue(double value)
+    {
+        if (value == 0.0 || !double.IsFinite(value)) return value;
+
+        // Digits after the point that leave ConversionSignificantDigits significant ones.
+        var magnitude = (int)Math.Floor(Math.Log10(Math.Abs(value)));
+        var decimals = ConversionSignificantDigits - 1 - magnitude;
+
+        // Outside Math.Round's domain the value is either enormous or denormal-small; in both
+        // cases there is no residue worth chasing, and clamping would corrupt real digits.
+        if (decimals is < 0 or > 15) return value;
+
+        return Math.Round(value, decimals, MidpointRounding.AwayFromZero);
     }
 
     /// <summary>

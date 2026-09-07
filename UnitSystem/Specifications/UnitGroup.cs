@@ -57,8 +57,10 @@ public class UnitGroup
         if (fromDef == null) throw new ArgumentException($"Unknown unit: {fromUnit}");
         if (toDef == null) throw new ArgumentException($"Unknown unit: {toUnit}");
 
-        // Convert using the embedded functions: from -> base -> to
+        // Convert using the embedded functions: from -> base -> to, then snap the residue the
+        // round trip leaves behind (UnitDefinition.SnapConversionResidue explains why it matters).
         var valueInBase = fromDef.ToBaseUnit?.Invoke(value) ?? value;
-        return toDef.FromBaseUnit?.Invoke(valueInBase) ?? valueInBase;
+        var converted = toDef.FromBaseUnit?.Invoke(valueInBase) ?? valueInBase;
+        return toDef.IsBaseUnit ? converted : UnitDefinition.SnapConversionResidue(converted);
     }
 }
