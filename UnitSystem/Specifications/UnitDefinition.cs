@@ -29,8 +29,29 @@ public record UnitDefinition(
     /// <param name="name">Human-readable name</param>
     /// <param name="family">Unit family</param>
     /// <param name="unicodeSymbol">Optional Unicode display form (e.g., "Ω")</param>
-    public static UnitDefinition BaseUnit(string symbol, string name, UnitFamilyName family, string? unicodeSymbol = null) =>
-        new(symbol, name, family, true, x => x, x => x, unicodeSymbol);
+    /// <summary>
+    /// Enforces the contract in this type's own header: Symbol is the ASCII canonical form,
+    /// UnicodeSymbol the display form. A spec that registers a symbol an ordinary keyboard
+    /// cannot produce (μm, Ω, Å, ft·lbf) gets it folded to the ASCII spelling, with the form
+    /// as written kept for display.
+    ///
+    /// This was intent rather than rule until 2026-09-15, and dozens of registrations broke it.
+    /// The damage was not merely "hard to type": UnitSystem.NormalizeUnit folds TYPED input to
+    /// ASCII, so a unit registered only as `μm` could not be found by `μm` (which normalizes to
+    /// `um`) nor by `um` (never registered) — micrometers in CGS, microfarads in SI and
+    /// micronewtons in mmNs were all unreachable by any spelling at all.
+    /// </summary>
+    private static (string Symbol, string? Unicode) Ascii(string symbol, string? unicodeSymbol)
+    {
+        var ascii = UnitSystem.NormalizeUnit(symbol);
+        return ascii == symbol ? (symbol, unicodeSymbol) : (ascii, unicodeSymbol ?? symbol);
+    }
+
+    public static UnitDefinition BaseUnit(string symbol, string name, UnitFamilyName family, string? unicodeSymbol = null)
+    {
+        var (s, u) = Ascii(symbol, unicodeSymbol);
+        return new(s, name, family, true, x => x, x => x, u);
+    }
 
     /// <summary>
     /// For derived units, provide conversion to/from base unit
@@ -42,8 +63,11 @@ public record UnitDefinition(
     /// <param name="fromBase">Function to convert from base unit</param>
     /// <param name="unicodeSymbol">Optional Unicode display form</param>
     public static UnitDefinition DerivedUnit(string symbol, string name, UnitFamilyName family,
-        Func<double, double> toBase, Func<double, double> fromBase, string? unicodeSymbol = null) =>
-        new(symbol, name, family, false, toBase, fromBase, unicodeSymbol);
+        Func<double, double> toBase, Func<double, double> fromBase, string? unicodeSymbol = null)
+    {
+        var (s, u) = Ascii(symbol, unicodeSymbol);
+        return new(s, name, family, false, toBase, fromBase, u);
+    }
 
     /// <summary>
     /// Simple linear conversion (multiplication/division)
@@ -54,11 +78,14 @@ public record UnitDefinition(
     /// <param name="family">Unit family</param>
     /// <param name="factor">Conversion factor to base unit</param>
     /// <param name="unicodeSymbol">Optional Unicode display form</param>
-    public static UnitDefinition LinearUnit(string symbol, string name, UnitFamilyName family, double factor, string? unicodeSymbol = null) =>
-        new(symbol, name, family, false,
+    public static UnitDefinition LinearUnit(string symbol, string name, UnitFamilyName family, double factor, string? unicodeSymbol = null)
+    {
+        var (s, u) = Ascii(symbol, unicodeSymbol);
+        return new(s, name, family, false,
             x => x * factor,      // e.g., inches to feet: x * (1/12)
             x => x / factor,      // e.g., feet to inches: x / (1/12) = x * 12
-            unicodeSymbol);
+            u);
+    }
 
     /// <summary>
     /// Convert any value from this unit to any other unit in the same family

@@ -69,11 +69,11 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.DerivedUnit("F", "Fahrenheit", UnitFamilyName.Temperature,
                 f => (f - 32.0) * 5.0/9.0 + 273.15,    // F to K: (F-32)*5/9 + 273.15
                 k => (k - 273.15) * 9.0/5.0 + 32.0),   // K to F: (K-273.15)*9/5 + 32
-            // Unambiguous aliases — "C" and "F" collide with Coulombs (ElectricCharge) and
-            // Farads (Capacitance) in this same lookup table (see UnitSystem.cs's
-            // BuildUnitLookupCache: last-registered-family silently overwrites the symbol,
-            // no collision detection). Until that's fixed, degC/degF give authors a symbol
-            // that can never collide with anything else in the table.
+            // Explicit aliases. "C" and "F" are also registered by Coulombs (ElectricCharge)
+            // and Farads (Capacitance) in this same lookup table. Registration order used to
+            // decide the winner — silently, and against temperature. UnitSymbolOwnership now
+            // assigns both symbols to Temperature, so a bare `|C`/`|F` is Celsius/Fahrenheit
+            // in every system; degC/degF remain for authors who prefer to say it outright.
             UnitDefinition.DerivedUnit("degC", "Celsius (unambiguous)", UnitFamilyName.Temperature,
                 c => c + 273.15,
                 k => k - 273.15),

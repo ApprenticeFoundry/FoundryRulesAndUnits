@@ -108,6 +108,11 @@ public class UnitSystem : IUnitSystem
                         createFunc
                     );
                     
+                    // A contested symbol goes to its declared owner, not to whichever family
+                    // happened to be registered last (UnitSymbolOwnership explains why).
+                    if (UnitSymbolOwnership.IsClaimedByAnother(unitDef.Symbol, unitDef.Family))
+                        continue;
+
                     // PHASE 2: Dual-key lookup for Unicode support
                     // Add ASCII Symbol (always present)
                     lookup[unitDef.Symbol] = lookupInfo;
@@ -120,7 +125,8 @@ public class UnitSystem : IUnitSystem
                 }
                 
                 // Also add the base unit if it's not already included
-                if (!lookup.ContainsKey(unitGroup.BaseUnit.Symbol))
+                if (!lookup.ContainsKey(unitGroup.BaseUnit.Symbol)
+                    && !UnitSymbolOwnership.IsClaimedByAnother(unitGroup.BaseUnit.Symbol, unitGroup.BaseUnit.Family))
                 {
                     Func<double, MeasuredValue> createFunc = (value) => 
                         CreateTypedMeasuredValue(unitGroup.BaseUnit.Family, value, unitGroup.BaseUnit.Symbol);
@@ -192,16 +198,23 @@ public class UnitSystem : IUnitSystem
     ///
     /// The substitution set is a finite, closed Unicode block — it will never grow
     /// into a combinatorial explosion because every registered unit stays ASCII-only;
-    /// only the boundary accepts Unicode input.
+    /// only the boundary accepts Unicode input. That invariant is ENFORCED, not assumed:
+    /// UnitDefinition's factories fold any non-ASCII symbol through here at registration
+    /// (it used to be merely intended, and dozens of units were registered as μm, Ω, Å,
+    /// ft·lbf — which normalization then made unreachable by EITHER spelling, since the
+    /// typed form folded to an ASCII symbol nobody had registered).
+    ///
+    /// Every symbol therefore has a form an ordinary keyboard can produce. Unicode stays
+    /// available for input and for display (UnitDefinition.UnicodeSymbol).
     /// </summary>
     public static string NormalizeUnit(string unit)
     {
         if (string.IsNullOrEmpty(unit)) return unit;
 
-        // Degree-sign temperature forms (°F, °C, °K) → registered ASCII symbols.
-        // Exact-token replaces only: a bare '°' is itself a registered symbol
-        // (Bearing/Angle) and must pass through untouched. (Bug 032: LLM authors
-        // write 'Temperature|°F' constantly; it used to be stored as poison.)
+        // Degree-sign temperature forms (°F, °C, °K) → registered ASCII symbols. Handled as
+        // exact tokens BEFORE the general '°' → "deg" fold below, which would otherwise turn
+        // them into degF/degC/degK — also registered, but F/C/K are the canonical spellings.
+        // (Bug 032: LLM authors write 'Temperature|°F' constantly; it used to be stored as poison.)
         unit = unit switch
         {
             "°F" => "F",
@@ -211,7 +224,8 @@ public class UnitSystem : IUnitSystem
         };
 
         // Superscript digits (U+00B2, U+00B3, U+2074–U+2079)
-        return unit
+        unit = unit
+            .Replace('\u00B9', '1')   // superscript one
             .Replace('\u00B2', '2')   // ²
             .Replace('\u00B3', '3')   // ³
             .Replace('\u2074', '4')   // ⁴
@@ -221,6 +235,20 @@ public class UnitSystem : IUnitSystem
             .Replace('\u2078', '8')   // ⁸
             .Replace('\u2079', '9')   // ⁹
             .Replace('\u03BC', 'u');  // μ → u  (micro prefix)
+
+        // Symbols with no single-character ASCII stand-in. A person typing a model on an ordinary
+        // keyboard cannot produce these at all, so each gets a spelled-out alternative — the very
+        // spellings the ASCII registrations already use (mohm/kohm, N*m, deg/s).
+        unit = unit
+            .Replace("\u03A9", "ohm")   // greek capital omega
+            .Replace("\u2126", "ohm")   // ohm sign (a separate codepoint)
+            .Replace("\u00C5", "angstrom")   // latin capital A with ring
+            .Replace("\u212B", "angstrom")   // angstrom sign (a separate codepoint)
+            .Replace("\u00B7", "*")     // middle dot
+            .Replace("\u22C5", "*")     // dot operator
+            .Replace("\u00B0", "deg");  // degree sign
+
+        return unit;
     }
 
     /// <summary>

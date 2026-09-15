@@ -53,9 +53,10 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.DerivedUnit("K", "Kelvin", UnitFamilyName.Temperature,
                 k => (k - 273.15) * 9.0/5.0 + 32.0,    // K to F: (K-273.15)*9/5 + 32
                 f => (f - 32.0) * 5.0/9.0 + 273.15),   // F to K: (F-32)*5/9 + 273.15
-            // Unambiguous aliases — "C"/"F" collide with Coulombs/Farads (last-registered wins,
-            // no collision detection in UnitSystem.cs's BuildUnitLookupCache). F is this
-            // system's base unit, so degF is a pure identity pass-through.
+            // Explicit aliases. "C"/"F" are also registered by ElectricCharge/Capacitance;
+            // UnitSymbolOwnership assigns both symbols to Temperature, so a bare `|C`/`|F`
+            // is Celsius/Fahrenheit. degC/degF stay for authors who want to say so outright.
+            // F is this system's base unit, so degF is a pure identity pass-through.
             UnitDefinition.DerivedUnit("degF", "Fahrenheit (unambiguous)", UnitFamilyName.Temperature,
                 f => f,
                 f => f),

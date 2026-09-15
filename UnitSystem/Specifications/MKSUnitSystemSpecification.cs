@@ -66,8 +66,9 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.DerivedUnit("F", "Fahrenheit", UnitFamilyName.Temperature,
             f => (f - 32.0) * 5.0 / 9.0 + 273.15,    // F to K: (F-32)*5/9 + 273.15
             k => (k - 273.15) * 9.0 / 5.0 + 32.0),   // K to F: (K-273.15)*9/5 + 32
-        // Unambiguous aliases — "C"/"F" collide with Coulombs/Farads (last-registered wins,
-        // no collision detection in UnitSystem.cs's BuildUnitLookupCache).
+        // Explicit aliases. "C"/"F" are also registered by ElectricCharge/Capacitance;
+        // UnitSymbolOwnership assigns both symbols to Temperature, so a bare `|C`/`|F`
+        // is Celsius/Fahrenheit. degC/degF stay for authors who want to say so outright.
         UnitDefinition.DerivedUnit("degC", "Celsius (unambiguous)", UnitFamilyName.Temperature,
             c => c + 273.15,
             k => k - 273.15),
