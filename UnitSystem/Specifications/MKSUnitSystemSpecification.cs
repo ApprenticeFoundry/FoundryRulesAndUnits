@@ -28,6 +28,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.001),        // 1 mm = 0.001 m
         UnitDefinition.LinearUnit("um", "micrometers", UnitFamilyName.Length, 0.000001, "μm"),     // ASCII: um, Unicode: μm
         UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Length, 0.000000001),   // 1 nm = 1e-9 m
+        UnitDefinition.LinearUnit("pm", "picometers", UnitFamilyName.Length, 0.000000000001), // 1 pm = 1e-12 m — added 2026-10-02 (chemistry: bond lengths); SI already had it, MKS had drifted
         UnitDefinition.LinearUnit("angstrom", "angstroms", UnitFamilyName.Length, 0.0000000001, "Å"),    // ASCII: angstrom, Unicode: Å
         UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 0.0254),            // 1 in = 0.0254 m
         UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 0.3048),              // 1 ft = 0.3048 m
@@ -43,6 +44,11 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("ton", "tons", UnitFamilyName.Mass, 1000.0),               // metric ton in MKS = 1000 kg (NB: imperial IPS/FPS "ton" = 2000 lb ≈ 907 kg)
         UnitDefinition.LinearUnit("g", "grams", UnitFamilyName.Mass, 0.001),                  // 1 g = 0.001 kg
         UnitDefinition.LinearUnit("mg", "milligrams", UnitFamilyName.Mass, 0.000001),        // 1 mg = 0.000001 kg
+        // Unified atomic mass unit (1/12 the mass of a carbon-12 atom), CODATA 2022: 1.66053906892(52)e-27 kg
+        // (https://physics.nist.gov/cgi-bin/cuu/Value?ukg) — added 2026-10-02 (chemistry: an atom's or molecule's own mass;
+        // water is 18.015 u). CGS already had `u`, MKS and SI had drifted. `Da` is the dalton, same quantity.
+        UnitDefinition.LinearUnit("u", "atomic mass units", UnitFamilyName.Mass, 1.66053906892e-27),
+        UnitDefinition.LinearUnit("Da", "daltons", UnitFamilyName.Mass, 1.66053906892e-27),
         UnitDefinition.LinearUnit("lb", "pounds", UnitFamilyName.Mass, 0.453592),            // 1 lb = 0.453592 kg
         UnitDefinition.LinearUnit("oz", "ounces", UnitFamilyName.Mass, 0.0283495),           // 1 oz = 0.0283495 kg
 

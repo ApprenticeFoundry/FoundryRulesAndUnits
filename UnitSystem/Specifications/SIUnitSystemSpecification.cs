@@ -44,6 +44,10 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("μg", "micrograms", UnitFamilyName.Mass, 0.000000001),    // 1 μg = 1e-9 kg
             UnitDefinition.LinearUnit("ug", "micrograms", UnitFamilyName.Mass, 0.000000001),    // 1 ug = 1e-9 kg (ASCII)
             UnitDefinition.LinearUnit("ng", "nanograms", UnitFamilyName.Mass, 0.000000000001),  // 1 ng = 1e-12 kg
+            // Unified atomic mass unit, CODATA 2022: 1.66053906892(52)e-27 kg (https://physics.nist.gov/cgi-bin/cuu/Value?ukg)
+            // — added 2026-10-02 (chemistry). CGS already had `u`; `Da` is the dalton, same quantity.
+            UnitDefinition.LinearUnit("u", "atomic mass units", UnitFamilyName.Mass, 1.66053906892e-27),
+            UnitDefinition.LinearUnit("Da", "daltons", UnitFamilyName.Mass, 1.66053906892e-27),
             UnitDefinition.LinearUnit("t", "metric tons", UnitFamilyName.Mass, 1000.0),         // 1 t = 1000 kg
             UnitDefinition.LinearUnit("lb", "pounds", UnitFamilyName.Mass, 0.453592),           // 1 lb = 0.453592 kg
             UnitDefinition.LinearUnit("oz", "ounces", UnitFamilyName.Mass, 0.0283495),          // 1 oz = 0.0283495 kg

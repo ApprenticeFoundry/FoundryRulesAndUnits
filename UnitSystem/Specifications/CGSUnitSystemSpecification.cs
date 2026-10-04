@@ -25,6 +25,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("mm", "millimeters", UnitFamilyName.Length, 0.1),         // 1 mm = 0.1 cm
             UnitDefinition.LinearUnit("μm", "micrometers", UnitFamilyName.Length, 0.0001),      // 1 μm = 0.0001 cm
             UnitDefinition.LinearUnit("nm", "nanometers", UnitFamilyName.Length, 0.0000001),    // 1 nm = 0.0000001 cm
+            UnitDefinition.LinearUnit("pm", "picometers", UnitFamilyName.Length, 0.0000000001), // 1 pm = 1e-10 cm — added 2026-10-02 (chemistry); SI already had it
             UnitDefinition.LinearUnit("m", "meters", UnitFamilyName.Length, 100.0),             // 1 m = 100 cm
             UnitDefinition.LinearUnit("in", "inches", UnitFamilyName.Length, 2.54),             // 1 in = 2.54 cm
             UnitDefinition.LinearUnit("ft", "feet", UnitFamilyName.Length, 30.48),              // 1 ft = 30.48 cm
@@ -40,6 +41,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("lb", "pounds", UnitFamilyName.Mass, 453.592),            // 1 lb = 453.592 g
             UnitDefinition.LinearUnit("oz", "ounces", UnitFamilyName.Mass, 28.3495),            // 1 oz = 28.3495 g
             UnitDefinition.LinearUnit("u", "atomic mass units", UnitFamilyName.Mass, 1.66054e-24), // 1 u in grams
+            UnitDefinition.LinearUnit("Da", "daltons", UnitFamilyName.Mass, 1.66054e-24),          // dalton = u — added 2026-10-02 (chemistry); same value as the `u` above
 
             // Force units (dynes as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("dyne", "dynes", UnitFamilyName.Force),
