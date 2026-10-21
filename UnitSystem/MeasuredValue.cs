@@ -175,6 +175,20 @@ public class MeasuredValue : IMeasuredValue
 		}
 	}
 
+	/// <summary>
+	/// The value in the given units, or false when this quantity's family has no such unit — an unknown symbol, or a unit of
+	/// another family (kW asked of an energy). <see cref="As"/> throws in those cases; this is the form for a caller that must
+	/// REFUSE rather than guess, such as a page asking a model for a value in a unit, so no application needs its own guard.
+	/// </summary>
+	public bool TryAs(string units, out double value)
+	{
+		value = 0;
+		if (string.IsNullOrWhiteSpace(units)) return false;
+		try { value = As(units); return true; }
+		catch (ArgumentException) { return false; }          // unknown unit, or a unit outside this family
+		catch (InvalidOperationException) { return false; }  // no unit group to convert with
+	}
+
 	public int ValueAsInt() { return (int)V; }
 	public double Value() { return V; }
 	public string Units() { return U; }

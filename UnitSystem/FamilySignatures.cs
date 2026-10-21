@@ -49,6 +49,7 @@ public static class FamilySignatures
         [UnitFamilyName.Inertia]      = DimensionalSignature.Of(length: 2, mass: 1),
         [UnitFamilyName.Frequency]    = DimensionalSignature.Of(time: -1),
         [UnitFamilyName.Density]      = DimensionalSignature.Of(length: -3, mass: 1),           // kg/m³ — 2026-08-30
+        [UnitFamilyName.Irradiance]   = DimensionalSignature.Of(mass: 1, time: -3),             // W/m² — 2026-10-20 (area × irradiance = power)
 
         // ── electrical ───────────────────────────────────────────────────────
         [UnitFamilyName.Current]              = DimensionalSignature.Of(current: 1),

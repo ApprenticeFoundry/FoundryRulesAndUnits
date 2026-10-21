@@ -79,4 +79,14 @@ public enum UnitFamilyName
 
     // Three-valued logic - system-independent verdict scale (-1 False, 0 Undecided, 1 True)
     Verdict,
+
+    // Utility-scale power plants — added 2026-10-20 (FoundrySolar). Both are NOMINAL-ONLY (absent from FamilySignatures):
+    // kVA is not kW, and that distinction is purely semantic (like Bq vs Hz), so the two never add or auto-promote.
+    // Appended at the end so no existing enum value moves.
+    ApparentPower,   // VA — inverter and transformer ratings
+    Irradiation,     // J/m² — solar energy per area over a period (plane-of-array kWh/m²)
+
+    // Solar flux — added 2026-10-20 (FoundrySolar: the 1,000 W/m² STC irradiance was being written as `/ 1000 W` and `/ 1 m2`).
+    // Unlike the two above this one HAS a dimensional signature (power per area), so area × irradiance composes into power.
+    Irradiance,      // W/m² — solar power per area
 }

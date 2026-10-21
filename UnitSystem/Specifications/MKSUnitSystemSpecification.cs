@@ -206,6 +206,21 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("kN/m", "kilonewtons per meter", UnitFamilyName.Stiffness, 1000.0),  // 1 kN/m = 1000 N/m
         UnitDefinition.LinearUnit("N/mm", "newtons per millimeter", UnitFamilyName.Stiffness, 1000.0), // 1 N/mm = 1000 N/m
 
+        // Apparent power (volt-amperes as base) — nominal-only: kVA is not kW (see UnitFamilyName.ApparentPower).
+        UnitDefinition.BaseUnit("VA", "volt-amperes", UnitFamilyName.ApparentPower),
+        UnitDefinition.LinearUnit("kVA", "kilovolt-amperes", UnitFamilyName.ApparentPower, 1000.0),        // 1 kVA = 1000 VA
+        UnitDefinition.LinearUnit("MVA", "megavolt-amperes", UnitFamilyName.ApparentPower, 1000000.0),     // 1 MVA = 1,000,000 VA
+
+        // Irradiation (joules per square metre as base) — solar energy per area over a period; nominal-only.
+        UnitDefinition.BaseUnit("J/m2", "joules per square metre", UnitFamilyName.Irradiation),
+        UnitDefinition.LinearUnit("Wh/m2", "watt-hours per square metre", UnitFamilyName.Irradiation, 3600.0),          // 1 Wh/m2 = 3600 J/m2
+        UnitDefinition.LinearUnit("kWh/m2", "kilowatt-hours per square metre", UnitFamilyName.Irradiation, 3600000.0),  // 1 kWh/m2 = 3.6e6 J/m2
+        UnitDefinition.LinearUnit("MJ/m2", "megajoules per square metre", UnitFamilyName.Irradiation, 1000000.0),       // 1 MJ/m2 = 1e6 J/m2
+
+        // Irradiance (watts per square metre as base) — solar power per area; has a dimensional signature (see FamilySignatures).
+        UnitDefinition.BaseUnit("W/m2", "watts per square metre", UnitFamilyName.Irradiance),
+        UnitDefinition.LinearUnit("kW/m2", "kilowatts per square metre", UnitFamilyName.Irradiance, 1000.0),            // 1 kW/m2 = 1000 W/m2
+
         // Damping units (newton-seconds per meter as base) — damping coefficients, Force ÷ Speed (bug 30/31)
         UnitDefinition.BaseUnit("Ns/m", "newton-seconds per meter", UnitFamilyName.Damping),
         UnitDefinition.LinearUnit("kNs/m", "kilonewton-seconds per meter", UnitFamilyName.Damping, 1000.0), // 1 kNs/m = 1000 Ns/m
@@ -306,6 +321,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("MJ", "megajoules", UnitFamilyName.Energy, 1000000.0),      // 1 MJ = 1,000,000 J
         UnitDefinition.LinearUnit("Wh",  "watt-hours",      UnitFamilyName.Energy, 3600.0),    // 1 Wh  = 3,600 J
         UnitDefinition.LinearUnit("kWh", "kilowatt-hours", UnitFamilyName.Energy, 3600000.0), // 1 kWh = 3,600,000 J
+        UnitDefinition.LinearUnit("MWh", "megawatt-hours", UnitFamilyName.Energy, 3600000000.0), // 1 MWh = 3.6e9 J (utility-scale plant energy)
         UnitDefinition.LinearUnit("cal", "calories", UnitFamilyName.Energy, 4.184),           // 1 cal = 4.184 J
         UnitDefinition.LinearUnit("kcal", "kilocalories", UnitFamilyName.Energy, 4184.0),     // 1 kcal = 4184 J
         UnitDefinition.LinearUnit("BTU", "British thermal units", UnitFamilyName.Energy, 1055.06), // 1 BTU = 1055.06 J

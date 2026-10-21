@@ -150,6 +150,13 @@ namespace FoundryRulesAndUnits.Extensions
         }
 
         /// <summary>
+        /// The pretty form of a unit SYMBOL ("m2" → "m²", "degC" → "°C", "kWh/m2" → "kWh/m²"), for a caller that holds the symbol and
+        /// not a MeasuredValue — a control showing a value in a unit it was asked for. The same mapping <see cref="PrettyUnits(MeasuredValue)"/>
+        /// uses, so a label can never be spelled one way here and another way there.
+        /// </summary>
+        public static string PrettyUnits(string units) => ConvertToUnicodeUnits(units);
+
+        /// <summary>
         /// Convert ASCII unit symbols to their Unicode equivalents
         /// Handles compound units and complex expressions
         /// </summary>
