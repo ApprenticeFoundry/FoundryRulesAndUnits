@@ -50,6 +50,11 @@ public static class FamilySignatures
         [UnitFamilyName.Frequency]    = DimensionalSignature.Of(time: -1),
         [UnitFamilyName.Density]      = DimensionalSignature.Of(length: -3, mass: 1),           // kg/m³ — 2026-08-30
         [UnitFamilyName.Irradiance]   = DimensionalSignature.Of(mass: 1, time: -3),             // W/m² — 2026-10-20 (area × irradiance = power)
+        [UnitFamilyName.InverseTemperature] = DimensionalSignature.Of(temperature: -1),         // 1/K — 2026-10-21 (coefficient × temperature difference)
+        [UnitFamilyName.CostPerPower] = DimensionalSignature.Of(length: -2, mass: -1, time: 3, currency: 1),   // USD/W — 2026-10-21 (cost ÷ power)
+        [UnitFamilyName.AreaPerPower] = DimensionalSignature.Of(mass: -1, time: 3),                            // m²/W — 2026-10-21 (area ÷ power)
+        [UnitFamilyName.LengthPerPower] = DimensionalSignature.Of(length: -1, mass: -1, time: 3),              // m/W — 2026-10-21 (length ÷ power)
+        [UnitFamilyName.QuantityPerPower] = DimensionalSignature.Of(length: -2, mass: -1, time: 3, quantity: 1),   // ea/W — 2026-10-21 (count ÷ power)
 
         // ── electrical ───────────────────────────────────────────────────────
         [UnitFamilyName.Current]              = DimensionalSignature.Of(current: 1),

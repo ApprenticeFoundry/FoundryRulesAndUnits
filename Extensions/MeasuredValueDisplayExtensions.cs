@@ -25,7 +25,13 @@ namespace FoundryRulesAndUnits.Extensions
             ["degF"] = "°F",   // Legacy support for ASCII parser output
             ["degK"] = "°K",   // Legacy support
             ["degR"] = "°R",   // Legacy support
-            
+
+            // Slow rates (the one-token symbols registered beside Hz): shown the way a person writes them
+            ["perDay"] = "/day",
+            ["perWeek"] = "/week",
+            ["perYear"] = "/yr",
+            ["perK"] = "/K",
+
             // Micro units (μ prefix)
             ["um"] = "μm",
             ["ug"] = "μg",

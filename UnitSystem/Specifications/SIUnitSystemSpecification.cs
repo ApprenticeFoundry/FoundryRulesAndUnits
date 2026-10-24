@@ -115,7 +115,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
         UnitDefinition.LinearUnit("ha", "hectares", UnitFamilyName.Area, 10000.0),          // 1 ha = 10,000 m²
         UnitDefinition.LinearUnit("in2", "square inches", UnitFamilyName.Area, 0.00064516, "in²"), // ASCII: in2, Unicode: in²
         UnitDefinition.LinearUnit("ft2", "square feet", UnitFamilyName.Area, 0.092903, "ft²"),     // ASCII: ft2, Unicode: ft²
-            UnitDefinition.LinearUnit("acre", "acres", UnitFamilyName.Area, 4046.86),           // 1 acre = 4046.86 m²
+            UnitDefinition.LinearUnit("acre", "acres", UnitFamilyName.Area, 4046.8564224),      // 1 acre = 4046.8564224 m² exactly (43,560 ft²; was 4046.86 — corrected 2026-10-21)
 
             // Volume units (cubic meters as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("m3", "cubic meters", UnitFamilyName.Volume, "m³"),
@@ -231,6 +231,12 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
             // Frequency units (hertz as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("Hz", "hertz", UnitFamilyName.Frequency),
+            // A temperature coefficient: one-token symbol, as perDay/perYear are. 1 perK = 1 per kelvin.
+            UnitDefinition.BaseUnit("perK", "per kelvin", UnitFamilyName.InverseTemperature),
+            // Slow rates (a fraction per year, a cycle per day): one-token symbols, because the engine has no composite "1/year" form. perYear uses the engine's own year (365.2425 days).
+            UnitDefinition.LinearUnit("perDay", "per day", UnitFamilyName.Frequency, 1.0 / 86400.0),         // 1 perDay = 1/86400 Hz
+            UnitDefinition.LinearUnit("perWeek", "per week", UnitFamilyName.Frequency, 1.0 / 604800.0),      // 1 perWeek = 1/604800 Hz
+            UnitDefinition.LinearUnit("perYear", "per year", UnitFamilyName.Frequency, 1.0 / 31556952.0),    // 1 perYear = 1/31556952 Hz
             UnitDefinition.LinearUnit("mHz", "millihertz", UnitFamilyName.Frequency, 0.001),    // 1 mHz = 0.001 Hz
             UnitDefinition.LinearUnit("kHz", "kilohertz", UnitFamilyName.Frequency, 1000.0),    // 1 kHz = 1000 Hz
             UnitDefinition.LinearUnit("MHz", "megahertz", UnitFamilyName.Frequency, 1000000.0), // 1 MHz = 1,000,000 Hz
@@ -358,6 +364,25 @@ namespace FoundryRulesAndUnits.Units.Specifications
             // Currency units (USD as base) - System-independent, identical in all unit systems
             // Exchange rates as of January 2026 (approximate, should be updated periodically)
             UnitDefinition.BaseUnit("USD", "US Dollars", UnitFamilyName.Currency, "$"),
+            UnitDefinition.LinearUnit("kUSD", "thousand US Dollars", UnitFamilyName.Currency, 1000.0),       // 1 kUSD = 1000 USD
+            UnitDefinition.LinearUnit("MUSD", "million US Dollars", UnitFamilyName.Currency, 1000000.0),     // 1 MUSD = 1,000,000 USD
+            // Installed cost: money per unit of power (added 2026-10-21; USD/W is the base).
+            UnitDefinition.BaseUnit("USD/W", "US Dollars per watt", UnitFamilyName.CostPerPower),
+            UnitDefinition.LinearUnit("USD/kW", "US Dollars per kilowatt", UnitFamilyName.CostPerPower, 0.001),      // 1 USD/kW = 0.001 USD/W
+            UnitDefinition.LinearUnit("USD/MW", "US Dollars per megawatt", UnitFamilyName.CostPerPower, 0.000001),   // 1 USD/MW = 1e-6 USD/W
+            // Land, row length and a count per unit of power (added 2026-10-21; the W form is the base of each family).
+            UnitDefinition.BaseUnit("m2/W", "square meters per watt", UnitFamilyName.AreaPerPower),
+            UnitDefinition.LinearUnit("m2/kW", "square meters per kilowatt", UnitFamilyName.AreaPerPower, 0.001),          // 1 m2/kW = 0.001 m2/W
+            UnitDefinition.LinearUnit("m2/MW", "square meters per megawatt", UnitFamilyName.AreaPerPower, 0.000001),       // 1 m2/MW = 1e-6 m2/W
+            UnitDefinition.LinearUnit("acre/MW", "acres per megawatt", UnitFamilyName.AreaPerPower, 4046.8564224e-6),      // 1 acre = 4046.8564224 m2
+            UnitDefinition.LinearUnit("ha/MW", "hectares per megawatt", UnitFamilyName.AreaPerPower, 0.01),                // 1 ha = 10,000 m2
+            UnitDefinition.BaseUnit("m/W", "meters per watt", UnitFamilyName.LengthPerPower),
+            UnitDefinition.LinearUnit("m/kW", "meters per kilowatt", UnitFamilyName.LengthPerPower, 0.001),                // 1 m/kW = 0.001 m/W
+            UnitDefinition.LinearUnit("m/MW", "meters per megawatt", UnitFamilyName.LengthPerPower, 0.000001),             // 1 m/MW = 1e-6 m/W
+            UnitDefinition.LinearUnit("km/MW", "kilometers per megawatt", UnitFamilyName.LengthPerPower, 0.001),           // 1 km/MW = 1000 m / 1e6 W
+            UnitDefinition.BaseUnit("ea/W", "each per watt", UnitFamilyName.QuantityPerPower),
+            UnitDefinition.LinearUnit("ea/kW", "each per kilowatt", UnitFamilyName.QuantityPerPower, 0.001),               // 1 ea/kW = 0.001 ea/W
+            UnitDefinition.LinearUnit("ea/MW", "each per megawatt", UnitFamilyName.QuantityPerPower, 0.000001),            // 1 ea/MW = 1e-6 ea/W
             UnitDefinition.LinearUnit("EUR", "Euros", UnitFamilyName.Currency, 0.92, "€"),           // 1 EUR = 0.92 USD
             UnitDefinition.LinearUnit("GBP", "British Pounds", UnitFamilyName.Currency, 0.79, "£"),  // 1 GBP = 0.79 USD
             UnitDefinition.LinearUnit("JPY", "Japanese Yen", UnitFamilyName.Currency, 145.0, "¥"),   // 1 JPY = 145 USD
