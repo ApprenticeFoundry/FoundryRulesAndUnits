@@ -87,8 +87,8 @@ public class Acceleration : MeasuredValue
 	// Cross-family: Acceleration × Time → Speed (v = a × t)
 	public static Speed operator *(Acceleration left, Time right)
 	{
-		var speedValue = left.BaseValue() * right.BaseValue(); // (m/s²) × s = m/s
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var speedValue = left.MksValue() * right.MksValue(); // (m/s²) × s = m/s
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 		return (Speed)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 
@@ -97,15 +97,15 @@ public class Acceleration : MeasuredValue
 	// integration formulas like `Velocity + Accel * dt` need this overload (bugs 034/035).
 	public static Speed operator *(Acceleration left, Duration right)
 	{
-		var speedValue = left.BaseValue() * right.BaseValue(); // (m/s²) × s = m/s
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var speedValue = left.MksValue() * right.MksValue(); // (m/s²) × s = m/s
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 		return (Speed)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 
 	public static Speed operator *(Duration left, Acceleration right)
 	{
-		var speedValue = left.BaseValue() * right.BaseValue(); // s × (m/s²) = m/s
-		var unitSystem = new UnitSystem(right._unitGroup.SystemType);
+		var speedValue = left.MksValue() * right.MksValue(); // s × (m/s²) = m/s
+		var unitSystem = UnitSystem.Shared(right._unitGroup.SystemType);
 		return (Speed)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 }

@@ -73,8 +73,8 @@ public class Duration : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator *(Duration left, Speed right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var lengthValue = left.BaseValue() * right.BaseValue(); // s × (m/s) = m
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var lengthValue = left.MksValue() * right.MksValue(); // s × (m/s) = m
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 	}
 	
@@ -84,8 +84,8 @@ public class Duration : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator *(Duration left, Power right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var energyValue = left.BaseValue() * right.BaseValue(); // s × W = J
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var energyValue = left.MksValue() * right.MksValue(); // s × W = J
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
 	}
 

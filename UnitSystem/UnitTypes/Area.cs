@@ -92,8 +92,8 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator *(Area left, Length right)
 		{
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-			var volumeValue = left.BaseValue() * right.BaseValue(); // m² × m = m³
+			var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+			var volumeValue = left.MksValue() * right.MksValue(); // m² × m = m³
 			return unitSystem.CreateMeasuredValue(UnitFamilyName.Volume, volumeValue, "m3");
 		}
 		
@@ -103,8 +103,8 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static MeasuredValue operator /(Area left, Length right)
 		{
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-			var lengthValue = left.BaseValue() / right.BaseValue(); // m² ÷ m = m
+			var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+			var lengthValue = left.MksValue() / right.MksValue(); // m² ÷ m = m
 			return unitSystem.CreateMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 	}

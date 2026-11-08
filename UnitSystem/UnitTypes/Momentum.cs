@@ -98,8 +98,8 @@ public class Momentum : MeasuredValue
 	public static Speed operator /(Momentum momentum, Mass mass)
 	{
 		// Reuse existing unit system from the operands - no new instances!
-		var speedValue = momentum.BaseValue() / mass.BaseValue(); // (kg⋅m/s) ÷ kg = m/s
-		var unitSystem = new UnitSystem(momentum._unitGroup.SystemType);
+		var speedValue = momentum.MksValue() / mass.MksValue(); // (kg⋅m/s) ÷ kg = m/s
+		var unitSystem = UnitSystem.Shared(momentum._unitGroup.SystemType);
 		return (Speed)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 	
@@ -110,8 +110,8 @@ public class Momentum : MeasuredValue
 	public static Mass operator /(Momentum momentum, Speed speed)
 	{
 		// Reuse existing unit system from the operands - no new instances!
-		var massValue = momentum.BaseValue() / speed.BaseValue(); // (kg⋅m/s) ÷ (m/s) = kg
-		var unitSystem = new UnitSystem(momentum._unitGroup.SystemType);
+		var massValue = momentum.MksValue() / speed.MksValue(); // (kg⋅m/s) ÷ (m/s) = kg
+		var unitSystem = UnitSystem.Shared(momentum._unitGroup.SystemType);
 		return (Mass)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Mass, massValue, "kg");
 	}
 }

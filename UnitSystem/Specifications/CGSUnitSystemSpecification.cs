@@ -18,7 +18,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         public override UnitSystemType SystemType => UnitSystemType.CGS;
 
-        public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+        protected override IReadOnlyList<UnitDefinition> OwnDefinitions { get; } = new List<UnitDefinition>
         {
             // Length units (centimeters as base) - Small-scale measurements
             UnitDefinition.BaseUnit("cm", "centimeters", UnitFamilyName.Length),

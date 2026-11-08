@@ -90,15 +90,15 @@ public class Damping : MeasuredValue
 	// Cross-family: Damping × Speed → Force (viscous damping, F = c·v)
 	public static Force operator *(Damping left, Speed right)
 	{
-		var forceValue = left.BaseValue() * right.BaseValue(); // (Ns/m) × (m/s) = N
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var forceValue = left.MksValue() * right.MksValue(); // (Ns/m) × (m/s) = N
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 		return (Force)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Force, forceValue, "N");
 	}
 
 	public static Force operator *(Speed left, Damping right)
 	{
-		var forceValue = left.BaseValue() * right.BaseValue(); // (m/s) × (Ns/m) = N
-		var unitSystem = new UnitSystem(right._unitGroup.SystemType);
+		var forceValue = left.MksValue() * right.MksValue(); // (m/s) × (Ns/m) = N
+		var unitSystem = UnitSystem.Shared(right._unitGroup.SystemType);
 		return (Force)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Force, forceValue, "N");
 	}
 }

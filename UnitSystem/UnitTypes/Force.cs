@@ -99,8 +99,8 @@ public class Force : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Force left, Area right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var pressureValue = left.BaseValue() / right.BaseValue(); // N ÷ m² = Pa
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var pressureValue = left.MksValue() / right.MksValue(); // N ÷ m² = Pa
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Pressure, pressureValue, "Pa");
 	}
 
@@ -110,8 +110,8 @@ public class Force : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Force left, Length right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var stiffnessValue = left.BaseValue() / right.BaseValue(); // N ÷ m = N/m
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var stiffnessValue = left.MksValue() / right.MksValue(); // N ÷ m = N/m
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Stiffness, stiffnessValue, "N/m");
 	}
 
@@ -121,8 +121,8 @@ public class Force : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Force left, Speed right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var dampingValue = left.BaseValue() / right.BaseValue(); // N ÷ (m/s) = Ns/m
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var dampingValue = left.MksValue() / right.MksValue(); // N ÷ (m/s) = Ns/m
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Damping, dampingValue, "Ns/m");
 	}
 
@@ -132,8 +132,8 @@ public class Force : MeasuredValue
 	/// </summary>
 	public static Acceleration operator /(Force left, Mass right)
 	{
-		var accelValue = left.BaseValue() / right.BaseValue(); // N ÷ kg = m/s²
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var accelValue = left.MksValue() / right.MksValue(); // N ÷ kg = m/s²
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 		return (Acceleration)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Acceleration, accelValue, "m/s2");
 	}
 }

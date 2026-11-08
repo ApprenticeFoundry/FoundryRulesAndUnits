@@ -96,8 +96,8 @@ namespace FoundryRulesAndUnits.Units
 		public static Momentum operator *(Mass mass, Speed speed)
 		{
 			// Reuse existing unit system - no new instances!
-			var momentumValue = mass.BaseValue() * speed.BaseValue(); // kg × (m/s) = kg⋅m/s
-			var unitSystem = new UnitSystem(mass._unitGroup.SystemType);
+			var momentumValue = mass.MksValue() * speed.MksValue(); // kg × (m/s) = kg⋅m/s
+			var unitSystem = UnitSystem.Shared(mass._unitGroup.SystemType);
 			return (Momentum)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Momentum, momentumValue, "kg*m/s");
 		}
 		
@@ -109,8 +109,8 @@ namespace FoundryRulesAndUnits.Units
 		public static Energy operator *(Mass mass, Energy energy)
 		{
 			// For kinetic energy: mass × specific energy = total energy
-			var energyValue = mass.BaseValue() * energy.BaseValue(); // kg × (J/kg) = J
-			var unitSystem = new UnitSystem(mass._unitGroup.SystemType);
+			var energyValue = mass.MksValue() * energy.MksValue(); // kg × (J/kg) = J
+			var unitSystem = UnitSystem.Shared(mass._unitGroup.SystemType);
 			return (Energy)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Energy, energyValue, "J");
 		}
 		

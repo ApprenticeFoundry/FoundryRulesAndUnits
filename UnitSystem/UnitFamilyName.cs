@@ -103,4 +103,10 @@ public enum UnitFamilyName
     AreaPerPower,         // m2/W, acre/MW — land per capacity
     LengthPerPower,       // m/W, m/MW — row length per capacity
     QuantityPerPower,     // ea/W, ea/MW — a count per capacity (piles, modules)
+
+    // Rotational physics — added 2026-11-06 with the angle axis (SPEC_DIMENSIONAL_PEDIGREE §3.6), so these quantities can be declared.
+    AngularMomentum,      // kg*m2/s — I * w, r * p, torque * time
+    TorsionalStiffness,   // N*m/rad — a torsion spring (torque per angle)
+    TorsionalDamping,     // N*m*s/rad — a rotary damper (torque per angular velocity)
+    TwistRate,            // rad/m — shaft twist, a helix (angle per length)
 }

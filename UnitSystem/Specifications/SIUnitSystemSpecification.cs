@@ -18,7 +18,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         public override UnitSystemType SystemType => UnitSystemType.SI;
 
-        public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+        protected override IReadOnlyList<UnitDefinition> OwnDefinitions { get; } = new List<UnitDefinition>
         {
             // Length units (meters as base) - Small-scale measurements
             UnitDefinition.BaseUnit("m", "meters", UnitFamilyName.Length),
@@ -325,6 +325,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
             // Charge units (coulombs as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("C", "coulombs", UnitFamilyName.ElectricCharge),
+            UnitDefinition.LinearUnit("Coul", "coulombs", UnitFamilyName.ElectricCharge, 1.0),      // MKS spells it this way: bare `C` is Celsius
             UnitDefinition.LinearUnit("mC", "millicoulombs", UnitFamilyName.ElectricCharge, 0.001), // 1 mC = 0.001 C
             UnitDefinition.LinearUnit("μC", "microcoulombs", UnitFamilyName.ElectricCharge, 0.000001), // 1 μC = 1e-6 C
             UnitDefinition.LinearUnit("nC", "nanocoulombs", UnitFamilyName.ElectricCharge, 0.000000001), // 1 nC = 1e-9 C

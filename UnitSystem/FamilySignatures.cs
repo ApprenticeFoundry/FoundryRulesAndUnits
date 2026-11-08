@@ -13,10 +13,7 @@ namespace FoundryRulesAndUnits.Units;
 /// they carry meaning the exponent axes cannot express, never compose directly, and are
 /// never auto-promoted.
 ///   - WorkTime          — semantically true, dimensionally false (a work day is 8 hours)
-///   - Angle, Bearing    — dimensionless by physics; meaning is entirely nominal (no angle
-///                         axis by design — Torque-vs-Energy is answered by intent, §11)
-///   - AngularVelocity, AngularAcceleration — identity depends on the absent angle axis;
-///                         structurally they would collide with Frequency (rad/s vs Hz)
+///   - Bearing           — a compass reading, not a quantity you multiply
 ///   - Percent, Verdict  — zero signature; must never name a raw scalar
 ///   - Temperature       — affine conversions do not compose linearly (Kelvin-only entry
 ///                         is open question §12.2)
@@ -48,6 +45,13 @@ public static class FamilySignatures
         [UnitFamilyName.Momentum]     = DimensionalSignature.Of(length: 1, mass: 1, time: -1),
         [UnitFamilyName.Inertia]      = DimensionalSignature.Of(length: 2, mass: 1),
         [UnitFamilyName.Frequency]    = DimensionalSignature.Of(time: -1),
+        [UnitFamilyName.Angle]               = DimensionalSignature.Of(angle: 1),               // 2026-11-06, spec §3.6
+        [UnitFamilyName.AngularVelocity]     = DimensionalSignature.Of(time: -1, angle: 1),     // rad/s stays apart from Hz
+        [UnitFamilyName.AngularAcceleration] = DimensionalSignature.Of(time: -2, angle: 1),
+        [UnitFamilyName.AngularMomentum]     = DimensionalSignature.Of(length: 2, mass: 1, time: -1),            // no angle: I * w folds to it, r * p is it
+        [UnitFamilyName.TorsionalStiffness]  = DimensionalSignature.Of(length: 2, mass: 1, time: -2, angle: -1), // torque per angle
+        [UnitFamilyName.TorsionalDamping]    = DimensionalSignature.Of(length: 2, mass: 1, time: -1, angle: -1), // torque per angular velocity
+        [UnitFamilyName.TwistRate]           = DimensionalSignature.Of(length: -1, angle: 1),                    // angle per length
         [UnitFamilyName.Density]      = DimensionalSignature.Of(length: -3, mass: 1),           // kg/m³ — 2026-08-30
         [UnitFamilyName.Irradiance]   = DimensionalSignature.Of(mass: 1, time: -3),             // W/m² — 2026-10-20 (area × irradiance = power)
         [UnitFamilyName.InverseTemperature] = DimensionalSignature.Of(temperature: -1),         // 1/K — 2026-10-21 (coefficient × temperature difference)

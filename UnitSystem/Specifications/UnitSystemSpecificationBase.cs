@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FoundryRulesAndUnits.Units;
 
 namespace FoundryRulesAndUnits.Units.Specifications
@@ -15,7 +16,69 @@ namespace FoundryRulesAndUnits.Units.Specifications
         public abstract string SystemName { get; }
         public abstract string SystemDescription { get; }
         public abstract UnitSystemType SystemType { get; }
-        public abstract IReadOnlyList<UnitDefinition> UnitDefinitions { get; }
+
+        /// <summary>The units this system states for itself: its base units, and what only it has.</summary>
+        protected abstract IReadOnlyList<UnitDefinition> OwnDefinitions { get; }
+
+        private IReadOnlyList<UnitDefinition>? _unitDefinitions;
+
+        /// <summary>
+        /// Every unit this system can read. MKS is the one full list; another system is that list restated on its own base units, so a model means
+        /// the same thing whichever base the host chose, and a family this system never declared (seconds, once) is there rather than missing.
+        /// </summary>
+        public IReadOnlyList<UnitDefinition> UnitDefinitions =>
+            _unitDefinitions ??= SystemType == UnitSystemType.MKS ? OwnDefinitions : RestatedOnOwnBaseUnits();
+
+        // A unit whose own definition differs from MKS by more than this means something else (ton: 2000 lb here, 1000 kg there), and keeps its meaning.
+        // Below it, the difference is a rounded constant, and the systems must not disagree over rounding.
+        private const double DifferentMeaning = 1e-3;
+
+        private IReadOnlyList<UnitDefinition> RestatedOnOwnBaseUnits()
+        {
+            var own = OwnDefinitions.GroupBy(u => u.Family).ToDictionary(g => g.Key, g => g.ToList());
+            var all = new List<UnitDefinition>();
+
+            // In MKS order: a bare symbol two families register resolves as it does in MKS.
+            foreach (var family in new MKSUnitSystemSpecification().OwnDefinitions.GroupBy(u => u.Family))
+            {
+                var ownUnits = own.GetValueOrDefault(family.Key);
+                var ownBase = ownUnits?.FirstOrDefault(u => u.IsBaseUnit);
+                if (ownBase is null) { all.AddRange(family); own.Remove(family.Key); continue; }
+
+                var (toMks, fromMks) = BridgeToMks(ownBase, ownUnits!, family.ToList());
+                all.Add(ownBase);
+                foreach (var unit in family.Where(u => u.Symbol != ownBase.Symbol))
+                {
+                    var restated = UnitDefinition.DerivedUnit(unit.Symbol, unit.Name, unit.Family,
+                        x => fromMks(unit.ToBaseUnit!(x)), x => unit.FromBaseUnit!(toMks(x)), unit.UnicodeSymbol);
+                    var stated = ownUnits!.FirstOrDefault(u => u.Symbol == unit.Symbol);
+                    all.Add(stated is not null && MeansSomethingElse(stated, restated) ? stated : restated);
+                }
+                all.AddRange(ownUnits!.Where(u => !u.IsBaseUnit && family.All(m => m.Symbol != u.Symbol)));
+                own.Remove(family.Key);
+            }
+
+            all.AddRange(own.Values.SelectMany(units => units));   // families MKS does not have
+            return all;
+        }
+
+        /// <summary>Between this system's base unit and the MKS base unit of the family: by MKS's own definition when it has one, or by this system's.</summary>
+        private static (Func<double, double> ToMks, Func<double, double> FromMks) BridgeToMks(UnitDefinition ownBase, List<UnitDefinition> ownUnits, List<UnitDefinition> mksUnits)
+        {
+            var known = mksUnits.FirstOrDefault(u => u.Symbol == ownBase.Symbol);
+            if (known is not null) return (known.ToBaseUnit!, known.FromBaseUnit!);
+
+            var mksBase = mksUnits.First(u => u.IsBaseUnit).Symbol;
+            var stated = ownUnits.FirstOrDefault(u => u.Symbol == mksBase)
+                ?? throw new InvalidOperationException($"{ownBase.Family}: neither {ownBase.Symbol} nor {mksBase} is defined in terms of the other.");
+            return (stated.FromBaseUnit!, stated.ToBaseUnit!);
+        }
+
+        private static bool MeansSomethingElse(UnitDefinition a, UnitDefinition b)
+        {
+            var (x, y) = (a.ToBaseUnit!(1.0), b.ToBaseUnit!(1.0));
+            return Math.Abs(x - y) > DifferentMeaning * Math.Max(Math.Abs(x), Math.Abs(y));
+        }
 
         // Common cached fields for performance optimization
         private Dictionary<UnitFamilyName, UnitGroup>? _cachedUnitGroups = null;

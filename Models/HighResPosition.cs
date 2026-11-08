@@ -20,7 +20,7 @@ namespace FoundryRulesAndUnits.Models
 
 		public HighResPosition()
 		{
-			var unitSystem = new UnitSystem();
+			var unitSystem = UnitSystem.Shared();
 			xLoc = unitSystem.CreateUnit<Length>(0, "m");
 			yLoc = unitSystem.CreateUnit<Length>(0, "m");
 			zLoc = unitSystem.CreateUnit<Length>(0, "m");
@@ -63,7 +63,7 @@ namespace FoundryRulesAndUnits.Models
 		}
 		public HighResPosition Loc(double xLoc, double yLoc, double zLoc, string units = "m")
 		{
-			var factory = new UnitSystem();
+			var factory = UnitSystem.Shared();
 			this.xLoc = this.xLoc == null! ? factory.CreateUnit<Length>(xLoc, units) : this.xLoc.Assign(xLoc, units);
 			this.yLoc = this.yLoc == null! ? factory.CreateUnit<Length>(yLoc, units) : this.yLoc.Assign(yLoc, units);
 			this.zLoc = this.zLoc == null! ? factory.CreateUnit<Length>(zLoc, units) : this.zLoc.Assign(zLoc, units);
@@ -71,7 +71,7 @@ namespace FoundryRulesAndUnits.Models
 		}
 		public HighResPosition Ang(double xAng, double yAng, double zAng, string units = "rad")
 		{
-			var factory = new UnitSystem();
+			var factory = UnitSystem.Shared();
 			this.xAng = this.xAng == null! ? factory.CreateUnit<Angle>(xAng, units) : this.xAng.Assign(xAng, units);
 			this.yAng = this.yAng == null! ? factory.CreateUnit<Angle>(yAng, units) : this.yAng.Assign(yAng, units);
 			this.zAng = this.zAng == null! ? factory.CreateUnit<Angle>(zAng, units) : this.zAng.Assign(zAng, units);

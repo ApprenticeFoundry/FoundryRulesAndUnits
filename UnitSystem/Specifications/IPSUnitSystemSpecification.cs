@@ -18,7 +18,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         public override UnitSystemType SystemType => UnitSystemType.IPS;
 
-        public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+        protected override IReadOnlyList<UnitDefinition> OwnDefinitions { get; } = new List<UnitDefinition>
         {
             // Length units (inches as base) - Small-scale measurements
             UnitDefinition.BaseUnit("in", "inches", UnitFamilyName.Length),
@@ -97,7 +97,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("ft/s", "feet per second", UnitFamilyName.Speed, 12.0),   // 1 ft/s = 12 in/s
             UnitDefinition.LinearUnit("ft/min", "feet per minute", UnitFamilyName.Speed, 0.2),  // 1 ft/min = 0.2 in/s
             UnitDefinition.LinearUnit("mph", "miles per hour", UnitFamilyName.Speed, 17.6),     // 1 mph = 17.6 in/s
-            UnitDefinition.LinearUnit("m/s", "meters per second", UnitFamilyName.Speed, 39.3701), // 1 m/s = 39.37 in/s
+            UnitDefinition.LinearUnit("m/s", "meters per second", UnitFamilyName.Speed, 1.0 / 0.0254), // 1 m/s = 39.37 in/s
             UnitDefinition.LinearUnit("km/h", "kilometers per hour", UnitFamilyName.Speed, 10.936), // 1 km/h = 10.936 in/s
 
             // Acceleration units (inches per second squared as base) - ASCII canonical with Unicode display
@@ -161,7 +161,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("BTU", "British thermal units", UnitFamilyName.Energy, 778.169), // 1 BTU = 778.169 ft·lbf
             UnitDefinition.LinearUnit("kWh", "kilowatt-hours", UnitFamilyName.Energy, 2655224.0), // 1 kWh = 2,655,224 ft·lbf
             UnitDefinition.LinearUnit("MWh", "megawatt-hours", UnitFamilyName.Energy, 2655224000.0), // 1 MWh = 1000 kWh
-            UnitDefinition.LinearUnit("J", "joules", UnitFamilyName.Energy, 0.737562),           // 1 J = 0.7376 ft·lbf
+            UnitDefinition.LinearUnit("J", "joules", UnitFamilyName.Energy, 1.0 / (0.3048 * 4.44822)),           // 1 J = 0.7376 ft·lbf
             UnitDefinition.LinearUnit("cal", "calories", UnitFamilyName.Energy, 3.08596),        // 1 cal = 3.086 ft·lbf
 
             // Power units (horsepower as base) - using enhanced approach with UnitFamilyName enum!

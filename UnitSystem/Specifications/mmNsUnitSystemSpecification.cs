@@ -18,7 +18,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         public override UnitSystemType SystemType => UnitSystemType.mmNs;
 
-        public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+        protected override IReadOnlyList<UnitDefinition> OwnDefinitions { get; } = new List<UnitDefinition>
         {
             // Length units (millimeters as base) - Small-scale measurements
             UnitDefinition.BaseUnit("mm", "millimeters", UnitFamilyName.Length),

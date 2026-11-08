@@ -18,7 +18,7 @@ namespace FoundryRulesAndUnits.Units.Specifications
 
         public override UnitSystemType SystemType => UnitSystemType.FPS;
 
-        public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+        protected override IReadOnlyList<UnitDefinition> OwnDefinitions { get; } = new List<UnitDefinition>
         {
             // Length units (feet as base) - Small-scale measurements
             UnitDefinition.BaseUnit("ft", "feet", UnitFamilyName.Length),
@@ -144,14 +144,14 @@ namespace FoundryRulesAndUnits.Units.Specifications
             UnitDefinition.LinearUnit("psi", "pounds per square inch", UnitFamilyName.Pressure, 144.0), // 1 psi = 144 psf
             UnitDefinition.LinearUnit("kip/ft2", "kips per square foot", UnitFamilyName.Pressure, 1000.0), // 1 kip/ft² = 1000 psf
             UnitDefinition.LinearUnit("atm", "atmospheres", UnitFamilyName.Pressure, 2116.22),  // 1 atm = 2116.22 psf
-            UnitDefinition.LinearUnit("Pa", "pascals", UnitFamilyName.Pressure, 0.0208854),     // 1 Pa = 0.02089 psf
+            UnitDefinition.LinearUnit("Pa", "pascals", UnitFamilyName.Pressure, 144.0 / 6894.76),     // 1 Pa = 0.02089 psf
             UnitDefinition.LinearUnit("kPa", "kilopascals", UnitFamilyName.Pressure, 20.8854),  // 1 kPa = 20.885 psf
 
             // Energy units (foot-pounds as base) - using enhanced approach with UnitFamilyName enum!
             UnitDefinition.BaseUnit("ft·lbf", "foot-pounds", UnitFamilyName.Energy),
             UnitDefinition.LinearUnit("in·lbf", "inch-pounds", UnitFamilyName.Energy, 1.0/12.0), // 1 in·lbf = 1/12 ft·lbf
             UnitDefinition.LinearUnit("BTU", "British thermal units", UnitFamilyName.Energy, 778.169), // 1 BTU = 778.169 ft·lbf
-            UnitDefinition.LinearUnit("J", "joules", UnitFamilyName.Energy, 0.737562),           // 1 J = 0.7376 ft·lbf
+            UnitDefinition.LinearUnit("J", "joules", UnitFamilyName.Energy, 1.0 / (0.3048 * 4.44822)),           // 1 J = 0.7376 ft·lbf
             UnitDefinition.LinearUnit("kWh", "kilowatt-hours", UnitFamilyName.Energy, 2655224.0), // 1 kWh = 2,655,224 ft·lbf
             UnitDefinition.LinearUnit("MWh", "megawatt-hours", UnitFamilyName.Energy, 2655224000.0), // 1 MWh = 1000 kWh
 

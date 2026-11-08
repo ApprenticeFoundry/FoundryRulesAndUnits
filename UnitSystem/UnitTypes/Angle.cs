@@ -73,6 +73,22 @@ namespace FoundryRulesAndUnits.Units
 			return result;
 		}
 
+		// A bare number meeting an angle is radians, because pi and tau are bare: atan2(y, x) + pi. An angle shown in any
+		// other unit refuses, because `30 deg + 1` could mean a degree or a radian and the writer must say (spec §3.6).
+		private Angle PlusRadians(double radians)
+		{
+			if (Units() != "rad")
+				throw new InvalidOperationException($"a bare number cannot meet an angle in {Units()}: say which, as 1 {Units()} or 1 rad");
+			var result = new Angle(_unitGroup);
+			result.Init(Value() + radians, Internal());
+			return result;
+		}
+
+		public static Angle operator +(Angle left, double right) => left.PlusRadians(right);
+		public static Angle operator +(double left, Angle right) => right.PlusRadians(left);
+		public static Angle operator -(Angle left, double right) => left.PlusRadians(-right);
+		public static Angle operator -(double left, Angle right) => (-1.0 * right).PlusRadians(left);
+
 		// Scalar multiplication operators - both directions needed
 		public static Angle operator *(double left, Angle right)
 		{

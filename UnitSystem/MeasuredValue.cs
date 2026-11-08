@@ -164,7 +164,7 @@ public class MeasuredValue : IMeasuredValue
 			// Try to create a temporary unit system for conversion
 			try
 			{
-				var unitSystem = new UnitSystem();
+				var unitSystem = UnitSystem.Shared();
 				return unitSystem.Convert(V, I, units);
 			}
 			catch
@@ -199,6 +199,26 @@ public class MeasuredValue : IMeasuredValue
 	/// </summary>
 	/// <returns>The numeric value in base units for mental math calculations</returns>
 	public double BaseValue() { return V; }
+
+	/// <summary>
+	/// The value in this family's MKS base unit, whatever system it is stored in. The cross-family operators multiply base values, which is only
+	/// right in a coherent system: ft x lb is not lbf. So they work in MKS numbers and let the result convert into its own system.
+	/// </summary>
+	public double MksValue()
+	{
+		if (_unitGroup is null || _unitGroup.SystemType == UnitSystemType.MKS) return V;
+		var mksBase = UnitSystem.Shared().GetBaseUnitForFamily(F);
+		return mksBase.Length == 0 || mksBase == I ? V : _unitGroup.Convert(V, I, mksBase);
+	}
+
+	/// <summary>
+	/// An operator stamps its result with an MKS symbol. In another system that is the right value, but the host chose this system, so show its base unit.
+	/// </summary>
+	public void ShowBaseUnitsAfterMks()
+	{
+		if (_unitGroup is null || _unitGroup.SystemType == UnitSystemType.MKS) return;
+		if (U == UnitSystem.Shared().GetBaseUnitForFamily(F)) U = I;
+	}
 
 	/// <summary>
 	/// Get the base unit symbol (I field) - the unit symbol for internal storage
@@ -413,7 +433,7 @@ public class MeasuredValue : IMeasuredValue
 	/// </summary>
 	public static MeasuredValue operator -(MeasuredValue operand)
 	{
-		var unitSystem = new UnitSystem(operand.UnitGroup.SystemType);
+		var unitSystem = UnitSystem.Shared(operand.UnitGroup.SystemType);
 		var negated = unitSystem.CreateTypedMeasuredValue(operand.UnitFamily, -operand.V, operand.I);
 		negated.SetDisplayUnits(operand.U);
 		return negated;

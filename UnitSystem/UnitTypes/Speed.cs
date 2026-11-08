@@ -73,8 +73,8 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static Length operator *(Speed left, Time right)
 		{
-			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+			var lengthValue = left.MksValue() * right.MksValue(); // (m/s) × s = m
+			var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 			return (Length)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
@@ -84,8 +84,8 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static Length operator *(Speed left, Duration right)
 		{
-			var lengthValue = left.BaseValue() * right.BaseValue(); // (m/s) × s = m
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+			var lengthValue = left.MksValue() * right.MksValue(); // (m/s) × s = m
+			var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 			return (Length)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Length, lengthValue, "m");
 		}
 		
@@ -96,9 +96,9 @@ namespace FoundryRulesAndUnits.Units
 		/// </summary>
 		public static Energy operator *(Speed left, Speed right)
 		{
-			var speedSquaredValue = left.BaseValue() * right.BaseValue(); // (m/s) × (m/s) = m²/s²
+			var speedSquaredValue = left.MksValue() * right.MksValue(); // (m/s) × (m/s) = m²/s²
 			// m²/s² has the same units as J/kg (specific energy)
-			var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+			var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 			return (Energy)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Energy, speedSquaredValue, "J");
 		}
 		

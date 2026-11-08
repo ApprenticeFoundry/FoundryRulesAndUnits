@@ -90,15 +90,15 @@ public class Stiffness : MeasuredValue
 	// Cross-family: Stiffness × Length → Force (Hooke's law, F = k·x)
 	public static Force operator *(Stiffness left, Length right)
 	{
-		var forceValue = left.BaseValue() * right.BaseValue(); // (N/m) × m = N
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
+		var forceValue = left.MksValue() * right.MksValue(); // (N/m) × m = N
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
 		return (Force)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Force, forceValue, "N");
 	}
 
 	public static Force operator *(Length left, Stiffness right)
 	{
-		var forceValue = left.BaseValue() * right.BaseValue(); // m × (N/m) = N
-		var unitSystem = new UnitSystem(right._unitGroup.SystemType);
+		var forceValue = left.MksValue() * right.MksValue(); // m × (N/m) = N
+		var unitSystem = UnitSystem.Shared(right._unitGroup.SystemType);
 		return (Force)unitSystem.CreateTypedMeasuredValue(UnitFamilyName.Force, forceValue, "N");
 	}
 }

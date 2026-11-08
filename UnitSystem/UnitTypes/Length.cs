@@ -135,8 +135,8 @@ public class Length : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator *(Length left, Length right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var areaValue = left.BaseValue() * right.BaseValue(); // m × m = m²
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var areaValue = left.MksValue() * right.MksValue(); // m × m = m²
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Area, areaValue, "m2");
 	}
 	
@@ -146,8 +146,8 @@ public class Length : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator *(Length left, Area right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var volumeValue = left.BaseValue() * right.BaseValue(); // m × m² = m³
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var volumeValue = left.MksValue() * right.MksValue(); // m × m² = m³
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Volume, volumeValue, "m3");
 	}
 	
@@ -157,8 +157,8 @@ public class Length : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Length left, Time right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var speedValue = left.BaseValue() / right.BaseValue(); // m ÷ s = m/s
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var speedValue = left.MksValue() / right.MksValue(); // m ÷ s = m/s
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 	
@@ -168,8 +168,8 @@ public class Length : MeasuredValue
 	/// </summary>
 	public static MeasuredValue operator /(Length left, Duration right)
 	{
-		var unitSystem = new UnitSystem(left._unitGroup.SystemType);
-		var speedValue = left.BaseValue() / right.BaseValue(); // m ÷ s = m/s
+		var unitSystem = UnitSystem.Shared(left._unitGroup.SystemType);
+		var speedValue = left.MksValue() / right.MksValue(); // m ÷ s = m/s
 		return unitSystem.CreateMeasuredValue(UnitFamilyName.Speed, speedValue, "m/s");
 	}
 }

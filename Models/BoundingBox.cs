@@ -19,7 +19,7 @@ namespace FoundryRulesAndUnits.Models
 
 		public BoundingBox()
 		{
-			var UnitFactory = new UnitSystem();
+			var UnitFactory = UnitSystem.Shared();
 			width = UnitFactory.CreateUnit<Length>(10, "m");
 			height = UnitFactory.CreateUnit<Length>(20, "m");
 			depth = UnitFactory.CreateUnit<Length>(30, "m");
@@ -72,7 +72,7 @@ namespace FoundryRulesAndUnits.Models
 
 		public BoundingBox Box(double w, double h, double d, string units = "m")
 		{
-			var factory = new UnitSystem();
+			var factory = UnitSystem.Shared();
 			this.width = this.width == null! ? factory.CreateUnit<Length>(w, units) : this.width.Assign(w, units);
 			this.height = this.height == null! ? factory.CreateUnit<Length>(h, units) : this.height.Assign(h, units);
 			this.depth = this.depth == null! ? factory.CreateUnit<Length>(d, units) : this.depth.Assign(d, units);
@@ -80,7 +80,7 @@ namespace FoundryRulesAndUnits.Models
 		}
 		public BoundingBox Pin(double x, double y, double z, string units = "m")
 		{
-			var factory = new UnitSystem();
+			var factory = UnitSystem.Shared();
 			this.pinX = this.pinX == null! ? factory.CreateUnit<Length>(x, units) : this.pinX.Assign(x, units);
 			this.pinY = this.pinY == null! ? factory.CreateUnit<Length>(y, units) : this.pinY.Assign(y, units);
 			this.pinZ = this.pinZ == null! ? factory.CreateUnit<Length>(z, units) : this.pinZ.Assign(z, units);

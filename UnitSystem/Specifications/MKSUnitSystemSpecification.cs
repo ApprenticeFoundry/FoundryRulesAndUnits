@@ -18,7 +18,7 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
 
     public override UnitSystemType SystemType => UnitSystemType.MKS;
 
-    public override IReadOnlyList<UnitDefinition> UnitDefinitions { get; } = new List<UnitDefinition>
+    protected override IReadOnlyList<UnitDefinition> OwnDefinitions { get; } = new List<UnitDefinition>
     {
         // Length units (meters as base) - All-scale measurements
         UnitDefinition.BaseUnit("m", "meters", UnitFamilyName.Length),
@@ -497,6 +497,25 @@ public class MKSUnitSystemSpecification : UnitSystemSpecificationBase
         UnitDefinition.LinearUnit("deg/s2", "degrees per second squared", UnitFamilyName.AngularAcceleration, Math.PI / 180.0, "°/s²"), // ASCII: deg/s2, Unicode: °/s²
         UnitDefinition.LinearUnit("rpm/s", "rpm per second", UnitFamilyName.AngularAcceleration, 2.0 * Math.PI / 60.0), // 1 rpm/s = 2π/60 rad/s²
         UnitDefinition.LinearUnit("rev/s2", "revolutions per second squared", UnitFamilyName.AngularAcceleration, 2.0 * Math.PI, "rev/s²"), // ASCII: rev/s2, Unicode: rev/s²
+
+        // Rotational physics (2026-11-06, SPEC_DIMENSIONAL_PEDIGREE §3.6). Other systems inherit these.
+        UnitDefinition.BaseUnit("kg*m2/s", "kilogram-square meters per second", UnitFamilyName.AngularMomentum, "kg⋅m²/s"),
+        UnitDefinition.LinearUnit("N*m*s", "newton-meter-seconds", UnitFamilyName.AngularMomentum, 1.0, "N⋅m⋅s"),
+        UnitDefinition.LinearUnit("g*cm2/s", "gram-square centimeters per second", UnitFamilyName.AngularMomentum, 0.0000001, "g⋅cm²/s"),
+        UnitDefinition.LinearUnit("lb*ft2/s", "pound-square feet per second", UnitFamilyName.AngularMomentum, 0.0421401, "lb⋅ft²/s"),
+
+        UnitDefinition.BaseUnit("N*m/rad", "newton-meters per radian", UnitFamilyName.TorsionalStiffness, "N⋅m/rad"),
+        UnitDefinition.LinearUnit("N*m/deg", "newton-meters per degree", UnitFamilyName.TorsionalStiffness, 180.0 / Math.PI, "N⋅m/°"),
+        UnitDefinition.LinearUnit("kN*m/rad", "kilonewton-meters per radian", UnitFamilyName.TorsionalStiffness, 1000.0, "kN⋅m/rad"),
+        UnitDefinition.LinearUnit("lb*ft/rad", "pound-feet per radian", UnitFamilyName.TorsionalStiffness, 1.35582, "lb⋅ft/rad"),
+
+        UnitDefinition.BaseUnit("N*m*s/rad", "newton-meter-seconds per radian", UnitFamilyName.TorsionalDamping, "N⋅m⋅s/rad"),
+        UnitDefinition.LinearUnit("N*m*s/deg", "newton-meter-seconds per degree", UnitFamilyName.TorsionalDamping, 180.0 / Math.PI, "N⋅m⋅s/°"),
+
+        UnitDefinition.BaseUnit("rad/m", "radians per meter", UnitFamilyName.TwistRate),
+        UnitDefinition.LinearUnit("deg/m", "degrees per meter", UnitFamilyName.TwistRate, Math.PI / 180.0, "°/m"),
+        UnitDefinition.LinearUnit("deg/mm", "degrees per millimeter", UnitFamilyName.TwistRate, 1000.0 * Math.PI / 180.0, "°/mm"),
+        UnitDefinition.LinearUnit("rev/m", "revolutions per meter", UnitFamilyName.TwistRate, 2.0 * Math.PI),
 
         // Inductance units (henries as base) - using enhanced approach with UnitFamilyName enum!
         UnitDefinition.BaseUnit("H", "henries", UnitFamilyName.Inductance),

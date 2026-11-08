@@ -16,6 +16,27 @@ public class UnitSystem : IUnitSystem
     private volatile Dictionary<string, UnitLookupInfo>? _cachedUnitLookup = null;
     private readonly object _lookupBuildLock = new();
 
+    // Declared before Service: static fields initialize in order, and building Service reads these.
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<UnitSystemType, IUnitSystemSpecification> _specifications = new();
+    private static readonly System.Collections.Concurrent.ConcurrentDictionary<UnitSystemType, UnitSystem> _shared = new();
+    private bool _isShared;
+
+    /// <summary>
+    /// THE unit service: one object for the whole application. Dependency injection hands out this object as <see cref="IUnitSystem"/> and
+    /// KnBase.UnitService is this object, so a host chooses the base system once, with <c>unitSystem.Apply(UnitSystemType.FPS)</c> on what it
+    /// was injected, and everything sees it. It is static as well as injected because the unit operators are static and cannot be injected.
+    /// The base is process-wide: on a shared server, one choice serves every user. Values already made keep the system they were made in.
+    /// </summary>
+    public static UnitSystem Service { get; } = new UnitSystem(UnitSystemType.MKS);
+
+    /// <summary>
+    /// The system a value of this type belongs to, for making or converting that value: the operators ask by their operand's own type, so feet
+    /// stay feet whatever the base is. This is not a second service, and it does not follow the base: to choose the base, Apply on
+    /// <see cref="Service"/>. With no type it is MKS, which is what drawing geometry is stated in. It cannot be re-pointed.
+    /// </summary>
+    public static UnitSystem Shared(UnitSystemType type = UnitSystemType.MKS) =>
+        _shared.GetOrAdd(type, static t => new UnitSystem(t) { _isShared = true });
+
     /// <summary>
     /// Current active unit system specification
     /// </summary>
@@ -47,7 +68,12 @@ public class UnitSystem : IUnitSystem
     /// </summary>
     public IUnitSystemSpecification Apply(UnitSystemType systemType)
     {
-        _currentSystem = systemType switch
+        if (_isShared)
+            throw new InvalidOperationException("UnitSystem.Shared is the system of a value and cannot change; to choose the base system, Apply on UnitSystem.Service.");
+
+        // The tables are read-only, so each type's are built once for everyone: building them costs about 500 microseconds and 138 KB,
+        // and every units multiply used to build a set to make a single value (journal 1639).
+        _currentSystem = _specifications.GetOrAdd(systemType, static type => type switch
         {
             UnitSystemType.MKS => new MKSUnitSystemSpecification(),
             UnitSystemType.SI => new SIUnitSystemSpecification(),
@@ -56,7 +82,7 @@ public class UnitSystem : IUnitSystem
             UnitSystemType.IPS => new IPSUnitSystemSpecification(),
             UnitSystemType.mmNs => new mmNsUnitSystemSpecification(),
             _ => new MKSUnitSystemSpecification()
-        };
+        });
 
         ActiveType = systemType;
 
