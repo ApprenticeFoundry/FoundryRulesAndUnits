@@ -26,6 +26,13 @@ code comments or call-site convention but was never written down anywhere)? Nobo
 grep every real usage of both across the workspace and let the actual call sites answer it before
 touching either class.
 
+## A fact found 2026-11-08 (Forge), not a decision
+
+The parser has already half-chosen. `UnitSystemSpecificationBase` marks `Time` **function-only** (not
+parser-accessible), so `45 min`, `|hr` and `units(x, 'hr')` in KN all make a `Duration`; a `Time` is made only
+by asking for it (`astime(...)`). `Moment` (`UnitSystem/Calendar/`) returns `Duration` from every subtraction
+and accepts both families when a span is added, so it neither depends on nor settles this question.
+
 ## Deliberately not addressed here
 
 This is a filing, not a decision. No option analysis, no recommendation — that's the next
